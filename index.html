@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>eBay Live — Opening Up Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f4f4;--bg-card:#fff;--border:#e0e0e0;--border-strong:#8d8d8d;
+  --text:#161616;--text-muted:#525252;--text-helper:#6f6f6f;
+  --accent:#0f62fe;--accent-2:#f1c21b;
+  --green-bg:#defbe6;--green-text:#0e6027;--green-border:#24a148;
+  --yellow-bg:#fdf6dd;--yellow-text:#7d4e00;
+  --red-bg:#fff1f1;--red-text:#a2191f;--red-border:#da1e28;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* Header */
+.hdr{background:#161616;border-bottom:1px solid #393939;height:49px;display:flex;align-items:center;padding:0 24px;gap:28px;position:sticky;top:0;z-index:50}
+.hdr-brand{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.hdr-brand span{font-size:13px;font-weight:700;color:#f4f4f4;letter-spacing:.04em}
+.hdr-brand svg{flex-shrink:0}
+.tab-nav{display:flex;gap:2px;flex:1}
+.tab-btn{padding:6px 18px;font-size:12px;font-weight:400;color:#8d8d8d;background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;letter-spacing:.02em;font-family:inherit;transition:all .15s}
+.tab-btn.active{font-weight:600;color:#f4f4f4;background:rgba(255,255,255,.1);border-bottom-color:#0f62fe}
+.grain-toggle{display:flex;background:rgba(255,255,255,.08);border:1px solid #393939;overflow:hidden}
+.grain-btn{padding:4px 12px;font-size:11px;font-weight:400;color:#8d8d8d;background:transparent;border:none;cursor:pointer;font-family:inherit;letter-spacing:.04em;transition:all .1s}
+.grain-btn.active{font-weight:600;color:#161616;background:#f4f4f4}
+
+/* Layout */
+.main{max-width:1600px;margin:0 auto;padding:20px 24px}
+.breadcrumb{font-size:10px;color:#6f6f6f;margin-bottom:12px;letter-spacing:.04em}
+.section{display:none}.section.active{display:block}
+
+/* Cards */
+.card{background:#fff;border:1px solid #e0e0e0;margin-bottom:1px;overflow:hidden}
+.card-head{display:flex;align-items:center;gap:.5rem;padding:8px 14px;background:#f4f4f4;border-bottom:1px solid #e0e0e0;border-left:3px solid #0f62fe;margin-bottom:0}
+.card-title{font-size:10px;font-weight:600;color:#525252;text-transform:uppercase;letter-spacing:.08em;flex:1}
+.card-sub{font-size:9px;color:#6f6f6f;margin-left:auto}
+.card-body{padding:14px}
+.mb1{margin-bottom:1px}
+
+/* KPI row */
+.kpi-row{display:grid;gap:1px;background:#e0e0e0;margin-bottom:1px}
+.kpi-tile{background:#fff;padding:14px;display:flex;flex-direction:column;gap:5px}
+.kpi-tile.north-star{border-top:3px solid #0f62fe}
+.kpi-tile.on-target{border-top:3px solid #24a148}
+.kpi-label{font-size:10px;font-weight:600;color:#6f6f6f;text-transform:uppercase;letter-spacing:.08em;display:flex;justify-content:space-between;align-items:flex-start;gap:4px}
+.kpi-value{font-size:24px;font-weight:700;color:#161616;display:flex;align-items:center;gap:8px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi-value.xl{font-size:30px}
+.kpi-note{font-size:9px;color:#8d8d8d}
+.kpi-guard{font-size:9px;color:#a2191f;border-top:1px solid #f4f4f4;padding-top:4px;margin-top:2px}
+.badge{font-size:11px;font-weight:600;padding:2px 6px;display:inline-block}
+.badge-sm{font-size:9px;font-weight:700;padding:1px 5px;display:inline-block}
+.g{background:var(--green-bg);color:var(--green-text)}
+.r{background:var(--red-bg);color:var(--red-text)}
+
+/* Progress bar */
+.prog-wrap{height:3px;background:#e0e0e0;margin:4px 0 2px}
+.prog-bar{height:100%;transition:width .3s}
+
+/* Chart pane */
+.chart-pane{border:1px solid #e0e0e0;background:#fff;padding:12px;margin-bottom:1px}
+.chart-pane-title{font-size:10px;font-weight:600;color:#525252;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+
+/* Grid helpers */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:1px}
+
+/* Funnel bars */
+.funnel{display:flex;flex-direction:column;gap:10px;padding:8px 0}
+.funnel-row{display:flex;flex-direction:column;gap:3px}
+.funnel-meta{display:flex;justify-content:space-between;font-size:10px;color:#525252}
+.funnel-meta span:first-child{font-weight:600}
+.funnel-track{height:22px;background:#f4f4f4;position:relative}
+.funnel-fill{height:100%;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:700;color:#fff;position:relative}
+.funnel-target-ramp{position:absolute;top:0;height:100%;width:2px;background:#f1c21b;z-index:1}
+.funnel-target-ga{position:absolute;top:0;height:100%;width:2px;background:#24a148;z-index:1}
+.funnel-conv{font-size:9px;color:#6f6f6f;padding-left:4px}
+.funnel-targets-legend{font-size:9px;color:#6f6f6f;display:flex;gap:14px;margin-top:1px;padding-left:4px}
+.funnel-targets-legend .ramp{color:#7d4e00}
+.funnel-targets-legend .ga{color:#0e6027}
+
+/* Guardrail tile */
+.guard-tile{background:#fff;border:1px solid #e0e0e0;padding:12px;display:flex;flex-direction:column;gap:4px}
+.guard-tile.ok{border-left:3px solid #24a148}
+.guard-tile.warn{border-left:3px solid #da1e28}
+.guard-label{font-size:10px;font-weight:600;color:#6f6f6f;text-transform:uppercase;letter-spacing:.06em}
+.guard-val{font-size:20px;font-weight:700;color:#161616;font-variant-numeric:tabular-nums}
+.guard-status{font-size:9px}
+.guard-tile.ok .guard-status{color:#0e6027}
+.guard-tile.warn .guard-status{color:#a2191f}
+
+/* Tables */
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;color:#6f6f6f;text-transform:uppercase;letter-spacing:.06em;background:#f4f4f4;border-bottom:1px solid #e0e0e0;white-space:nowrap}
+.tbl td{padding:8px 12px;border-bottom:1px solid #f4f4f4}
+.tbl tr:nth-child(even) td{background:#fafafa}
+.tbl tr:nth-child(odd) td{background:#fff}
+.tbl-overflow{overflow-x:auto}
+.fw6{font-weight:600;color:#161616}
+.mono{font-family:monospace;font-size:10px;color:#6f6f6f}
+
+/* Section label */
+.sect-sub{font-size:10px;font-weight:700;color:#0f62fe;padding:8px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+
+/* Print */
+@media print{
+  .hdr{position:relative}
+  .tab-btn,.grain-btn{display:none}
+  .section{display:block!important}
+  .section:not(.active){page-break-before:always}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════════════ -->
+<header class="hdr">
+  <div class="hdr-brand">
+    <svg width="18" height="18" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#0f62fe" opacity=".2"/><circle cx="12" cy="12" r="4" fill="#0f62fe"/></svg>
+    <span>eBay Live — Opening Up</span>
+  </div>
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('executive')">Executive</button>
+    <button class="tab-btn" onclick="showTab('registration')">Registration</button>
+    <button class="tab-btn" onclick="showTab('prestream')">Pre-Stream</button>
+    <button class="tab-btn" onclick="showTab('instream')">In-Stream</button>
+    <button class="tab-btn" onclick="showTab('poststream')">Post-Stream</button>
+  </nav>
+  <div class="grain-toggle">
+    <button class="grain-btn active" onclick="setGrain('Weekly',this)">Weekly</button>
+    <button class="grain-btn" onclick="setGrain('Monthly',this)">Monthly</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="breadcrumb" id="bc">Executive · Alpha cohort · As of 2026-07-09 · Weekly</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     EXECUTIVE TAB
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-executive" class="section active">
+
+  <!-- North Stars -->
+  <div style="background:#e0e0e0;margin-bottom:1px">
+    <div class="card-head" style="margin:0"><span class="card-title">Program North Stars (L0) — E2E Registration → Outcome Rates</span><span class="card-sub">Cohort-matured · 14-day window · Alpha phase</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">E2E Reg → First Show Rate</div>
+      <div class="kpi-value xl">18% <span class="badge g">▲ 20.0%</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
+      <div class="kpi-note">120% of GA target (15%) · ✓ On track</div>
+      <div class="kpi-guard">Gate 2: ≥15% for ≥2 consecutive cohort weeks</div>
+    </div>
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">E2E Reg → Show with Sales Rate</div>
+      <div class="kpi-value xl">14% <span class="badge g">▲ 27.3%</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
+      <div class="kpi-note">140% of GA target (10%) · ✓ On track</div>
+      <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
+    </div>
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">E2E Reg → Order Fulfilled Rate</div>
+      <div class="kpi-value xl">11% <span class="badge g">▲ 22.2%</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
+      <div class="kpi-note">110% of GA target (10%) · ✓ On track</div>
+      <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
+    </div>
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">E2E Reg → Full Fulfillment Rate</div>
+      <div class="kpi-value xl">10% <span class="badge g">▲ 25.0%</span></div>
+      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
+      <div class="kpi-note">100% of GA target (10%) · ✓ On track</div>
+      <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
+    </div>
+  </div>
+
+  <div class="chart-pane">
+    <div class="chart-pane-title">E2E North Star Rates by Cohort Week</div>
+    <div id="ch-exec-northstar" style="height:220px"></div>
+  </div>
+
+  <!-- Supporting -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Supporting Program Metrics</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">GMV / Streaming Hour <span class="badge-sm" style="background:#6929c4;color:#fff">In-Stream</span></div>
+      <div class="kpi-value">$47 <span class="badge g">▲ 14.6%</span></div>
+      <div class="kpi-note">North Star — ≥ category baseline</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">7-Day Repeat Streaming Rate <span class="badge-sm" style="background:#6929c4;color:#fff">In-Stream</span></div>
+      <div class="kpi-value">47% <span class="badge g">▲ 9.3%</span></div>
+      <div class="kpi-note">GA target: ≥40% · ✓ On track</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Order Fulfillment Rate <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span></div>
+      <div class="kpi-value">91% <span class="badge g">▲ 5.8%</span></div>
+      <div class="kpi-note">GA gate: ≥90% · Hard stop if &lt;60%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">21-Day Seller Retention <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span></div>
+      <div class="kpi-value">67% <span class="badge g">▲ 10.0%</span></div>
+      <div class="kpi-note">≥1 show d8–21 / first-show sellers · GA: &gt;70%</div>
+    </div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">E2E Velocity (Median Days)</div>
+      <div class="kpi-value">15d <span class="badge g">▲ 11.8%</span></div>
+      <div class="kpi-note">Acct created → first fulfilled order · lower is better</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">BBE Rate (14-day) <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span></div>
+      <div class="kpi-value">1.6% <span class="badge g">▼ 5.9%</span></div>
+      <div class="kpi-note">Guardrail: ≤ baseline+5pp · Hard stop if &gt;baseline+15pp</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">S1 Proactive Outreach</div>
+      <div class="kpi-value" style="font-size:18px">20% <span class="badge g" style="font-size:10px">▼ 16.7%</span></div>
+      <div class="kpi-note">S2 Inbound GCX: <strong>11%</strong> <span class="badge g" style="font-size:9px">▼ 15.4%</span></div>
+      <div class="kpi-note" style="margin-top:2px">Both lower is better</div>
+    </div>
+  </div>
+
+  <div class="g2" style="gap:1px;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">GMV / Streaming Hour — by Cohort Week</div>
+      <div id="ch-exec-gmv" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Self-Serve Health — Outreach & GCX Contact Rates</div>
+      <div id="ch-exec-selfserve" style="height:160px"></div>
+    </div>
+  </div>
+
+  <!-- Gate table -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Alpha → GA Gate Progress</span><span class="card-sub">Gate 2 requires ≥2 consecutive cohort weeks above target</span></div>
+  </div>
+  <div class="tbl-overflow card-body" style="background:#fff;border:1px solid #e0e0e0">
+    <table class="tbl">
+      <thead><tr><th>Domain</th><th>Metric</th><th>Alpha Gate</th><th>Current (Jun-30)</th><th>GA Gate</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → First Show Rate</td><td>10 sellers</td><td class="fw6">18%</td><td>≥15%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Show with Sales Rate</td><td>8 sellers</td><td class="fw6">14%</td><td>≥10%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Order Fulfilled Rate</td><td>7 sellers</td><td class="fw6">11%</td><td>≥10%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Full Fulfillment Rate</td><td>6 sellers</td><td class="fw6">10%</td><td>≥10%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Registration</td><td class="fw6">Live Privilege Granted Rate</td><td>40–50 sellers</td><td class="fw6">58%</td><td>≥60%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">In-Stream</td><td class="fw6">GMV / Streaming Hour</td><td>≥ cat. baseline</td><td class="fw6">$47</td><td>≥ category baseline</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">In-Stream</td><td class="fw6">7-Day Repeat Streaming Rate</td><td>5 sellers</td><td class="fw6">47%</td><td>≥40%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">1-Order Fulfillment Rate</td><td>1 seller / category</td><td class="fw6">91%</td><td>≥90%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">Full Fulfillment Rate</td><td>1 seller / category</td><td class="fw6">82%</td><td>≥80%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">21-Day Seller Retention Rate</td><td>—</td><td class="fw6">67%</td><td>&gt;70%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Trust</td><td class="fw6">BBE Rate (14-day)</td><td>No P1 bugs</td><td class="fw6">1.6%</td><td>≤ baseline+5pp</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     REGISTRATION TAB
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-registration" class="section">
+
+  <div style="background:#e0e0e0;margin-bottom:1px">
+    <div class="card-head" style="margin:0"><span class="card-title">Registration — P0 Metrics (L0 North Stars)</span><span class="card-sub">Owner: Sahaj Cheema · Analytics: Roger Yu</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Live Privilege Granted Rate <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
+      <div class="kpi-value">58% <span class="badge r">▼ 3.3%</span></div>
+      <div class="kpi-note">Target: ≥60% (Ramp &amp; GA)</div>
+      <div class="kpi-guard">⚠ Guardrail: Below threshold = program blocker</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Account Creation Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">82% <span class="badge g">▲ 2.5%</span></div>
+      <div class="kpi-note">Target: ≥75%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Streaming Registration Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">76% <span class="badge g">▲ 1.3%</span></div>
+      <div class="kpi-note">App submitted / account created · abandonment &lt;30%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Median Approval Time <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">1.8h <span class="badge g">▼ 14.3%</span></div>
+      <div class="kpi-note">Target: &lt;2 hrs</div>
+      <div class="kpi-guard">⚠ Guardrail: Alert if &gt;3 hrs (baseline: 1.6 hrs)</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Manual Review Rate <span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></div>
+      <div class="kpi-value">25% <span class="badge g">▼ 10.7%</span></div>
+      <div class="kpi-note">Lower is better</div>
+      <div class="kpi-guard">⚠ Guardrail: Alert if &gt;30%</div>
+    </div>
+  </div>
+
+  <!-- Funnel -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Registration Funnel — Cohort Week Jun-30</span><span class="card-sub">User-id level · GUID-level for Account Creation</span></div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0">
+    <div style="background:#fff;padding:16px">
+      <div class="funnel">
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>GUIDs Entered Flow</span><span>320 sellers (100%)</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Account Created</span><span>261 sellers — 81.6% of GUIDs</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:81.6%;background:#0353e9">82%</div></div>
+          <div class="funnel-conv">↓ 81.6% conversion from GUIDs</div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Streaming App Submitted</span><span>198 sellers — 75.9% of Accounts</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:61.9%;background:#0043ce">62%</div></div>
+          <div class="funnel-conv">↓ 75.9% conversion from Accounts</div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Live Privilege Granted</span><span>115 sellers — 58.1% of Submitted</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:35.9%;background:#002d9c">36%</div></div>
+          <div class="funnel-conv">↓ 58.1% conversion from Submitted</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Registration Funnel — Seller Counts</div>
+      <div id="ch-reg-funnel" style="height:220px"></div>
+    </div>
+  </div>
+
+  <!-- Trend charts -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Registration Trends — by Cohort Week</span></div>
+  </div>
+  <div class="g3" style="gap:1px;background:#e0e0e0;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">LPG Rate — Target 60%</div>
+      <div id="ch-reg-lpg" style="height:170px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Median Approval Time (hrs)</div>
+      <div id="ch-reg-approval" style="height:170px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Manual Review Rate — Guardrail 30%</div>
+      <div id="ch-reg-manual" style="height:170px"></div>
+    </div>
+  </div>
+
+  <!-- Velocity table -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Velocity Targets — Registration Stage</span></div>
+  </div>
+  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;padding:0">
+    <table class="tbl">
+      <thead><tr><th>Step</th><th>Metric</th><th>Median Target</th><th>P90 Target</th><th>Guardrail</th></tr></thead>
+      <tbody>
+        <tr><td class="fw6">GUID → Account Created</td><td>Account Creation Rate (guid-level)</td><td style="color:#0e6027;font-weight:600">&lt;3 min</td><td>≤30 min</td><td style="color:#a2191f;font-size:10px">P90 &gt;30 min alert</td></tr>
+        <tr><td class="fw6">Account → App Submitted</td><td>Streaming Registration Rate (user_id-level)</td><td style="color:#0e6027;font-weight:600">&lt;3 hrs</td><td>≤14 days</td><td style="color:#a2191f;font-size:10px">Abandonment &gt;30%</td></tr>
+        <tr><td class="fw6">App Submitted → Studio Activated (LPG)</td><td>LPG / Approval Rate</td><td style="color:#0e6027;font-weight:600">&lt;2 hrs median</td><td>≤5 days P90</td><td style="color:#a2191f;font-size:10px">Manual review &gt;30% · Approval time &gt;3 hrs</td></tr>
+        <tr><td class="fw6">Studio Activated → First Show</td><td>Approval-to-First-Show Rate</td><td style="color:#0e6027;font-weight:600">&lt;10 days median</td><td>≤21 days P75</td><td style="color:#a2191f;font-size:10px">Drop-off rate &gt;26.2% (historical baseline)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     PRE-STREAM TAB
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-prestream" class="section">
+
+  <div style="background:#e0e0e0;margin-bottom:1px">
+    <div class="card-head" style="margin:0"><span class="card-title">Pre-Stream — L0 North Star &amp; P0 Metrics</span><span class="card-sub">Owner: Namita Sharma · Analytics: Karthikeya Purohit</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">Seller Setup Success Rate <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
+      <div class="kpi-value xl">45% <span class="badge g">▲ 12.5%</span></div>
+      <div class="kpi-note">Published event + ≥1 listing / Sellers who started setup</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Event Creation Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">52% <span class="badge g">▲ 10.6%</span></div>
+      <div class="kpi-note">Ramp: &gt;50% ✓ · GA: &gt;75%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Listing Readiness Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">48% <span class="badge g">▲ 9.1%</span></div>
+      <div class="kpi-note">Ramp: &gt;50% · GA: &gt;75%</div>
+    </div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-top:1px">
+    <div class="kpi-tile">
+      <div class="kpi-label">First Show Ready Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">29% <span class="badge g">▲ 11.5%</span></div>
+      <div class="kpi-note">Ramp: &gt;20% ✓ · GA: &gt;40%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">14-Day First Show Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">27% <span class="badge g">▲ 12.5%</span></div>
+      <div class="kpi-note">Ramp: &gt;20% ✓ · GA: &gt;60%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Express Listing Adoption <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">60% <span class="badge g">▲ 9.1%</span></div>
+      <div class="kpi-note">Ramp: &gt;50% ✓</div>
+    </div>
+  </div>
+
+  <!-- Funnel -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Pre-Stream Funnel — LPG → First Show (Cohort Jun-30)</span></div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0">
+    <div style="background:#fff;padding:16px">
+      <div class="funnel">
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>LPG (baseline)</span><span>115 sellers (100%)</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Event Creation Rate</span><span>60 sellers (52%)</span></div>
+          <div class="funnel-track">
+            <div class="funnel-fill" style="width:52%;background:#0353e9">52%</div>
+            <div class="funnel-target-ramp" style="left:50%"></div>
+            <div class="funnel-target-ga" style="left:75%"></div>
+          </div>
+          <div class="funnel-targets-legend"><span class="ramp">▏ Ramp: 50%</span><span class="ga">▏ GA: 75%</span></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Listing Readiness Rate</span><span>55 sellers (48%)</span></div>
+          <div class="funnel-track">
+            <div class="funnel-fill" style="width:48%;background:#0043ce">48%</div>
+            <div class="funnel-target-ramp" style="left:50%"></div>
+            <div class="funnel-target-ga" style="left:75%"></div>
+          </div>
+          <div class="funnel-targets-legend"><span class="ramp">▏ Ramp: 50%</span><span class="ga">▏ GA: 75%</span></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>First Show Ready Rate</span><span>33 sellers (29%)</span></div>
+          <div class="funnel-track">
+            <div class="funnel-fill" style="width:29%;background:#002d9c">29%</div>
+            <div class="funnel-target-ramp" style="left:20%"></div>
+            <div class="funnel-target-ga" style="left:40%"></div>
+          </div>
+          <div class="funnel-targets-legend"><span class="ramp">▏ Ramp: 20%</span><span class="ga">▏ GA: 40%</span></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>14-Day First Show Rate</span><span>31 sellers (27%)</span></div>
+          <div class="funnel-track">
+            <div class="funnel-fill" style="width:27%;background:#001d6c">27%</div>
+            <div class="funnel-target-ramp" style="left:20%"></div>
+            <div class="funnel-target-ga" style="left:60%"></div>
+          </div>
+          <div class="funnel-targets-legend"><span class="ramp">▏ Ramp: 20%</span><span class="ga">▏ GA: 60%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Funnel Step Rates — Trend by Cohort Week</div>
+      <div id="ch-ps-funnel" style="height:240px"></div>
+    </div>
+  </div>
+
+  <!-- Event & Listing Quality -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Event &amp; Listing Creation Quality</span></div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0;margin-bottom:1px">
+    <div style="background:#fff;padding:12px">
+      <div class="sect-sub">Event Creation</div>
+      <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
+        <div class="kpi-tile" style="padding:10px">
+          <div class="kpi-label" style="font-size:9px">Event Completion Rate</div>
+          <div class="kpi-value" style="font-size:18px">81% <span class="badge g" style="font-size:9px">▲ 3.8%</span></div>
+          <div class="kpi-note">Published / Started</div>
+        </div>
+        <div class="kpi-tile" style="padding:10px">
+          <div class="kpi-label" style="font-size:9px">Event Abandonment Rate</div>
+          <div class="kpi-value" style="font-size:18px">19% <span class="badge g" style="font-size:9px">▼ 13.6%</span></div>
+          <div class="kpi-note">Lower is better</div>
+        </div>
+      </div>
+      <div id="ch-ps-event" style="height:150px"></div>
+    </div>
+    <div style="background:#fff;padding:12px">
+      <div class="sect-sub" style="color:#0353e9">Listing Creation</div>
+      <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
+        <div class="kpi-tile" style="padding:10px">
+          <div class="kpi-label" style="font-size:9px">Listing Completion Rate</div>
+          <div class="kpi-value" style="font-size:18px">76% <span class="badge g" style="font-size:9px">▲ 4.1%</span></div>
+          <div class="kpi-note">Created / Started</div>
+        </div>
+        <div class="kpi-tile" style="padding:10px">
+          <div class="kpi-label" style="font-size:9px">Express Listing Adoption</div>
+          <div class="kpi-value" style="font-size:18px">60% <span class="badge g" style="font-size:9px">▲ 9.1%</span></div>
+          <div class="kpi-note">Ramp: &gt;50% ✓</div>
+        </div>
+      </div>
+      <div id="ch-ps-listing" style="height:150px"></div>
+    </div>
+  </div>
+
+  <!-- Recommendations & Errors -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Recommendation Quality &amp; Error Monitoring</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:1px">
+    <div class="kpi-tile">
+      <div class="kpi-label">Category Accept Rate</div>
+      <div class="kpi-value">70% <span class="badge g">▲ 4.5%</span></div>
+      <div class="kpi-note">Accepted / Recommended</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Shipping Policy Accept</div>
+      <div class="kpi-value">75% <span class="badge g">▲ 2.7%</span></div>
+      <div class="kpi-note">Accepted / Shown</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Event Error Rate</div>
+      <div class="kpi-value">3.2% <span class="badge g">▼ 22.0%</span></div>
+      <div class="kpi-guard">⚠ Errors / Event Starts</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Listing Error Rate</div>
+      <div class="kpi-value">5.1% <span class="badge g">▼ 17.7%</span></div>
+      <div class="kpi-guard">⚠ Errors / Listing Starts</div>
+    </div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Recommendation Acceptance Rates</div>
+      <div id="ch-ps-recos" style="height:150px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Error Rates (Guardrails)</div>
+      <div id="ch-ps-errors" style="height:150px"></div>
+    </div>
+  </div>
+
+  <!-- P1 table -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">P1 Diagnostic Metrics — Latest Cohort Week</span></div>
+  </div>
+  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
+    <table class="tbl">
+      <thead><tr><th>Metric</th><th>Definition</th><th>Current Value</th><th>Priority</th><th>Alert Threshold</th></tr></thead>
+      <tbody>
+        <tr><td class="fw6">Draft Save Rate</td><td class="mono">Drafts Saved / Event Starts</td><td class="fw6">44%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">—</td></tr>
+        <tr><td class="fw6">Draft → Publish Conversion</td><td class="mono">Published Drafts / Drafts Saved</td><td class="fw6">71%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&lt;60% alert</td></tr>
+        <tr><td class="fw6">Updates Before Publish (Event)</td><td class="mono">Avg edits before publish</td><td class="fw6">2.4 edits</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;5 edits</td></tr>
+        <tr><td class="fw6">Category Override Rate</td><td class="mono">Overrides / Recommendations</td><td class="fw6">30%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
+        <tr><td class="fw6">Shipping Policy Override Rate</td><td class="mono">Overrides / Recommendations shown</td><td class="fw6">25%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
+        <tr><td class="fw6">Mandatory Field Error Rate</td><td class="mono">Validation Errors / Listing Starts</td><td class="fw6">5.1%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;10%</td></tr>
+        <tr><td class="fw6">Category Restriction Error Rate</td><td class="mono">Restricted cat. errors / Event Starts</td><td class="fw6">1.8%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;5%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     IN-STREAM TAB
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-instream" class="section">
+
+  <div style="background:#e0e0e0;margin-bottom:1px">
+    <div class="card-head" style="margin:0"><span class="card-title">In-Stream — North Star &amp; L0 Revenue Metrics</span><span class="card-sub">Owner: Jimmy Forde · Analytics: Sarvesh Pathak</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">GMV / Streaming Hour <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
+      <div class="kpi-value xl">$47 <span class="badge g">▲ 14.6%</span></div>
+      <div class="kpi-note">North Star · ≥ category baseline</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">GMV During Stream <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
+      <div class="kpi-value">$640 <span class="badge g">▲ 14.3%</span></div>
+      <div class="kpi-note">Total revenue from stream</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Stream Duration P50</div>
+      <div class="kpi-value">26 min <span class="badge g">▲ 8.3%</span></div>
+      <div class="kpi-note">P50 ≥20 min · engagement signal ✓</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Sell Through Rate (Pinned)</div>
+      <div class="kpi-value">44% <span class="badge g">▲ 10.0%</span></div>
+      <div class="kpi-note">Pinned Items Sold / Pinned Items</div>
+    </div>
+  </div>
+
+  <div class="chart-pane" style="margin-top:1px">
+    <div class="chart-pane-title">GMV per Streaming Hour &amp; GMV During Stream — by Cohort Week</div>
+    <div id="ch-is-gmv" style="height:210px"></div>
+  </div>
+
+  <!-- Inventory -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Pinned Inventory &amp; Format Mix (L1)</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Total Items Listed</div>
+      <div class="kpi-value">28 <span class="badge g">▲ 7.7%</span></div>
+      <div class="kpi-note">DISTINCT items per event</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Total Items Pinned</div>
+      <div class="kpi-value">17 <span class="badge g">▲ 13.3%</span></div>
+      <div class="kpi-note">Pinned to buyer screen</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">BIN Listings Pinned</div>
+      <div class="kpi-value">10 <span class="badge g">▲ 11.1%</span></div>
+      <div class="kpi-note">Buy-It-Now format</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Auction Listings Pinned</div>
+      <div class="kpi-value">7 <span class="badge g">▲ 16.7%</span></div>
+      <div class="kpi-note">Auction format</div>
+    </div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Items Listed vs Pinned per Stream</div>
+      <div id="ch-is-items" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Sell Through Rates</div>
+      <div id="ch-is-sellthrough" style="height:160px"></div>
+    </div>
+  </div>
+
+  <!-- Pin Duration & Engagement -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Pin Duration &amp; Engagement Timing (L1)</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Avg Pin Duration P50</div>
+      <div class="kpi-value">6.1 min <span class="badge g">▲ 8.9%</span></div>
+      <div class="kpi-note">Median time item pinned to screen</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Time to First Pin</div>
+      <div class="kpi-value">2.6 min <span class="badge g">▼ 10.3%</span></div>
+      <div class="kpi-note">Dead time before monetisation · lower is better</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Engagement Tools / Stream</div>
+      <div class="kpi-value">3.1 <span class="badge g">▲ 10.7%</span></div>
+      <div class="kpi-note">Quiz + Poll + Notice activations</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Chat Messages / Stream</div>
+      <div class="kpi-value">74 <span class="badge g">▲ 8.8%</span></div>
+      <div class="kpi-note">Total inbound + outbound</div>
+    </div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Pin Duration &amp; Time-to-First-Pin</div>
+      <div id="ch-is-pin" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Engagement Tools &amp; Chat per Stream</div>
+      <div id="ch-is-engage" style="height:160px"></div>
+    </div>
+  </div>
+
+  <!-- Guardrails -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Guardrail Metrics — Stream Health</span><span class="card-sub">Per-stream counts · Elevated = action required</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="guard-tile ok">
+      <div class="guard-label">Stream Activation Failures</div>
+      <div class="guard-val">1</div>
+      <div class="guard-status">Threshold: 0 acceptable · ✓ Trending down</div>
+    </div>
+    <div class="guard-tile ok">
+      <div class="guard-label">Listings Added In-Stream</div>
+      <div class="guard-val">2</div>
+      <div class="guard-status">0 ideal (dead air signal) · ✓ Improving</div>
+    </div>
+    <div class="guard-tile ok">
+      <div class="guard-label">Auction Resets</div>
+      <div class="guard-val">1</div>
+      <div class="guard-status">0 ideal · ✓ Improving</div>
+    </div>
+    <div class="guard-tile ok">
+      <div class="guard-label">Users Muted</div>
+      <div class="guard-val">2</div>
+      <div class="guard-status">0 ideal — engagement quality · ✓ Improving</div>
+    </div>
+  </div>
+  <div class="chart-pane" style="margin-top:1px">
+    <div class="chart-pane-title">Guardrail Trends — All 4 Signals (lower = healthier)</div>
+    <div id="ch-is-guard" style="height:160px"></div>
+  </div>
+
+  <!-- Lifecycle table -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">In-Stream Lifecycle — Metric Summary</span></div>
+  </div>
+  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
+    <table class="tbl">
+      <thead><tr><th>Stage</th><th>Metric</th><th>Formula</th><th>Current</th><th>Level</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue</td><td class="fw6">GMV / Streaming Hour</td><td class="mono">GMV_DURING / (duration_s / 3600)</td><td class="fw6">$47</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
+        <tr><td>Revenue</td><td class="fw6">GMV During Stream</td><td class="mono">GMV_DURING</td><td class="fw6">$640</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
+        <tr><td>Inventory</td><td class="fw6">Total Items Listed</td><td class="mono">COUNT(DISTINCT ITEMID)</td><td class="fw6">28</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Inventory</td><td class="fw6">Total Items Pinned</td><td class="mono">COUNT(listing_pinned events)</td><td class="fw6">17</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Inventory</td><td class="fw6">Sell Through Rate (Pinned)</td><td class="mono">Pinned Sold / Total Pinned</td><td class="fw6">44%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Timing</td><td class="fw6">Avg Pin Duration P50</td><td class="mono">SUM(unpin.ts - pin.ts) / pinned</td><td class="fw6">6.1 min</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Timing</td><td class="fw6">Time to First Pin</td><td class="mono">first_pin.ts - stream_started.ts</td><td class="fw6">2.6 min</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Engagement</td><td class="fw6">Tool Activations / Stream</td><td class="mono">COUNT distinct tool launches</td><td class="fw6">3.1</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td></tr>
+        <tr><td>Engagement</td><td class="fw6">Chat Messages / Stream</td><td class="mono">Total inbound + outbound</td><td class="fw6">74</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td></tr>
+        <tr><td>Guardrail</td><td class="fw6">Stream Activation Failures</td><td class="mono">start_event fires, no stream_started</td><td class="fw6">1</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
+        <tr><td>Guardrail</td><td class="fw6">Listings Added In-Stream</td><td class="mono">listing.ts after stream_started</td><td class="fw6">2</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
+        <tr><td>Guardrail</td><td class="fw6">Auction Resets</td><td class="mono">COUNT auction_reset events</td><td class="fw6">1</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- /in-stream -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     POST-STREAM TAB
+════════════════════════════════════════════════════════════════════════ -->
+<div id="tab-poststream" class="section">
+
+  <div style="background:#e0e0e0;margin-bottom:1px">
+    <div class="card-head" style="margin:0"><span class="card-title">Post-Stream — Fulfillment, Insights &amp; Seller Retention</span><span class="card-sub">Owner: Jessica Reid · Analytics: Roger Yu</span></div>
+  </div>
+
+  <!-- North Stars -->
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">Order Fulfillment Rate (1-Order) <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
+      <div class="kpi-value xl">91% <span class="badge g">▲ 5.8%</span></div>
+      <div class="kpi-note">Orders shipped within handling time / Total orders · GA gate: ≥90%</div>
+      <div class="kpi-guard">Hard stop: &lt;60% = program blocker</div>
+    </div>
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">Full Fulfillment Rate <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
+      <div class="kpi-value xl">82% <span class="badge g">▲ 7.9%</span></div>
+      <div class="kpi-note">All orders in show fully shipped / Total paid orders · GA: ≥80%</div>
+      <div class="kpi-guard">⚠ Late shipment rate: 6.2%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">21-Day Seller Retention Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">67% <span class="badge g">▲ 10.0%</span></div>
+      <div class="kpi-note">≥1 show d8–21 / first-show sellers · GA target: &gt;70%</div>
+      <div class="kpi-guard">Hard stop: seller churn &gt;30% for ≥2 weeks</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Post-Stream Insights Engagement <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
+      <div class="kpi-value">61% <span class="badge g">▲ 17.3%</span></div>
+      <div class="kpi-note">Sellers landing on Insights / sellers with ≥1 completed stream</div>
+    </div>
+  </div>
+
+  <div class="chart-pane" style="margin-top:1px">
+    <div class="chart-pane-title">Fulfillment Rates &amp; 21-Day Retention — by Cohort Week</div>
+    <div id="ch-ps2-northstar" style="height:210px"></div>
+  </div>
+
+  <!-- Fulfillment funnel -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Order Lifecycle — Cohort Jun-30</span><span class="card-sub">Post-show paid orders · seller handling SLA window</span></div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0">
+    <div style="background:#fff;padding:16px">
+      <div class="funnel">
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Total Orders Created (post-event)</span><span>842 orders (100%)</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Paid Orders</span><span>788 orders — 93.6%</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:93.6%;background:#0353e9">93.6%</div></div>
+          <div class="funnel-conv">↓ 6.4% unpaid rate</div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>1-Order Fulfilled (≥1 item shipped)</span><span>717 orders — 91.0% of paid</span></div>
+          <div class="funnel-track">
+            <div class="funnel-fill" style="width:85.2%;background:#0043ce">91%</div>
+            <div class="funnel-target-ga" style="left:90%"></div>
+          </div>
+          <div class="funnel-targets-legend"><span class="ga">— GA gate: 90%</span></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Fully Fulfilled (all items shipped)</span><span>646 orders — 82.0% of paid</span></div>
+          <div class="funnel-track">
+            <div class="funnel-fill" style="width:76.8%;background:#002d9c">82%</div>
+            <div class="funnel-target-ga" style="left:80%"></div>
+          </div>
+          <div class="funnel-targets-legend"><span class="ga">— GA gate: 80%</span></div>
+        </div>
+        <div class="funnel-row">
+          <div class="funnel-meta"><span>Fulfilled Within SLA (handling time)</span><span>600 orders — 92.7% of fulfilled</span></div>
+          <div class="funnel-track"><div class="funnel-fill" style="width:71.3%;background:#001d6c">93%</div></div>
+          <div class="funnel-conv">↓ 6.2% late shipment rate (against fulfilled)</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Fulfillment Timing — % Fulfilled by Day Bucket</div>
+      <div id="ch-ps2-timing" style="height:240px"></div>
+    </div>
+  </div>
+
+  <!-- Fulfillment KPIs -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Fulfillment Quality Metrics (L1)</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Median Days to First Fulfillment</div>
+      <div class="kpi-value">2.1d <span class="badge g">▼ 24.0%</span></div>
+      <div class="kpi-note">Payment → first item shipped · lower is better</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Median Days to Full Fulfillment</div>
+      <div class="kpi-value">3.4d <span class="badge g">▼ 17.1%</span></div>
+      <div class="kpi-note">Payment → all items shipped · lower is better</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Unpaid Order Rate</div>
+      <div class="kpi-value">6.4% <span class="badge g">▼ 36.0%</span></div>
+      <div class="kpi-note">Orders not paid within payment window</div>
+      <div class="kpi-guard">⚠ Unpaid aging 72h: 2.1%</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Paid But Unfulfilled (7d)</div>
+      <div class="kpi-value">4.8% <span class="badge g">▼ 29.4%</span></div>
+      <div class="kpi-note">Paid orders unshipped after 7 days</div>
+      <div class="kpi-guard">⚠ Monitor for BBE risk</div>
+    </div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Fulfillment Speed — Median &amp; P90 Days</div>
+      <div id="ch-ps2-speed" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Unpaid &amp; Late Shipment Rates</div>
+      <div id="ch-ps2-unpaid" style="height:160px"></div>
+    </div>
+  </div>
+
+  <!-- Post-Stream Insights Engagement -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Post-Stream Insights Page — Seller Engagement (L1)</span><span class="card-sub">Insights page: view statistics, download report, date range exploration</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Insights Landing Rate (same day)</div>
+      <div class="kpi-value">38% <span class="badge g">▲ 8.6%</span></div>
+      <div class="kpi-note">Sellers landing on Insights within 1d of stream end</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Report Download Rate</div>
+      <div class="kpi-value">44% <span class="badge g">▲ 15.8%</span></div>
+      <div class="kpi-note">Sellers who clicked download / all Insights landers</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Non-Default View Adoption</div>
+      <div class="kpi-value">29% <span class="badge g">▲ 20.8%</span></div>
+      <div class="kpi-note">Sellers who selected a non-default date range</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Repeat Insights Revisit Rate</div>
+      <div class="kpi-value">52% <span class="badge g">▲ 18.2%</span></div>
+      <div class="kpi-note">Sellers with 2+ Insights sessions post-stream</div>
+    </div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Insights Landing by Time Bucket (% of sellers with completed stream)</div>
+      <div id="ch-ps2-insights" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Insights Engagement Actions — Trend</div>
+      <div id="ch-ps2-engage" style="height:160px"></div>
+    </div>
+  </div>
+
+  <!-- Retention & Guardrails -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Seller Retention &amp; Guardrail Metrics</span><span class="card-sub">21-day churn · BBE · hard stops</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="guard-tile ok">
+      <div class="guard-label">Order Fulfillment Rate</div>
+      <div class="guard-val">91%</div>
+      <div class="guard-status">≥90% GA gate · Hard stop if &lt;60% · ✓ On track</div>
+    </div>
+    <div class="guard-tile ok">
+      <div class="guard-label">BBE Rate (14-day)</div>
+      <div class="guard-val">1.6%</div>
+      <div class="guard-status">≤ baseline+5pp · Hard stop if &gt;baseline+15pp · ✓ On track</div>
+    </div>
+    <div class="guard-tile warn">
+      <div class="guard-label">21-Day Seller Churn</div>
+      <div class="guard-val">33%</div>
+      <div class="guard-status">Hard stop if &gt;30% · ⚠ Slightly elevated — monitor</div>
+    </div>
+    <div class="guard-tile ok">
+      <div class="guard-label">Late Shipment Rate</div>
+      <div class="guard-val">6.2%</div>
+      <div class="guard-status">Fulfilled orders shipped after seller SLA · ✓ Trending down</div>
+    </div>
+  </div>
+  <div class="chart-pane" style="margin-top:1px">
+    <div class="chart-pane-title">Seller Retention &amp; Fulfillment Rates — Trend (lower churn = healthier)</div>
+    <div id="ch-ps2-retention" style="height:160px"></div>
+  </div>
+
+  <!-- Metric summary table -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Post-Stream Metric Summary</span></div>
+  </div>
+  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
+    <table class="tbl">
+      <thead><tr><th>Domain</th><th>Metric</th><th>Formula</th><th>Current</th><th>Target</th><th>Level</th></tr></thead>
+      <tbody>
+        <tr><td>Fulfillment</td><td class="fw6">Order Fulfillment Rate (1-Order)</td><td class="mono">Orders with ≥1 item fulfilled / Paid orders</td><td class="fw6">91%</td><td>≥90% (GA)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
+        <tr><td>Fulfillment</td><td class="fw6">Full Fulfillment Rate</td><td class="mono">Fully fulfilled orders / Paid orders</td><td class="fw6">82%</td><td>≥80% (GA)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
+        <tr><td>Fulfillment</td><td class="fw6">Median Days to First Fulfillment</td><td class="mono">Median(payment_ts → first_ship_ts) in days</td><td class="fw6">2.1d</td><td>Improving WoW</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Fulfillment</td><td class="fw6">Late Shipment Rate</td><td class="mono">Late fulfilled / Total fulfilled</td><td class="fw6">6.2%</td><td>Declining</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Fulfillment</td><td class="fw6">Unpaid Order Rate</td><td class="mono">Unpaid orders / Total orders</td><td class="fw6">6.4%</td><td>Declining</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Fulfillment</td><td class="fw6">Paid but Unfulfilled (7d)</td><td class="mono">Paid orders unshipped after 7d / Paid orders</td><td class="fw6">4.8%</td><td>Declining</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Insights</td><td class="fw6">Post-Stream Insights Engagement</td><td class="mono">Sellers landing on Insights / Sellers with ≥1 stream</td><td class="fw6">61%</td><td>—</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
+        <tr><td>Insights</td><td class="fw6">Insights Landing Rate (1d)</td><td class="mono">Insights landers within 1d / Sellers with ended stream</td><td class="fw6">38%</td><td>—</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Insights</td><td class="fw6">Report Download Rate</td><td class="mono">Downloads / Insights landers</td><td class="fw6">44%</td><td>—</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Insights</td><td class="fw6">Repeat Insights Revisit Rate</td><td class="mono">Sellers with 2+ sessions / First-time landers</td><td class="fw6">52%</td><td>—</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
+        <tr><td>Retention</td><td class="fw6">21-Day Seller Retention Rate</td><td class="mono">Sellers with ≥1 show d8–21 / First-show sellers</td><td class="fw6">67%</td><td>&gt;70% (GA)</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td></tr>
+        <tr><td>Trust</td><td class="fw6">BBE Rate (14-day)</td><td class="mono">BBE transactions / Total transactions</td><td class="fw6">1.6%</td><td>≤ baseline+5pp</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
+        <tr><td>Trust</td><td class="fw6">21-Day Seller Churn</td><td class="mono">Sellers with no shows for 21 days / Active sellers</td><td class="fw6">33%</td><td>&lt;30%</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- /post-stream -->
+
+</div><!-- /main -->
+
+<script>
+// ─── Data ──────────────────────────────────────────────────────────────────
+const WKS = ['Jun-2','Jun-9','Jun-16','Jun-23','Jun-30'];
+
+const D = {
+  e2e_first_show:    [8,11,13,15,18],
+  e2e_sales:         [5,7,9,11,14],
+  e2e_order:         [4,6,7,9,11],
+  e2e_full:          [3,5,6,8,10],
+  gmv_per_hour:      [28,34,38,41,47],
+  s1:                [38,31,27,24,20],
+  s2:                [22,18,15,13,11],
+  lpg_rate:          [49,52,55,56,58],
+  approval_hrs:      [3.2,2.8,2.4,2.1,1.8],
+  manual_review:     [38,33,31,28,25],
+  event_completion:  [68,72,75,78,81],
+  event_abandon:     [32,28,25,22,19],
+  listing_completion:[60,65,70,73,76],
+  express_adopt:     [40,45,50,55,60],
+  cat_accept:        [58,62,65,67,70],
+  ship_accept:       [65,68,71,73,75],
+  event_error:       [8.2,6.8,5.4,4.1,3.2],
+  listing_error:     [11.1,9.4,7.8,6.2,5.1],
+  ps_event_creation:  [32,38,43,47,52],
+  ps_listing_ready:   [28,33,40,44,48],
+  ps_show_ready:      [16,20,23,26,29],
+  ps_show_14d:        [14,17,21,24,27],
+  gmv_stream:        [340,410,490,560,640],
+  items_listed:      [18,21,24,26,28],
+  items_pinned:      [9,11,13,15,17],
+  sell_pinned:       [28,33,36,40,44],
+  sell_all:          [15,18,21,24,27],
+  pin_dur:           [4.2,4.8,5.1,5.6,6.1],
+  first_pin_time:    [3.8,3.4,3.1,2.9,2.6],
+  tools:             [2.1,2.4,2.6,2.8,3.1],
+  chat:              [48,56,61,68,74],
+  act_fail:          [4,3,2,2,1],
+  instream_list:     [6,5,4,3,2],
+  auct_reset:        [3,2,2,1,1],
+  muted:             [5,4,3,3,2],
+  // Post-Stream data
+  ps2_order_fulfill: [74,79,83,87,91],
+  ps2_full_fulfill:  [62,68,73,77,82],
+  ps2_retention_21d: [48,53,57,62,67],
+  ps2_insights_eng:  [32,41,48,55,61],
+  ps2_churn_21d:     [48,44,40,36,33],
+  ps2_bbs_rate:      [2.4,2.1,1.9,1.7,1.6],
+  ps2_late_ship:     [13.4,11.2,9.1,7.6,6.2],
+  ps2_unpaid_rate:   [11.2,9.4,8.1,7.2,6.4],
+  ps2_unfulfilled7d: [10.8,9.1,7.6,6.2,4.8],
+  ps2_med_days_1st:  [4.8,4.1,3.4,2.8,2.1],
+  ps2_p90_days_1st:  [9.2,8.1,7.3,6.4,5.8],
+  ps2_med_days_full: [6.4,5.6,4.8,4.1,3.4],
+  ps2_insights_1d:   [18,24,29,33,38],
+  ps2_insights_3d:   [24,30,36,41,46],
+  ps2_insights_7d:   [29,36,42,48,52],
+  ps2_download_rate: [24,30,35,40,44],
+  ps2_revisit_rate:  [28,34,39,45,52],
+  ps2_nondefault:    [12,16,20,25,29],
+};
+
+// ─── Chart helper ──────────────────────────────────────────────────────────
+function mkLine(id, series, yFmt, targets) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const c = echarts.init(el);
+  c.setOption({
+    animation: true, animationDuration: 400,
+    grid:{top:22,right:16,bottom:32,left:46},
+    tooltip:{trigger:'axis'},
+    xAxis:{type:'category',data:WKS,axisLabel:{fontSize:9,color:'#6f6f6f'},axisLine:{lineStyle:{color:'#e0e0e0'}}},
+    yAxis:{type:'value',axisLabel:{fontSize:9,color:'#6f6f6f',formatter:'{value}'+(yFmt||'')},splitLine:{lineStyle:{color:'#f4f4f4',type:'dashed'}}},
+    series:[
+      ...series.map(s=>({name:s.n,type:'line',data:s.d,smooth:false,lineStyle:{color:s.c,width:2},itemStyle:{color:s.c},symbol:'circle',symbolSize:5})),
+      ...(targets||[]).map(t=>({name:t.n,type:'line',data:Array(5).fill(t.v),lineStyle:{color:t.c||'#8d8d8d',type:'dashed',width:1},itemStyle:{color:t.c||'#8d8d8d'},symbol:'none'}))
+    ],
+    legend:{bottom:0,textStyle:{fontSize:9,color:'#6f6f6f'}}
+  });
+  window.addEventListener('resize',()=>c.resize());
+}
+
+function mkBar(id, yData, xData, colors) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const c = echarts.init(el);
+  c.setOption({
+    animation:true,animationDuration:400,
+    grid:{top:16,right:20,bottom:36,left:64},
+    tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+    xAxis:{type:'value',axisLabel:{fontSize:9,color:'#6f6f6f'},splitLine:{lineStyle:{color:'#f4f4f4'}}},
+    yAxis:{type:'category',data:yData,axisLabel:{fontSize:9,color:'#525252',width:120,overflow:'truncate'}},
+    series:[{
+      type:'bar',data:xData,barMaxWidth:28,
+      itemStyle:{color:(p)=>(colors||['#0f62fe','#0353e9','#0043ce','#002d9c'])[p.dataIndex]},
+      label:{show:true,position:'right',fontSize:9,color:'#525252',formatter:p=>p.value.toLocaleString()}
+    }]
+  });
+  window.addEventListener('resize',()=>c.resize());
+}
+
+function mkDual(id, bar, line) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const c = echarts.init(el);
+  c.setOption({
+    animation:true,animationDuration:400,
+    grid:{top:22,right:60,bottom:32,left:52},
+    tooltip:{trigger:'axis'},
+    xAxis:{type:'category',data:WKS,axisLabel:{fontSize:9,color:'#6f6f6f'},axisLine:{lineStyle:{color:'#e0e0e0'}}},
+    yAxis:[
+      {type:'value',name:bar.yName,axisLabel:{fontSize:9,color:'#0f62fe',formatter:bar.fmt+'{value}'},splitLine:{lineStyle:{color:'#f4f4f4',type:'dashed'}}},
+      {type:'value',name:line.yName,axisLabel:{fontSize:9,color:'#0353e9',formatter:line.fmt+'{value}'},splitLine:{show:false}}
+    ],
+    series:[
+      {name:bar.n,type:'bar',data:bar.d,yAxisIndex:0,itemStyle:{color:'rgba(15,98,254,0.18)'}},
+      {name:line.n,type:'line',data:line.d,yAxisIndex:1,lineStyle:{color:'#0f62fe',width:2},itemStyle:{color:'#0f62fe'},symbol:'circle',symbolSize:5}
+    ],
+    legend:{bottom:0,textStyle:{fontSize:9,color:'#6f6f6f'}}
+  });
+  window.addEventListener('resize',()=>c.resize());
+}
+
+// ─── Tab switching ─────────────────────────────────────────────────────────
+let activeTab = 'executive';
+function showTab(tab) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+  activeTab = tab;
+  updateBreadcrumb();
+  setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
+}
+
+let activeGrain = 'Weekly';
+function setGrain(g, btn) {
+  document.querySelectorAll('.grain-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeGrain = g;
+  updateBreadcrumb();
+}
+
+function updateBreadcrumb(){
+  const tabName = {executive:'Executive',registration:'Registration',prestream:'Pre-Stream',instream:'In-Stream',poststream:'Post-Stream'}[activeTab];
+  document.getElementById('bc').textContent = tabName+' · Alpha cohort · As of 2026-07-09 · '+activeGrain;
+}
+
+// ─── Init charts ───────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  // Executive
+  mkLine('ch-exec-northstar',[
+    {n:'Reg → First Show',d:D.e2e_first_show,c:'#0f62fe'},
+    {n:'Reg → Sales',d:D.e2e_sales,c:'#0e6027'},
+    {n:'Reg → Order Fulfilled',d:D.e2e_order,c:'#f1c21b'},
+    {n:'Reg → Full Fulfill',d:D.e2e_full,c:'#da1e28'}
+  ],'%',[{n:'GA Target (10%)',v:10}]);
+
+  mkLine('ch-exec-gmv',[{n:'GMV/hr ($)',d:D.gmv_per_hour,c:'#0f62fe'}],'$');
+  mkLine('ch-exec-selfserve',[
+    {n:'S1 Proactive Outreach %',d:D.s1,c:'#f1c21b'},
+    {n:'S2 Inbound GCX %',d:D.s2,c:'#da1e28'}
+  ],'%',[{n:'Guardrail target',v:30}]);
+
+  // Registration
+  mkBar('ch-reg-funnel',
+    ['Live Privilege Granted','App Submitted','Account Created','GUIDs Entered'],
+    [115,198,261,320],
+    ['#002d9c','#0043ce','#0353e9','#0f62fe']
+  );
+  mkLine('ch-reg-lpg',[{n:'LPG Rate',d:D.lpg_rate,c:'#0f62fe'}],'%',[{n:'Target 60%',v:60,c:'#24a148'}]);
+  mkLine('ch-reg-approval',[{n:'Approval hrs',d:D.approval_hrs,c:'#da1e28'}],' hrs',[{n:'Target 2h',v:2,c:'#24a148'}]);
+  mkLine('ch-reg-manual',[{n:'Manual Review %',d:D.manual_review,c:'#f1c21b'}],'%',[{n:'Guardrail 30%',v:30,c:'#da1e28'}]);
+
+  // Pre-Stream
+  mkLine('ch-ps-funnel',[
+    {n:'Event Creation',d:D.ps_event_creation,c:'#0f62fe'},
+    {n:'Listing Ready',d:D.ps_listing_ready,c:'#0353e9'},
+    {n:'First Show Ready',d:D.ps_show_ready,c:'#002d9c'},
+    {n:'14d First Show',d:D.ps_show_14d,c:'#001d6c'}
+  ],'%');
+  mkLine('ch-ps-event',[
+    {n:'Completion Rate',d:D.event_completion,c:'#0f62fe'},
+    {n:'Abandonment Rate',d:D.event_abandon,c:'#da1e28'}
+  ],'%');
+  mkLine('ch-ps-listing',[
+    {n:'Completion Rate',d:D.listing_completion,c:'#0353e9'},
+    {n:'Express Adoption',d:D.express_adopt,c:'#24a148'}
+  ],'%');
+  mkLine('ch-ps-recos',[
+    {n:'Category Accept',d:D.cat_accept,c:'#0f62fe'},
+    {n:'Shipping Accept',d:D.ship_accept,c:'#24a148'}
+  ],'%');
+  mkLine('ch-ps-errors',[
+    {n:'Event Error Rate',d:D.event_error,c:'#da1e28'},
+    {n:'Listing Error Rate',d:D.listing_error,c:'#f1c21b'}
+  ],'%');
+
+  // In-Stream
+  mkDual('ch-is-gmv',
+    {n:'GMV During Stream',d:D.gmv_stream,yName:'GMV $',fmt:'$'},
+    {n:'GMV/hr',d:D.gmv_per_hour,yName:'$/hr',fmt:'$'}
+  );
+  mkLine('ch-is-items',[
+    {n:'Items Listed',d:D.items_listed,c:'#0f62fe'},
+    {n:'Items Pinned',d:D.items_pinned,c:'#24a148'}
+  ],'');
+  mkLine('ch-is-sellthrough',[
+    {n:'Pinned Listings',d:D.sell_pinned,c:'#0f62fe'},
+    {n:'All Listings',d:D.sell_all,c:'#8d8d8d'}
+  ],'%');
+  mkLine('ch-is-pin',[
+    {n:'Avg Pin Duration (min)',d:D.pin_dur,c:'#0f62fe'},
+    {n:'Time to First Pin (min)',d:D.first_pin_time,c:'#da1e28'}
+  ],' min');
+  mkLine('ch-is-engage',[
+    {n:'Tool Activations',d:D.tools,c:'#24a148'},
+    {n:'Chat Messages',d:D.chat,c:'#0f62fe'}
+  ],'');
+  mkLine('ch-is-guard',[
+    {n:'Activation Failures',d:D.act_fail,c:'#da1e28'},
+    {n:'In-Stream Listings',d:D.instream_list,c:'#f1c21b'},
+    {n:'Auction Resets',d:D.auct_reset,c:'#6929c4'},
+    {n:'Users Muted',d:D.muted,c:'#8d8d8d'}
+  ],'');
+
+  // Post-Stream charts
+  mkLine('ch-ps2-northstar',[
+    {n:'1-Order Fulfillment Rate %',d:D.ps2_order_fulfill,c:'#0f62fe'},
+    {n:'Full Fulfillment Rate %',d:D.ps2_full_fulfill,c:'#24a148'},
+    {n:'21-Day Retention Rate %',d:D.ps2_retention_21d,c:'#f1c21b'}
+  ],'%',[
+    {n:'Fulfillment GA gate (90%)',v:90,c:'#0f62fe'},
+    {n:'Retention GA target (70%)',v:70,c:'#f1c21b'}
+  ]);
+
+  // Fulfillment timing bar chart (stacked cumulative by day bucket)
+  (function(){
+    const el = document.getElementById('ch-ps2-timing');
+    if(!el) return;
+    const c = echarts.init(el);
+    c.setOption({
+      animation:true,animationDuration:400,
+      grid:{top:28,right:16,bottom:36,left:60},
+      tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+      legend:{bottom:0,textStyle:{fontSize:9,color:'#6f6f6f'}},
+      xAxis:{type:'category',data:WKS,axisLabel:{fontSize:9,color:'#6f6f6f'}},
+      yAxis:{type:'value',max:100,axisLabel:{fontSize:9,color:'#6f6f6f',formatter:'{value}%'},splitLine:{lineStyle:{color:'#f4f4f4'}}},
+      series:[
+        {name:'Within 1d',type:'bar',stack:'s',data:[28,31,33,35,38],itemStyle:{color:'#0f62fe'}},
+        {name:'1–3d',type:'bar',stack:'s',data:[22,24,25,26,27],itemStyle:{color:'#0353e9'}},
+        {name:'3–5d',type:'bar',stack:'s',data:[14,15,15,14,14],itemStyle:{color:'#0043ce'}},
+        {name:'5–7d',type:'bar',stack:'s',data:[8,7,7,8,7],itemStyle:{color:'#002d9c'}},
+        {name:'>7d / unfulfilled',type:'bar',stack:'s',data:[28,23,20,17,14],itemStyle:{color:'#e0e0e0'}}
+      ]
+    });
+    window.addEventListener('resize',()=>c.resize());
+  })();
+
+  mkLine('ch-ps2-speed',[
+    {n:'Median days — 1st fulfillment',d:D.ps2_med_days_1st,c:'#0f62fe'},
+    {n:'P90 days — 1st fulfillment',d:D.ps2_p90_days_1st,c:'#8d8d8d'},
+    {n:'Median days — full fulfillment',d:D.ps2_med_days_full,c:'#24a148'}
+  ],' d');
+
+  mkLine('ch-ps2-unpaid',[
+    {n:'Unpaid Order Rate %',d:D.ps2_unpaid_rate,c:'#da1e28'},
+    {n:'Late Shipment Rate %',d:D.ps2_late_ship,c:'#f1c21b'},
+    {n:'Paid Unfulfilled 7d %',d:D.ps2_unfulfilled7d,c:'#6929c4'}
+  ],'%');
+
+  mkLine('ch-ps2-insights',[
+    {n:'Landed within 1d',d:D.ps2_insights_1d,c:'#0f62fe'},
+    {n:'Landed within 3d',d:D.ps2_insights_3d,c:'#0353e9'},
+    {n:'Landed within 7d',d:D.ps2_insights_7d,c:'#002d9c'}
+  ],'%');
+
+  mkLine('ch-ps2-engage',[
+    {n:'Download Rate %',d:D.ps2_download_rate,c:'#24a148'},
+    {n:'Repeat Revisit Rate %',d:D.ps2_revisit_rate,c:'#0f62fe'},
+    {n:'Non-Default View Adoption %',d:D.ps2_nondefault,c:'#f1c21b'}
+  ],'%');
+
+  mkLine('ch-ps2-retention',[
+    {n:'21-Day Retention Rate %',d:D.ps2_retention_21d,c:'#0f62fe'},
+    {n:'21-Day Churn Rate %',d:D.ps2_churn_21d,c:'#da1e28'}
+  ],'%',[{n:'Retention GA target (70%)',v:70,c:'#24a148'},{n:'Churn hard stop (30%)',v:30,c:'#da1e28'}]);
+});
+</script>
+</body>
+</html>
