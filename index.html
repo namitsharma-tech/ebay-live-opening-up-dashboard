@@ -53,6 +53,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 .kpi-value{font-size:24px;font-weight:700;color:#161616;display:flex;align-items:center;gap:8px;line-height:1.1;font-variant-numeric:tabular-nums}
 .kpi-value.xl{font-size:30px}
 .kpi-note{font-size:9px;color:#8d8d8d}
+.kpi-count{font-size:11px;font-weight:700;color:#161616;letter-spacing:-.01em;margin-top:-2px}
 .kpi-guard{font-size:9px;color:#a2191f;border-top:1px solid #f4f4f4;padding-top:4px;margin-top:2px}
 .badge{font-size:11px;font-weight:600;padding:2px 6px;display:inline-block}
 .badge-sm{font-size:9px;font-weight:700;padding:1px 5px;display:inline-block}
@@ -155,28 +156,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile north-star">
       <div class="kpi-label">E2E Reg → First Show Rate</div>
-      <div class="kpi-value xl">18% <span class="badge g">▲ 20.0%</span></div>
+      <div class="kpi-value xl">18% <span class="badge g">▲ +3pp (+20.0%)</span></div>
+      <div class="kpi-count">21 of 115 cohort sellers</div>
       <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
       <div class="kpi-note">120% of GA target (15%) · ✓ On track</div>
       <div class="kpi-guard">Gate 2: ≥15% for ≥2 consecutive cohort weeks</div>
     </div>
     <div class="kpi-tile north-star">
       <div class="kpi-label">E2E Reg → Show with Sales Rate</div>
-      <div class="kpi-value xl">14% <span class="badge g">▲ 27.3%</span></div>
+      <div class="kpi-value xl">14% <span class="badge g">▲ +3pp (+27.3%)</span></div>
+      <div class="kpi-count">16 of 115 cohort sellers</div>
       <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
       <div class="kpi-note">140% of GA target (10%) · ✓ On track</div>
       <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
     </div>
     <div class="kpi-tile north-star">
       <div class="kpi-label">E2E Reg → Order Fulfilled Rate</div>
-      <div class="kpi-value xl">11% <span class="badge g">▲ 22.2%</span></div>
+      <div class="kpi-value xl">11% <span class="badge g">▲ +2pp (+22.2%)</span></div>
+      <div class="kpi-count">13 of 115 cohort sellers</div>
       <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
       <div class="kpi-note">110% of GA target (10%) · ✓ On track</div>
       <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
     </div>
     <div class="kpi-tile north-star">
       <div class="kpi-label">E2E Reg → Full Fulfillment Rate</div>
-      <div class="kpi-value xl">10% <span class="badge g">▲ 25.0%</span></div>
+      <div class="kpi-value xl">10% <span class="badge g">▲ +2pp (+25.0%)</span></div>
+      <div class="kpi-count">12 of 115 cohort sellers</div>
       <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
       <div class="kpi-note">100% of GA target (10%) · ✓ On track</div>
       <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
@@ -195,41 +200,47 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">GMV / Streaming Hour <span class="badge-sm" style="background:#6929c4;color:#fff">In-Stream</span></div>
-      <div class="kpi-value">$47 <span class="badge g">▲ 14.6%</span></div>
+      <div class="kpi-value">$47 <span class="badge g">▲ +$6 (+14.6%)</span></div>
+      <div class="kpi-count">115 active seller-events</div>
       <div class="kpi-note">North Star — ≥ category baseline</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">7-Day Repeat Streaming Rate <span class="badge-sm" style="background:#6929c4;color:#fff">In-Stream</span></div>
-      <div class="kpi-value">47% <span class="badge g">▲ 9.3%</span></div>
+      <div class="kpi-value">47% <span class="badge g">▲ +4pp (+9.3%)</span></div>
+      <div class="kpi-count">54 of 115 first-show sellers</div>
       <div class="kpi-note">GA target: ≥40% · ✓ On track</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Order Fulfillment Rate <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span></div>
-      <div class="kpi-value">91% <span class="badge g">▲ 5.8%</span></div>
+      <div class="kpi-value">91% <span class="badge g">▲ +4pp (+4.6%)</span></div>
+      <div class="kpi-count">717 of 788 paid orders</div>
       <div class="kpi-note">GA gate: ≥90% · Hard stop if &lt;60%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">21-Day Seller Retention <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span></div>
-      <div class="kpi-value">67% <span class="badge g">▲ 10.0%</span></div>
+      <div class="kpi-value">67% <span class="badge g">▲ +6pp (+10.0%)</span></div>
+      <div class="kpi-count">77 of 115 first-show sellers</div>
       <div class="kpi-note">≥1 show d8–21 / first-show sellers · GA: &gt;70%</div>
     </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">E2E Velocity (Median Days)</div>
-      <div class="kpi-value">15d <span class="badge g">▲ 11.8%</span></div>
+      <div class="kpi-value">15d <span class="badge g">▼ -2d (-11.8%)</span></div>
+      <div class="kpi-count">median across 21 first-show sellers</div>
       <div class="kpi-note">Acct created → first fulfilled order · lower is better</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">BBE Rate (14-day) <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span></div>
-      <div class="kpi-value">1.6% <span class="badge g">▼ 5.9%</span></div>
+      <div class="kpi-value">1.6% <span class="badge g">▼ -0.1pp (-5.9%)</span></div>
+      <div class="kpi-count">vs. category baseline · lower is better</div>
       <div class="kpi-note">Guardrail: ≤ baseline+5pp · Hard stop if &gt;baseline+15pp</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">S1 Proactive Outreach</div>
-      <div class="kpi-value" style="font-size:18px">20% <span class="badge g" style="font-size:10px">▼ 16.7%</span></div>
-      <div class="kpi-note">S2 Inbound GCX: <strong>11%</strong> <span class="badge g" style="font-size:9px">▼ 15.4%</span></div>
-      <div class="kpi-note" style="margin-top:2px">Both lower is better</div>
+      <div class="kpi-value" style="font-size:18px">20% <span class="badge g" style="font-size:10px">▼ -4pp (-16.7%)</span></div>
+      <div class="kpi-count">S2 Inbound GCX: <strong>11%</strong> <span class="badge g" style="font-size:9px">▼ -2pp (-15.4%)</span></div>
+      <div class="kpi-note">Both lower is better</div>
     </div>
   </div>
 
@@ -266,6 +277,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       </tbody>
     </table>
   </div>
+
+  <!-- Metric Definitions -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
+    <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('exec-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.exec-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
+      <span class="card-title">Metric Definitions — Executive</span>
+      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
+      <span class="exec-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
+    </div>
+  </div>
+  <div id="exec-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:22%">Metric</th><th style="width:8%">Level</th><th style="width:30%">Numerator</th><th style="width:30%">Denominator</th><th style="width:10%">Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">E2E North Stars (Cohort-matured, 14-day window)</td></tr>
+        <tr><td class="fw6">E2E Reg → First Show Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Cohort sellers with ≥1 completed live stream</td><td class="mono">Sellers who completed registration in cohort week</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">E2E Reg → Show with Sales Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Cohort sellers with ≥1 stream that had ≥1 transaction</td><td class="mono">Sellers who completed registration in cohort week</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">E2E Reg → Order Fulfilled Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Cohort sellers with ≥1 fulfilled order from a live stream</td><td class="mono">Sellers who completed registration in cohort week</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS × POST_STREAM_FULFILLMENT</td></tr>
+        <tr><td class="fw6">E2E Reg → Full Fulfillment Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Cohort sellers with all orders from ≥1 stream fully fulfilled</td><td class="mono">Sellers who completed registration in cohort week</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS × POST_STREAM_FULFILLMENT</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Supporting Program Metrics</td></tr>
+        <tr><td class="fw6">GMV / Streaming Hour</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(GMV_DURING)</td><td class="mono">SUM(stream_duration_seconds) / 3600</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">7-Day Repeat Streaming Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Sellers with ≥2 streams within 7 days of first stream</td><td class="mono">Sellers with ≥1 completed stream in cohort window</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">Order Fulfillment Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Paid orders with ≥1 item shipped within SLA</td><td class="mono">Total paid orders from live streams</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td class="fw6">21-Day Seller Retention Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Sellers with ≥1 show between day 8 and day 21 post first show</td><td class="mono">Sellers who completed their first show</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">E2E Velocity (Median Days)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(account_created_ts → first_fulfilled_order_ts, 0.5) in days</td><td class="mono">1 (expressed as median days)</td><td class="mono">REG_EVENTS × POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td class="fw6">BBE Rate (14-day)</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">BBE transactions within 14 days of purchase</td><td class="mono">Total transactions from live streams</td><td class="mono">LIVE_COMMERCE_TRANSACTIONS × BUYER_BBE_T</td></tr>
+        <tr><td class="fw6">S1 Proactive Outreach</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers who received proactive outreach from S1</td><td class="mono">Total active sellers in cohort week</td><td class="mono">SELLER_SUPPORT_CONTACTS_T</td></tr>
+        <tr><td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
+          <strong style="color:#525252">WoW badges:</strong> pp = percentage-point change (absolute). % in parentheses = relative change vs prior week. $ prefix = dollar-value change. Lower-is-better metrics show ▼ in green when improving.
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
@@ -279,29 +324,34 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">Live Privilege Granted Rate <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
-      <div class="kpi-value">58% <span class="badge r">▼ 3.3%</span></div>
+      <div class="kpi-value">58% <span class="badge r">▼ -2pp (-3.3%)</span></div>
+      <div class="kpi-count">115 of 198 apps approved</div>
       <div class="kpi-note">Target: ≥60% (Ramp &amp; GA)</div>
       <div class="kpi-guard">⚠ Guardrail: Below threshold = program blocker</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Account Creation Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">82% <span class="badge g">▲ 2.5%</span></div>
+      <div class="kpi-value">82% <span class="badge g">▲ +2pp (+2.5%)</span></div>
+      <div class="kpi-count">261 of 320 GUIDs entered</div>
       <div class="kpi-note">Target: ≥75%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Streaming Registration Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">76% <span class="badge g">▲ 1.3%</span></div>
+      <div class="kpi-value">76% <span class="badge g">▲ +1pp (+1.3%)</span></div>
+      <div class="kpi-count">150 of 198 accounts submitted</div>
       <div class="kpi-note">App submitted / account created · abandonment &lt;30%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Median Approval Time <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">1.8h <span class="badge g">▼ 14.3%</span></div>
+      <div class="kpi-value">1.8h <span class="badge g">▼ -0.3h (-14.3%)</span></div>
+      <div class="kpi-count">115 sellers approved · lower is better</div>
       <div class="kpi-note">Target: &lt;2 hrs</div>
       <div class="kpi-guard">⚠ Guardrail: Alert if &gt;3 hrs (baseline: 1.6 hrs)</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Manual Review Rate <span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></div>
-      <div class="kpi-value">25% <span class="badge g">▼ 10.7%</span></div>
+      <div class="kpi-value">25% <span class="badge g">▼ -3pp (-10.7%)</span></div>
+      <div class="kpi-count">50 of 198 applications flagged</div>
       <div class="kpi-note">Lower is better</div>
       <div class="kpi-guard">⚠ Guardrail: Alert if &gt;30%</div>
     </div>
@@ -375,6 +425,35 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       </tbody>
     </table>
   </div>
+
+  <!-- Metric Definitions -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
+    <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('reg-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.reg-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
+      <span class="card-title">Metric Definitions — Registration</span>
+      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
+      <span class="reg-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
+    </div>
+  </div>
+  <div id="reg-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:22%">Metric</th><th style="width:8%">Priority</th><th style="width:30%">Numerator</th><th style="width:30%">Denominator</th><th style="width:10%">Source Table</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L0 North Star</td></tr>
+        <tr><td class="fw6">Live Privilege Granted Rate (LPG)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Sellers granted live-streaming permission (studio activated)</td><td class="mono">Sellers who submitted streaming application in cohort week</td><td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P0 Funnel Steps</td></tr>
+        <tr><td class="fw6">Account Creation Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Unique GUIDs who completed account creation (user_id assigned)</td><td class="mono">Unique GUIDs who entered the registration flow</td><td class="mono">LIVE_REG_EVENTS_T (GUID-level)</td></tr>
+        <tr><td class="fw6">Streaming Registration Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Sellers who submitted streaming application (app_submitted event)</td><td class="mono">Sellers who created an account (user_id-level)</td><td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM</td></tr>
+        <tr><td class="fw6">Median Approval Time</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">PERCENTILE(app_submitted_ts → lpg_granted_ts, 0.5) in hours</td><td class="mono">1 (expressed as median hours)</td><td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P1 Diagnostics</td></tr>
+        <tr><td class="fw6">Manual Review Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td class="mono">Applications routed to human review (policy_action = 'manual')</td><td class="mono">Total streaming applications submitted</td><td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM</td></tr>
+        <tr><td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
+          <strong style="color:#525252">Grain note:</strong> Account Creation Rate is measured at GUID level; all downstream steps are measured at user_id (seller) level. The cohort base is the week of application submission (not account creation week).
+        </td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
@@ -388,34 +467,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
     <div class="kpi-tile north-star">
       <div class="kpi-label">Seller Setup Success Rate <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
-      <div class="kpi-value xl">45% <span class="badge g">▲ 12.5%</span></div>
+      <div class="kpi-value xl">45% <span class="badge g">▲ +5pp (+12.5%)</span></div>
+      <div class="kpi-count">52 of 115 LPG sellers</div>
       <div class="kpi-note">Published event + ≥1 listing / Sellers who started setup</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Event Creation Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">52% <span class="badge g">▲ 10.6%</span></div>
+      <div class="kpi-value">52% <span class="badge g">▲ +5pp (+10.6%)</span></div>
+      <div class="kpi-count">60 of 115 LPG sellers</div>
       <div class="kpi-note">Ramp: &gt;50% ✓ · GA: &gt;75%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Listing Readiness Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">48% <span class="badge g">▲ 9.1%</span></div>
+      <div class="kpi-value">48% <span class="badge g">▲ +4pp (+9.1%)</span></div>
+      <div class="kpi-count">55 of 115 LPG sellers</div>
       <div class="kpi-note">Ramp: &gt;50% · GA: &gt;75%</div>
     </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-top:1px">
     <div class="kpi-tile">
       <div class="kpi-label">First Show Ready Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">29% <span class="badge g">▲ 11.5%</span></div>
+      <div class="kpi-value">29% <span class="badge g">▲ +3pp (+11.5%)</span></div>
+      <div class="kpi-count">33 of 115 LPG sellers</div>
       <div class="kpi-note">Ramp: &gt;20% ✓ · GA: &gt;40%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">14-Day First Show Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">27% <span class="badge g">▲ 12.5%</span></div>
+      <div class="kpi-value">27% <span class="badge g">▲ +3pp (+12.5%)</span></div>
+      <div class="kpi-count">31 of 115 LPG sellers</div>
       <div class="kpi-note">Ramp: &gt;20% ✓ · GA: &gt;60%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Express Listing Adoption <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">60% <span class="badge g">▲ 9.1%</span></div>
+      <div class="kpi-value">60% <span class="badge g">▲ +5pp (+9.1%)</span></div>
+      <div class="kpi-count">69 of 115 LPG sellers</div>
       <div class="kpi-note">Ramp: &gt;50% ✓</div>
     </div>
   </div>
@@ -770,22 +855,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile north-star">
       <div class="kpi-label">GMV / Streaming Hour <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
-      <div class="kpi-value xl">$47 <span class="badge g">▲ 14.6%</span></div>
+      <div class="kpi-value xl">$47 <span class="badge g">▲ +$6 (+14.6%)</span></div>
+      <div class="kpi-count">115 cohort seller-events</div>
       <div class="kpi-note">North Star · ≥ category baseline</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">GMV During Stream <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
-      <div class="kpi-value">$640 <span class="badge g">▲ 14.3%</span></div>
+      <div class="kpi-value">$640 <span class="badge g">▲ +$80 (+14.3%)</span></div>
+      <div class="kpi-count">median per stream · 115 events</div>
       <div class="kpi-note">Total revenue from stream</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Stream Duration P50</div>
-      <div class="kpi-value">26 min <span class="badge g">▲ 8.3%</span></div>
+      <div class="kpi-value">26 min <span class="badge g">▲ +2 min (+8.3%)</span></div>
+      <div class="kpi-count">median across 115 events</div>
       <div class="kpi-note">P50 ≥20 min · engagement signal ✓</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Sell Through Rate (Pinned)</div>
-      <div class="kpi-value">44% <span class="badge g">▲ 10.0%</span></div>
+      <div class="kpi-value">44% <span class="badge g">▲ +4pp (+10.0%)</span></div>
+      <div class="kpi-count">7 of 17 pinned items sold per event</div>
       <div class="kpi-note">Pinned Items Sold / Pinned Items</div>
     </div>
   </div>
@@ -802,22 +891,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">Total Items Listed</div>
-      <div class="kpi-value">28 <span class="badge g">▲ 7.7%</span></div>
+      <div class="kpi-value">28 <span class="badge g">▲ +2 (+7.7%)</span></div>
+      <div class="kpi-count">avg per event · 115 streams</div>
       <div class="kpi-note">DISTINCT items per event</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Total Items Pinned</div>
-      <div class="kpi-value">17 <span class="badge g">▲ 13.3%</span></div>
+      <div class="kpi-value">17 <span class="badge g">▲ +2 (+13.3%)</span></div>
+      <div class="kpi-count">avg per event · 61% of listed</div>
       <div class="kpi-note">Pinned to buyer screen</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">BIN Listings Pinned</div>
-      <div class="kpi-value">10 <span class="badge g">▲ 11.1%</span></div>
+      <div class="kpi-value">10 <span class="badge g">▲ +1 (+11.1%)</span></div>
+      <div class="kpi-count">avg per event · 59% of pinned</div>
       <div class="kpi-note">Buy-It-Now format</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Auction Listings Pinned</div>
-      <div class="kpi-value">7 <span class="badge g">▲ 16.7%</span></div>
+      <div class="kpi-value">7 <span class="badge g">▲ +1 (+16.7%)</span></div>
+      <div class="kpi-count">avg per event · 41% of pinned</div>
       <div class="kpi-note">Auction format</div>
     </div>
   </div>
@@ -839,22 +932,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">Avg Pin Duration P50</div>
-      <div class="kpi-value">6.1 min <span class="badge g">▲ 8.9%</span></div>
+      <div class="kpi-value">6.1 min <span class="badge g">▲ +0.5 min (+8.9%)</span></div>
+      <div class="kpi-count">median per pinned item · 115 events</div>
       <div class="kpi-note">Median time item pinned to screen</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Time to First Pin</div>
-      <div class="kpi-value">2.6 min <span class="badge g">▼ 10.3%</span></div>
+      <div class="kpi-value">2.6 min <span class="badge g">▼ -0.3 min (-10.3%)</span></div>
+      <div class="kpi-count">median · lower is better</div>
       <div class="kpi-note">Dead time before monetisation · lower is better</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Engagement Tools / Stream</div>
-      <div class="kpi-value">3.1 <span class="badge g">▲ 10.7%</span></div>
+      <div class="kpi-value">3.1 <span class="badge g">▲ +0.3 (+10.7%)</span></div>
+      <div class="kpi-count">avg activations per stream</div>
       <div class="kpi-note">Quiz + Poll + Notice activations</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Chat Messages / Stream</div>
-      <div class="kpi-value">74 <span class="badge g">▲ 8.8%</span></div>
+      <div class="kpi-value">74 <span class="badge g">▲ +6 (+8.8%)</span></div>
+      <div class="kpi-count">avg per stream · inbound + outbound</div>
       <div class="kpi-note">Total inbound + outbound</div>
     </div>
   </div>
@@ -923,6 +1020,42 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       </tbody>
     </table>
   </div>
+
+  <!-- Metric Definitions -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
+    <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('is-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.is-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
+      <span class="card-title">Metric Definitions — In-Stream</span>
+      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
+      <span class="is-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
+    </div>
+  </div>
+  <div id="is-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:22%">Metric</th><th style="width:8%">Level</th><th style="width:35%">Formula / Definition</th><th style="width:35%">Source Table</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L0 Revenue</td></tr>
+        <tr><td class="fw6">GMV / Streaming Hour</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(GMV_DURING) / SUM(stream_duration_s / 3600)</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">GMV During Stream</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(GMV_DURING) — revenue from items sold during live window</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">Stream Duration P50</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(stream_end_ts - stream_start_ts, 0.5) in minutes</td><td class="mono">LIVE_COMMERCE_EVENTS</td></tr>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Inventory &amp; Sell-Through</td></tr>
+        <tr><td class="fw6">Total Items Listed</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">COUNT(DISTINCT item_id) per event — all items associated with stream</td><td class="mono">LIVE_COMMERCE_EVENT_LISTING</td></tr>
+        <tr><td class="fw6">Total Items Pinned</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">COUNT(pin events) — items pushed to buyer screen during stream</td><td class="mono">LIVE_STREAM_ENGAGEMENT_EVENTS_T</td></tr>
+        <tr><td class="fw6">Sell Through Rate (Pinned)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">COUNT(DISTINCT sold pinned items) / COUNT(DISTINCT pinned items)</td><td class="mono">LIVE_STREAM_ENGAGEMENT_EVENTS_T × LIVE_COMMERCE_TRANSACTIONS</td></tr>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Pin Timing &amp; Engagement</td></tr>
+        <tr><td class="fw6">Avg Pin Duration P50</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(unpin_ts - pin_ts, 0.5) per item per stream, in minutes</td><td class="mono">LIVE_STREAM_ENGAGEMENT_EVENTS_T</td></tr>
+        <tr><td class="fw6">Time to First Pin</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(first_pin_ts - stream_started_ts, 0.5) in minutes · lower is better</td><td class="mono">LIVE_STREAM_ENGAGEMENT_EVENTS_T</td></tr>
+        <tr><td class="fw6">Engagement Tools / Stream</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td><td class="mono">COUNT(DISTINCT quiz | poll | notice launch events) per stream</td><td class="mono">LIVE_STREAM_ENGAGEMENT_EVENTS_T</td></tr>
+        <tr><td class="fw6">Chat Messages / Stream</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td><td class="mono">COUNT(chat_message events) per stream — inbound + outbound</td><td class="mono">LIVE_STREAM_CHAT_EVENTS_T</td></tr>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Guardrails (lower = healthier)</td></tr>
+        <tr><td class="fw6">Stream Activation Failures</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">COUNT(stream_start_event) WHERE no matching stream_started within 60s</td><td class="mono">LIVE_STREAM_LIFECYCLE_EVENTS_T</td></tr>
+        <tr><td class="fw6">Listings Added In-Stream</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">COUNT(listing_created events WHERE ts &gt; stream_started_ts)</td><td class="mono">LIVE_STREAM_LIFECYCLE_EVENTS_T × LIVE_COMMERCE_EVENT_LISTING</td></tr>
+        <tr><td class="fw6">Auction Resets</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">COUNT(auction_reset events) per stream</td><td class="mono">LIVE_STREAM_ENGAGEMENT_EVENTS_T</td></tr>
+        <tr><td class="fw6">Users Muted</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">COUNT(user_muted events) per stream — buyer engagement quality signal</td><td class="mono">LIVE_STREAM_MODERATION_EVENTS_T</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div><!-- /in-stream -->
 
 <!-- ═══════════════════════════════════════════════════════════════════════
@@ -938,25 +1071,29 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile north-star">
       <div class="kpi-label">Order Fulfillment Rate (1-Order) <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
-      <div class="kpi-value xl">91% <span class="badge g">▲ 5.8%</span></div>
+      <div class="kpi-value xl">91% <span class="badge g">▲ +4pp (+4.6%)</span></div>
+      <div class="kpi-count">717 of 788 paid orders fulfilled</div>
       <div class="kpi-note">Orders shipped within handling time / Total orders · GA gate: ≥90%</div>
       <div class="kpi-guard">Hard stop: &lt;60% = program blocker</div>
     </div>
     <div class="kpi-tile north-star">
       <div class="kpi-label">Full Fulfillment Rate <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
-      <div class="kpi-value xl">82% <span class="badge g">▲ 7.9%</span></div>
+      <div class="kpi-value xl">82% <span class="badge g">▲ +5pp (+6.5%)</span></div>
+      <div class="kpi-count">646 of 788 paid orders fully shipped</div>
       <div class="kpi-note">All orders in show fully shipped / Total paid orders · GA: ≥80%</div>
       <div class="kpi-guard">⚠ Late shipment rate: 6.2%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">21-Day Seller Retention Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">67% <span class="badge g">▲ 10.0%</span></div>
+      <div class="kpi-value">67% <span class="badge g">▲ +5pp (+8.1%)</span></div>
+      <div class="kpi-count">77 of 115 first-show sellers retained</div>
       <div class="kpi-note">≥1 show d8–21 / first-show sellers · GA target: &gt;70%</div>
       <div class="kpi-guard">Hard stop: seller churn &gt;30% for ≥2 weeks</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Post-Stream Insights Engagement <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
-      <div class="kpi-value">61% <span class="badge g">▲ 17.3%</span></div>
+      <div class="kpi-value">61% <span class="badge g">▲ +6pp (+10.9%)</span></div>
+      <div class="kpi-count">70 of 115 sellers visited Insights</div>
       <div class="kpi-note">Sellers landing on Insights / sellers with ≥1 completed stream</div>
     </div>
   </div>
@@ -1018,23 +1155,27 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">Median Days to First Fulfillment</div>
-      <div class="kpi-value">2.1d <span class="badge g">▼ 24.0%</span></div>
+      <div class="kpi-value">2.1d <span class="badge g">▼ -0.7d (-25.0%)</span></div>
+      <div class="kpi-count">717 fulfilled orders · lower is better</div>
       <div class="kpi-note">Payment → first item shipped · lower is better</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Median Days to Full Fulfillment</div>
-      <div class="kpi-value">3.4d <span class="badge g">▼ 17.1%</span></div>
+      <div class="kpi-value">3.4d <span class="badge g">▼ -0.7d (-17.1%)</span></div>
+      <div class="kpi-count">646 fully shipped orders · lower is better</div>
       <div class="kpi-note">Payment → all items shipped · lower is better</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Unpaid Order Rate</div>
-      <div class="kpi-value">6.4% <span class="badge g">▼ 36.0%</span></div>
+      <div class="kpi-value">6.4% <span class="badge g">▼ -0.8pp (-11.1%)</span></div>
+      <div class="kpi-count">54 of 842 orders unpaid · lower is better</div>
       <div class="kpi-note">Orders not paid within payment window</div>
       <div class="kpi-guard">⚠ Unpaid aging 72h: 2.1%</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Paid But Unfulfilled (7d)</div>
-      <div class="kpi-value">4.8% <span class="badge g">▼ 29.4%</span></div>
+      <div class="kpi-value">4.8% <span class="badge g">▼ -1.4pp (-22.6%)</span></div>
+      <div class="kpi-count">38 of 788 paid orders stalled · lower is better</div>
       <div class="kpi-note">Paid orders unshipped after 7 days</div>
       <div class="kpi-guard">⚠ Monitor for BBE risk</div>
     </div>
@@ -1057,22 +1198,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">Insights Landing Rate (same day)</div>
-      <div class="kpi-value">38% <span class="badge g">▲ 8.6%</span></div>
+      <div class="kpi-value">38% <span class="badge g">▲ +3pp (+8.6%)</span></div>
+      <div class="kpi-count">44 of 115 sellers · within 1d</div>
       <div class="kpi-note">Sellers landing on Insights within 1d of stream end</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Report Download Rate</div>
-      <div class="kpi-value">44% <span class="badge g">▲ 15.8%</span></div>
+      <div class="kpi-value">44% <span class="badge g">▲ +6pp (+15.8%)</span></div>
+      <div class="kpi-count">31 of 70 Insights landers</div>
       <div class="kpi-note">Sellers who clicked download / all Insights landers</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Non-Default View Adoption</div>
-      <div class="kpi-value">29% <span class="badge g">▲ 20.8%</span></div>
+      <div class="kpi-value">29% <span class="badge g">▲ +5pp (+20.8%)</span></div>
+      <div class="kpi-count">20 of 70 Insights landers</div>
       <div class="kpi-note">Sellers who selected a non-default date range</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Repeat Insights Revisit Rate</div>
-      <div class="kpi-value">52% <span class="badge g">▲ 18.2%</span></div>
+      <div class="kpi-value">52% <span class="badge g">▲ +7pp (+15.6%)</span></div>
+      <div class="kpi-count">36 of 70 Insights landers · 2+ sessions</div>
       <div class="kpi-note">Sellers with 2+ Insights sessions post-stream</div>
     </div>
   </div>
@@ -1142,6 +1287,44 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       </tbody>
     </table>
   </div>
+
+  <!-- Metric Definitions -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
+    <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('pst-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.pst-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
+      <span class="card-title">Metric Definitions — Post-Stream</span>
+      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
+      <span class="pst-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
+    </div>
+  </div>
+  <div id="pst-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:22%">Metric</th><th style="width:8%">Level</th><th style="width:35%">Formula / Definition</th><th style="width:35%">Source Table</th></tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L0 Fulfillment North Stars</td></tr>
+        <tr><td class="fw6">Order Fulfillment Rate (1-Order)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Paid orders with ≥1 item shipped within seller's handling SLA / Total paid orders</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td class="fw6">Full Fulfillment Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">Paid orders where ALL items shipped within SLA / Total paid orders</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P0 Retention &amp; Insights</td></tr>
+        <tr><td class="fw6">21-Day Seller Retention Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Sellers with ≥1 completed stream between day 8 and day 21 post first-show date / Sellers with ≥1 completed stream</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">Post-Stream Insights Engagement</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Sellers who landed on Insights page at least once / Sellers with ≥1 completed stream</td><td class="mono">LIVE_INSIGHTS_PAGE_EVENTS_T</td></tr>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Fulfillment Quality</td></tr>
+        <tr><td class="fw6">Median Days to First Fulfillment</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(payment_ts → first_item_shipped_ts, 0.5) in days · lower is better</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td class="fw6">Median Days to Full Fulfillment</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(payment_ts → all_items_shipped_ts, 0.5) in days · lower is better</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td class="fw6">Unpaid Order Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Orders not paid within payment window / Total orders created post-stream · lower is better</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td class="fw6">Paid But Unfulfilled (7d)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Paid orders with no shipment event after 7 days / Total paid orders · lower is better</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Insights Page Engagement</td></tr>
+        <tr><td class="fw6">Insights Landing Rate (same day)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers landing on Insights within 1 day of stream end / Sellers with completed stream</td><td class="mono">LIVE_INSIGHTS_PAGE_EVENTS_T</td></tr>
+        <tr><td class="fw6">Report Download Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers who clicked Download Report / All sellers who landed on Insights</td><td class="mono">LIVE_INSIGHTS_PAGE_EVENTS_T</td></tr>
+        <tr><td class="fw6">Non-Default View Adoption</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers who selected a non-default date range / All Insights landers</td><td class="mono">LIVE_INSIGHTS_PAGE_EVENTS_T</td></tr>
+        <tr><td class="fw6">Repeat Insights Revisit Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers with ≥2 Insights page sessions post-stream / Total Insights landers</td><td class="mono">LIVE_INSIGHTS_PAGE_EVENTS_T</td></tr>
+        <tr><td colspan="4" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Guardrails</td></tr>
+        <tr><td class="fw6">BBE Rate (14-day)</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">Buyer Bad Experience transactions within 14 days / Total transactions · hard stop if &gt; baseline+15pp</td><td class="mono">LIVE_COMMERCE_TRANSACTIONS × BUYER_BBE_T</td></tr>
+        <tr><td class="fw6">21-Day Seller Churn</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">Sellers with no stream activity for 21+ days / Active sellers in prior cohort · hard stop if &gt;30%</td><td class="mono">LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td></tr>
+        <tr><td class="fw6">Late Shipment Rate</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">Fulfilled orders shipped after seller SLA / Total fulfilled orders · lower is better</td><td class="mono">POST_STREAM_FULFILLMENT_T</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div><!-- /post-stream -->
 
 </div><!-- /main -->
@@ -1208,19 +1391,32 @@ const D = {
 };
 
 // ─── Chart helper ──────────────────────────────────────────────────────────
+function fmtVal(v,fmt){
+  if(fmt==='%') return v+'%';
+  if(fmt==='$') return '$'+v;
+  if(fmt===' hrs') return v+'h';
+  if(fmt===' min') return v+' min';
+  if(fmt===' d') return v+'d';
+  return String(v);
+}
 function mkLine(id, series, yFmt, targets) {
   const el = document.getElementById(id);
   if(!el) return;
   const c = echarts.init(el);
   c.setOption({
     animation: true, animationDuration: 400,
-    grid:{top:22,right:16,bottom:32,left:46},
-    tooltip:{trigger:'axis'},
+    grid:{top:28,right:16,bottom:32,left:46},
+    tooltip:{trigger:'axis',formatter:(params)=>params.map(p=>`<span style="color:${p.color}">●</span> ${p.seriesName}: <b>${fmtVal(p.value,yFmt)}</b>`).join('<br>')},
     xAxis:{type:'category',data:WKS,axisLabel:{fontSize:9,color:'#6f6f6f'},axisLine:{lineStyle:{color:'#e0e0e0'}}},
     yAxis:{type:'value',axisLabel:{fontSize:9,color:'#6f6f6f',formatter:'{value}'+(yFmt||'')},splitLine:{lineStyle:{color:'#f4f4f4',type:'dashed'}}},
     series:[
-      ...series.map(s=>({name:s.n,type:'line',data:s.d,smooth:false,lineStyle:{color:s.c,width:2},itemStyle:{color:s.c},symbol:'circle',symbolSize:5})),
-      ...(targets||[]).map(t=>({name:t.n,type:'line',data:Array(5).fill(t.v),lineStyle:{color:t.c||'#8d8d8d',type:'dashed',width:1},itemStyle:{color:t.c||'#8d8d8d'},symbol:'none'}))
+      ...series.map(s=>({
+        name:s.n,type:'line',data:s.d,smooth:false,
+        lineStyle:{color:s.c,width:2},itemStyle:{color:s.c},
+        symbol:'circle',symbolSize:5,
+        label:{show:true,position:'top',fontSize:8,color:s.c,formatter:(p)=>fmtVal(p.value,yFmt)}
+      })),
+      ...(targets||[]).map(t=>({name:t.n,type:'line',data:Array(5).fill(t.v),lineStyle:{color:t.c||'#8d8d8d',type:'dashed',width:1},itemStyle:{color:t.c||'#8d8d8d'},symbol:'none',label:{show:false}}))
     ],
     legend:{bottom:0,textStyle:{fontSize:9,color:'#6f6f6f'}}
   });
