@@ -797,12 +797,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
           <td class="mono">Sellers who clicked Event Creation CTA</td>
           <td class="mono">EVENT_COMPLETION_RATE_T<br><span style="color:#6f6f6f">= 1 − Event Completion Rate</span></td>
         </tr>
+
         <tr>
-          <td class="fw6">Event Error Rate</td>
+          <td class="fw6">Event Completion Time</td>
           <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sellers who hit ≥1 error during event form (error_code IS NOT NULL)</td>
-          <td class="mono">All sellers who opened event creation form</td>
-          <td class="mono">EVENT_CREATION_BASE_PT<br><span style="color:#da1e28;font-size:9px">⚠ error_code not yet instrumented</span></td>
+          <td class="mono">PERCENTILE(publish_ts − cta_click_ts, 0.5 | 0.9) in minutes</td>
+          <td class="mono">—  (elapsed time, not a rate)</td>
+          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Event Completion Time' · express vs non-express split available</span></td>
         </tr>
 
         <!-- Listing Creation Quality -->
@@ -817,11 +818,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
           <td class="mono">EXPRESS_LISTING_COMPLETION_RATE_T</td>
         </tr>
         <tr>
-          <td class="fw6">Listing Error Rate</td>
+          <td class="fw6">Listing Completion Time</td>
           <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sessions with ≥1 validation error (error_code IS NOT NULL)</td>
-          <td class="mono">Sessions that started listing creation</td>
-          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#da1e28;font-size:9px">⚠ error_code not yet instrumented</span></td>
+          <td class="mono">PERCENTILE(listing_created_ts − listing_cta_ts, 0.5 | 0.9) in minutes</td>
+          <td class="mono">—  (elapsed time, not a rate)</td>
+          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Express Listing Completion Time' · express vs non-express split available</span></td>
         </tr>
 
         <!-- Recommendation Quality -->
@@ -882,29 +883,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
           <td class="mono">1 (expressed as average edits per seller)</td>
           <td class="mono">EVENT_CREATION_BASE_PT<br><span style="color:#6f6f6f">Alert: avg &gt;5 edits</span></td>
         </tr>
-        <tr>
-          <td class="fw6">Mandatory Field Error Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sessions with mandatory-field validation errors</td>
-          <td class="mono">Sessions that started listing creation</td>
-          <td class="mono">EXPRESS_LISTINGS_BASE_PT (error_code filter)<br><span style="color:#6f6f6f">Alert: &gt;10%</span></td>
-        </tr>
-        <tr>
-          <td class="fw6">Category Restriction Error Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sessions with category-restriction errors during event creation</td>
-          <td class="mono">Sessions that opened event creation form</td>
-          <td class="mono">EVENT_CREATION_BASE_PT (error_code filter)<br><span style="color:#6f6f6f">Alert: &gt;5%</span></td>
-        </tr>
 
         <!-- Availability note -->
         <tr>
           <td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
             <strong style="color:#525252">Data availability:</strong>
             Base tables (EVENT_CREATION_BASE_PT, EXPRESS_LISTINGS_BASE_PT, EXPRESS_LISTING_COMPLETION_RATE_T, EVENT_COMPLETION_RATE_T) retain a rolling <strong>7-day</strong> window via daily DELETE + INSERT.
-            LISTING_ADOPTION_T and EVENT_FORM_NAV_BASE_PT are full-refresh tables populated on a daily schedule.
+            LISTING_ADOPTION_T, EVENT_FORM_NAV_BASE_PT, and COMPLETION_TIME_FINAL_T are full-refresh tables populated on a daily schedule.
             All rates use <strong>SUM(numerator) / SUM(denominator)</strong> aggregation — never an average of rates.
-            <span style="color:#da1e28">⚠ error_code</span> is not yet instrumented in listing or event base tables; error-rate metrics will show 0% until instrumentation is added.
+            Completion time metrics (Event &amp; Listing) are P50 / P90 elapsed minutes from CTA click → published; express vs non-express split available in COMPLETION_TIME_FINAL_T.
           </td>
         </tr>
       </tbody>
