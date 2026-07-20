@@ -514,11 +514,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
   </div>
 
-  <!-- Recommendations & Errors -->
+  <!-- Recommendations -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Recommendation Quality &amp; Error Monitoring</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Recommendation Quality</span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:1px">
+  <div class="kpi-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:1px">
     <div class="kpi-tile">
       <div class="kpi-label">Category Accept Rate</div>
       <div class="kpi-value">28% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13-19</span></div>
@@ -529,25 +529,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-value">55% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13-19</span></div>
       <div class="kpi-note">Accepted / Shown · 16/29 sellers</div>
     </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Event Error Rate</div>
-      <div class="kpi-value" style="color:#8d8d8d;font-size:13px;font-style:italic">Pending instrumentation</div>
-      <div class="kpi-guard">⚠ Errors / Event Starts</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Listing Error Rate</div>
-      <div class="kpi-value" style="color:#8d8d8d;font-size:13px;font-style:italic">Pending instrumentation</div>
-      <div class="kpi-guard">⚠ Errors / Listing Starts</div>
-    </div>
   </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0;margin-bottom:1px">
+  <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:1px">
     <div class="chart-pane" style="margin:0">
       <div class="chart-pane-title">Recommendation Acceptance Rates</div>
       <div id="ch-ps-recos" style="height:150px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Error Rates (Guardrails) <span style="font-weight:400;color:#8d8d8d;font-style:italic">— pending instrumentation</span></div>
-      <div id="ch-ps-errors" style="height:150px"></div>
     </div>
   </div>
 
@@ -564,8 +550,6 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
         <tr><td class="fw6">Updates Before Publish (Event)</td><td class="mono">Avg edits before publish</td><td class="fw6">2.4 edits</td><td style="color:#a2191f;font-size:10px">&gt;5 edits</td></tr>
         <tr><td class="fw6">Category Override Rate</td><td class="mono">Overrides / Recommendations</td><td class="fw6" style="color:#da1e28">72.4% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
         <tr><td class="fw6">Shipping Policy Override Rate</td><td class="mono">Overrides / Recommendations shown</td><td class="fw6" style="color:#da1e28">44.8% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
-        <tr><td class="fw6">Mandatory Field Error Rate</td><td class="mono">Validation Errors / Listing Starts</td><td class="fw6" style="color:#8d8d8d;font-style:italic">Pending instrumentation</td><td style="color:#a2191f;font-size:10px">&gt;10%</td></tr>
-        <tr><td class="fw6">Category Restriction Error Rate</td><td class="mono">Restricted cat. errors / Event Starts</td><td class="fw6" style="color:#8d8d8d;font-style:italic">Pending instrumentation</td><td style="color:#a2191f;font-size:10px">&gt;5%</td></tr>
       </tbody>
     </table>
   </div>
