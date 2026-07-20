@@ -569,6 +569,206 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       </tbody>
     </table>
   </div>
+
+  <!-- Metric Definitions -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
+    <div class="card-head" style="margin:0"><span class="card-title">Metric Definitions — Pre-Stream</span><span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span></div>
+  </div>
+  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th style="width:18%">Metric</th>
+          <th style="width:8%">Priority</th>
+          <th style="width:28%">Numerator</th>
+          <th style="width:28%">Denominator</th>
+          <th style="width:18%">Source Table</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- L0 / North Star -->
+        <tr>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">North Star</td>
+        </tr>
+        <tr>
+          <td class="fw6">Seller Setup Success Rate</td>
+          <td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td>
+          <td class="mono">Sellers who published an event AND created ≥1 listing</td>
+          <td class="mono">Sellers who clicked Event Creation CTA (started setup)</td>
+          <td class="mono">EVENT_COMPLETION_RATE_T × EXPRESS_LISTING_COMPLETION_RATE_T</td>
+        </tr>
+
+        <!-- P0 Funnel -->
+        <tr>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P0 — Funnel Steps (Cohort-based)</td>
+        </tr>
+        <tr>
+          <td class="fw6">Event Creation Rate</td>
+          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
+          <td class="mono">Sellers who published a Live event</td>
+          <td class="mono">LPG sellers in cohort week</td>
+          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × LIVE_EVENT</td>
+        </tr>
+        <tr>
+          <td class="fw6">Listing Readiness Rate</td>
+          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
+          <td class="mono">Sellers who created ≥1 express listing</td>
+          <td class="mono">LPG sellers in cohort week</td>
+          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × SLNG_LSTG_SUPER_FACT</td>
+        </tr>
+        <tr>
+          <td class="fw6">First Show Ready Rate</td>
+          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
+          <td class="mono">Sellers with published event AND ≥1 listing (show-ready)</td>
+          <td class="mono">LPG sellers in cohort week</td>
+          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × LIVE_EVENT × SLNG_LSTG_SUPER_FACT</td>
+        </tr>
+        <tr>
+          <td class="fw6">14-Day First Show Rate</td>
+          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
+          <td class="mono">Sellers who went live within 14 days of becoming show-ready</td>
+          <td class="mono">LPG sellers in cohort week</td>
+          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td>
+        </tr>
+        <tr>
+          <td class="fw6">Express Listing Adoption</td>
+          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
+          <td class="mono">Sellers with ≥1 express listing (APP_ID IN (590363, 456309))</td>
+          <td class="mono">Sellers who created any listing</td>
+          <td class="mono">LISTING_ADOPTION_T (via SLNG_LSTG_SUPER_FACT)</td>
+        </tr>
+
+        <!-- Event Creation Quality -->
+        <tr>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Event Creation Quality</td>
+        </tr>
+        <tr>
+          <td class="fw6">Event Completion Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who clicked CTA AND published an event</td>
+          <td class="mono">Sellers who clicked Event Creation CTA</td>
+          <td class="mono">EVENT_COMPLETION_RATE_T<br><span style="color:#6f6f6f">seller-level: click_cnt &gt; 0 AND published_cnt &gt; 0</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Event Abandonment Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who clicked CTA but did NOT publish</td>
+          <td class="mono">Sellers who clicked Event Creation CTA</td>
+          <td class="mono">EVENT_COMPLETION_RATE_T<br><span style="color:#6f6f6f">= 1 − Event Completion Rate</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Event Error Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who hit ≥1 error during event form (error_code IS NOT NULL)</td>
+          <td class="mono">All sellers who opened event creation form</td>
+          <td class="mono">EVENT_CREATION_BASE_PT<br><span style="color:#da1e28;font-size:9px">⚠ error_code not yet instrumented</span></td>
+        </tr>
+
+        <!-- Listing Creation Quality -->
+        <tr>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Listing Creation Quality</td>
+        </tr>
+        <tr>
+          <td class="fw6">Listing Completion Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">SUM(completed_cnt) — sessions reaching listing published state</td>
+          <td class="mono">SUM(started_cnt) — sessions that opened listing creation flow</td>
+          <td class="mono">EXPRESS_LISTING_COMPLETION_RATE_T</td>
+        </tr>
+        <tr>
+          <td class="fw6">Listing Error Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sessions with ≥1 validation error (error_code IS NOT NULL)</td>
+          <td class="mono">Sessions that started listing creation</td>
+          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#da1e28;font-size:9px">⚠ error_code not yet instrumented</span></td>
+        </tr>
+
+        <!-- Recommendation Quality -->
+        <tr>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Recommendation Quality</td>
+        </tr>
+        <tr>
+          <td class="fw6">Category Accept Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who did NOT click "Create Modal - Category" override</td>
+          <td class="mono">Sellers who saw any Create Modal event</td>
+          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − (DISTINCT users with Category click / DISTINCT modal users)</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Category Override Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who clicked "Create Modal - Category" to change recommendation</td>
+          <td class="mono">Sellers who saw any Create Modal event</td>
+          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − Category Accept Rate. Alert: &gt;40%</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Shipping Policy Accept Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who did NOT click "Create Modal - Shipping Policy" override</td>
+          <td class="mono">Sellers who saw any Create Modal event</td>
+          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − (DISTINCT users with Shipping click / DISTINCT modal users)</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Shipping Policy Override Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who clicked "Create Modal - Shipping Policy" to change recommendation</td>
+          <td class="mono">Sellers who saw any Create Modal event</td>
+          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − Shipping Accept Rate. Alert: &gt;40%</span></td>
+        </tr>
+
+        <!-- P1 Diagnostics -->
+        <tr>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P1 Diagnostics</td>
+        </tr>
+        <tr>
+          <td class="fw6">Draft Save Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sessions that triggered save-as-draft action (SID shared with publish)</td>
+          <td class="mono">Sessions that opened event creation form</td>
+          <td class="mono">EVENT_CREATION_BASE_PT<br><span style="color:#da1e28;font-size:9px">⚠ SID shared between draft-save and publish — cannot split</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Draft → Publish Conversion</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Published events that were previously saved as draft</td>
+          <td class="mono">All draft-saved events</td>
+          <td class="mono">EVENT_CREATION_BASE_PT × LIVE_EVENT<br><span style="color:#6f6f6f">Alert: &lt;60%</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Updates Before Publish (Event)</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">COUNT of edit/update events per seller before first publish</td>
+          <td class="mono">1 (expressed as average edits per seller)</td>
+          <td class="mono">EVENT_CREATION_BASE_PT<br><span style="color:#6f6f6f">Alert: avg &gt;5 edits</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Mandatory Field Error Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sessions with mandatory-field validation errors</td>
+          <td class="mono">Sessions that started listing creation</td>
+          <td class="mono">EXPRESS_LISTINGS_BASE_PT (error_code filter)<br><span style="color:#6f6f6f">Alert: &gt;10%</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Category Restriction Error Rate</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sessions with category-restriction errors during event creation</td>
+          <td class="mono">Sessions that opened event creation form</td>
+          <td class="mono">EVENT_CREATION_BASE_PT (error_code filter)<br><span style="color:#6f6f6f">Alert: &gt;5%</span></td>
+        </tr>
+
+        <!-- Availability note -->
+        <tr>
+          <td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
+            <strong style="color:#525252">Data availability:</strong>
+            Base tables (EVENT_CREATION_BASE_PT, EXPRESS_LISTINGS_BASE_PT, EXPRESS_LISTING_COMPLETION_RATE_T, EVENT_COMPLETION_RATE_T) retain a rolling <strong>7-day</strong> window via daily DELETE + INSERT.
+            LISTING_ADOPTION_T and EVENT_FORM_NAV_BASE_PT are full-refresh tables populated on a daily schedule.
+            All rates use <strong>SUM(numerator) / SUM(denominator)</strong> aggregation — never an average of rates.
+            <span style="color:#da1e28">⚠ error_code</span> is not yet instrumented in listing or event base tables; error-rate metrics will show 0% until instrumentation is added.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
