@@ -531,12 +531,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Event Error Rate</div>
-      <div class="kpi-value">3.2% <span class="badge g">▼ 22.0%</span></div>
+      <div class="kpi-value" style="color:#8d8d8d;font-size:13px;font-style:italic">Pending instrumentation</div>
       <div class="kpi-guard">⚠ Errors / Event Starts</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Listing Error Rate</div>
-      <div class="kpi-value">5.1% <span class="badge g">▼ 17.7%</span></div>
+      <div class="kpi-value" style="color:#8d8d8d;font-size:13px;font-style:italic">Pending instrumentation</div>
       <div class="kpi-guard">⚠ Errors / Listing Starts</div>
     </div>
   </div>
@@ -546,7 +546,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div id="ch-ps-recos" style="height:150px"></div>
     </div>
     <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Error Rates (Guardrails)</div>
+      <div class="chart-pane-title">Error Rates (Guardrails) <span style="font-weight:400;color:#8d8d8d;font-style:italic">— pending instrumentation</span></div>
       <div id="ch-ps-errors" style="height:150px"></div>
     </div>
   </div>
@@ -557,15 +557,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   </div>
   <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
     <table class="tbl">
-      <thead><tr><th>Metric</th><th>Definition</th><th>Current Value</th><th>Priority</th><th>Alert Threshold</th></tr></thead>
+      <thead><tr><th>Metric</th><th>Definition</th><th>Current Value</th><th>Alert Threshold</th></tr></thead>
       <tbody>
-        <tr><td class="fw6">Draft Save Rate</td><td class="mono">Drafts Saved / Event Starts</td><td class="fw6">44%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">—</td></tr>
-        <tr><td class="fw6">Draft → Publish Conversion</td><td class="mono">Published Drafts / Drafts Saved</td><td class="fw6">71%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&lt;60% alert</td></tr>
-        <tr><td class="fw6">Updates Before Publish (Event)</td><td class="mono">Avg edits before publish</td><td class="fw6">2.4 edits</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;5 edits</td></tr>
-        <tr><td class="fw6">Category Override Rate</td><td class="mono">Overrides / Recommendations</td><td class="fw6" style="color:#da1e28">72.4% ⚠</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
-        <tr><td class="fw6">Shipping Policy Override Rate</td><td class="mono">Overrides / Recommendations shown</td><td class="fw6" style="color:#da1e28">44.8% ⚠</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
-        <tr><td class="fw6">Mandatory Field Error Rate</td><td class="mono">Validation Errors / Listing Starts</td><td class="fw6">5.1%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;10%</td></tr>
-        <tr><td class="fw6">Category Restriction Error Rate</td><td class="mono">Restricted cat. errors / Event Starts</td><td class="fw6">1.8%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td style="color:#a2191f;font-size:10px">&gt;5%</td></tr>
+        <tr><td class="fw6">Draft Save Rate</td><td class="mono">Drafts Saved / Event Starts</td><td class="fw6">44%</td><td style="color:#a2191f;font-size:10px">—</td></tr>
+        <tr><td class="fw6">Draft → Publish Conversion</td><td class="mono">Published Drafts / Drafts Saved</td><td class="fw6">71%</td><td style="color:#a2191f;font-size:10px">&lt;60% alert</td></tr>
+        <tr><td class="fw6">Updates Before Publish (Event)</td><td class="mono">Avg edits before publish</td><td class="fw6">2.4 edits</td><td style="color:#a2191f;font-size:10px">&gt;5 edits</td></tr>
+        <tr><td class="fw6">Category Override Rate</td><td class="mono">Overrides / Recommendations</td><td class="fw6" style="color:#da1e28">72.4% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
+        <tr><td class="fw6">Shipping Policy Override Rate</td><td class="mono">Overrides / Recommendations shown</td><td class="fw6" style="color:#da1e28">44.8% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
+        <tr><td class="fw6">Mandatory Field Error Rate</td><td class="mono">Validation Errors / Listing Starts</td><td class="fw6" style="color:#8d8d8d;font-style:italic">Pending instrumentation</td><td style="color:#a2191f;font-size:10px">&gt;10%</td></tr>
+        <tr><td class="fw6">Category Restriction Error Rate</td><td class="mono">Restricted cat. errors / Event Starts</td><td class="fw6" style="color:#8d8d8d;font-style:italic">Pending instrumentation</td><td style="color:#a2191f;font-size:10px">&gt;5%</td></tr>
       </tbody>
     </table>
   </div>
