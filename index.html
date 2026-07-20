@@ -532,7 +532,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div style="background:#e0e0e0;margin-bottom:1px">
     <div class="card-head" style="margin:0"><span class="card-title">Pre-Stream — L0 North Star &amp; P0 Metrics</span><span class="card-sub">Owner: Namita Sharma · Analytics: Karthikeya Purohit</span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile north-star">
       <div class="kpi-label">Seller Setup Success Rate <span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></div>
       <div class="kpi-value xl">45% <span class="badge g">▲ +5pp (+12.5%)</span></div>
@@ -546,13 +546,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-note">Ramp: &gt;50% ✓ · GA: &gt;75%</div>
     </div>
     <div class="kpi-tile">
+      <div class="kpi-label">Event Completion Time <span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></div>
+      <div class="kpi-value"><span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
+      <div class="kpi-count">P50 · P90 · min from CTA → publish</div>
+      <div class="kpi-note">SQL: pre_stream_metrics.sql §8A · Source: COMPLETION_TIME_FINAL_T</div>
+    </div>
+    <div class="kpi-tile">
       <div class="kpi-label">Listing Readiness Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
       <div class="kpi-value">48% <span class="badge g">▲ +4pp (+9.1%)</span></div>
       <div class="kpi-count">55 of 115 LPG sellers</div>
       <div class="kpi-note">Ramp: &gt;50% · GA: &gt;75%</div>
     </div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-top:1px">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-top:1px">
+    <div class="kpi-tile">
+      <div class="kpi-label">Listing Completion Time <span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></div>
+      <div class="kpi-value"><span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
+      <div class="kpi-count">P50 · P90 · min from CTA → listing created</div>
+      <div class="kpi-note">SQL: pre_stream_metrics.sql §8C · express vs non-express split available</div>
+    </div>
     <div class="kpi-tile">
       <div class="kpi-label">First Show Ready Rate <span class="badge-sm" style="background:#24a148;color:#fff">P0</span></div>
       <div class="kpi-value">29% <span class="badge g">▲ +3pp (+11.5%)</span></div>
