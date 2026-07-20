@@ -572,9 +572,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 
   <!-- Metric Definitions -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
-    <div class="card-head" style="margin:0"><span class="card-title">Metric Definitions — Pre-Stream</span><span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span></div>
+    <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('ps-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.ps-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
+      <span class="card-title">Metric Definitions — Pre-Stream</span>
+      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
+      <span class="ps-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
+    </div>
   </div>
-  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
+  <div id="ps-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
     <table class="tbl">
       <thead>
         <tr>
