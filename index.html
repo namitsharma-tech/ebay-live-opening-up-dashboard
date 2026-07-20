@@ -111,10 +111,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 /* Section label */
 .sect-sub{font-size:10px;font-weight:700;color:#0f62fe;padding:8px 0 6px;text-transform:uppercase;letter-spacing:.06em}
 
+/* Filter bar */
+.filter-bar{display:flex;align-items:center;gap:10px;padding:7px 24px;background:#fff;border-bottom:2px solid #e0e0e0;flex-wrap:wrap;position:sticky;top:49px;z-index:40}
+.filter-label{font-size:9px;font-weight:700;color:#525252;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;padding-right:4px}
+.filter-group{display:flex;align-items:center;gap:5px}
+.filter-lbl{font-size:10px;color:#6f6f6f;white-space:nowrap}
+.filter-sel{font-size:11px;color:#161616;border:1px solid #8d8d8d;background:#fff;padding:3px 22px 3px 7px;font-family:inherit;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238d8d8d'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;min-width:90px}
+.filter-sel:focus{outline:2px solid #0f62fe;outline-offset:-2px}
+.filter-sel.active-filter{border-color:#0f62fe;color:#0f62fe;font-weight:600;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%230f62fe'/%3E%3C/svg%3E")}
+.filter-divider{width:1px;height:18px;background:#e0e0e0;margin:0 2px}
+.filter-reset{font-size:10px;font-weight:600;color:#0f62fe;background:transparent;border:1px solid #0f62fe;padding:3px 10px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.filter-reset:hover{background:#e8f0fe}
+.filter-active-pill{font-size:10px;font-weight:600;color:#0353e9;background:#e8f0fe;padding:2px 8px;border:1px solid #a6c8ff;white-space:nowrap}
+.filter-note{font-size:9px;color:#8d8d8d;margin-left:auto;white-space:nowrap}
+
 /* Print */
 @media print{
   .hdr{position:relative}
   .tab-btn,.grain-btn{display:none}
+  .filter-bar{display:none}
   .section{display:block!important}
   .section:not(.active){page-break-before:always}
 }
@@ -136,13 +151,66 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <button class="tab-btn" onclick="showTab('poststream')">Post-Stream</button>
   </nav>
   <div class="grain-toggle">
-    <button class="grain-btn active" onclick="setGrain('Weekly',this)">Weekly</button>
+    <button class="grain-btn active" onclick="setGrain('Daily',this)">Daily</button>
+    <button class="grain-btn" onclick="setGrain('Weekly',this)">Weekly</button>
     <button class="grain-btn" onclick="setGrain('Monthly',this)">Monthly</button>
   </div>
 </header>
 
+<!-- ═══ FILTER BAR ══════════════════════════════════════════════════════════ -->
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">Filter</span>
+  <div class="filter-divider"></div>
+
+  <div class="filter-group">
+    <label class="filter-lbl" for="f-geo">Geography</label>
+    <select class="filter-sel" id="f-geo" onchange="applyFilters()">
+      <option value="all">All Regions</option>
+      <option value="us">United States</option>
+      <option value="uk">United Kingdom</option>
+      <option value="de">Germany</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-lbl" for="f-phase">Launch Phase</label>
+    <select class="filter-sel" id="f-phase" onchange="applyFilters()">
+      <option value="all">All Phases</option>
+      <option value="alpha">Alpha</option>
+      <option value="ramp">Ramp</option>
+      <option value="ga">GA</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-lbl" for="f-cat">Category</label>
+    <select class="filter-sel" id="f-cat" onchange="applyFilters()">
+      <option value="all">All Categories</option>
+      <option value="electronics">Electronics</option>
+      <option value="fashion">Fashion</option>
+      <option value="home">Home &amp; Garden</option>
+      <option value="sports">Sports</option>
+      <option value="collectibles">Collectibles</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-lbl" for="f-tier">Seller Tier</label>
+    <select class="filter-sel" id="f-tier" onchange="applyFilters()">
+      <option value="all">All Tiers</option>
+      <option value="t1">T1 — Top Sellers</option>
+      <option value="t2">T2 — Mid-Tier</option>
+      <option value="t3">T3 — New Sellers</option>
+    </select>
+  </div>
+
+  <div class="filter-divider"></div>
+  <button class="filter-reset" id="filter-reset-btn" onclick="resetFilters()" style="display:none">✕ Reset filters</button>
+  <span class="filter-note" id="filter-note">⏳ Filters apply once live data is available</span>
+</div>
+
 <div class="main">
-  <div class="breadcrumb" id="bc">Executive · Alpha cohort · As of 2026-07-09 · Weekly</div>
+  <div class="breadcrumb" id="bc">Executive · Alpha cohort · As of 2026-07-09 · Daily</div>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
      EXECUTIVE TAB
@@ -1479,7 +1547,7 @@ function showTab(tab) {
   setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
 }
 
-let activeGrain = 'Weekly';
+let activeGrain = 'Daily';
 function setGrain(g, btn) {
   document.querySelectorAll('.grain-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -1487,9 +1555,74 @@ function setGrain(g, btn) {
   updateBreadcrumb();
 }
 
+// ─── Filters ───────────────────────────────────────────────────────────────
+const FILTER_LABELS = {
+  geo:   {all:'All Regions',us:'United States',uk:'United Kingdom',de:'Germany'},
+  phase: {all:'All Phases',alpha:'Alpha',ramp:'Ramp',ga:'GA'},
+  cat:   {all:'All Categories',electronics:'Electronics',fashion:'Fashion',home:'Home & Garden',sports:'Sports',collectibles:'Collectibles'},
+  tier:  {all:'All Tiers',t1:'T1',t2:'T2',t3:'T3'}
+};
+
+function getFilterState() {
+  return {
+    geo:   document.getElementById('f-geo').value,
+    phase: document.getElementById('f-phase').value,
+    cat:   document.getElementById('f-cat').value,
+    tier:  document.getElementById('f-tier').value
+  };
+}
+
+function applyFilters() {
+  const f = getFilterState();
+  const isFiltered = f.geo!=='all'||f.phase!=='all'||f.cat!=='all'||f.tier!=='all';
+
+  // Highlight active selects
+  ['f-geo','f-phase','f-cat','f-tier'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.classList.toggle('active-filter', el.value!=='all');
+  });
+
+  // Show/hide reset button
+  document.getElementById('filter-reset-btn').style.display = isFiltered ? 'inline-block' : 'none';
+
+  // Update note to active filter summary when filtered
+  const parts = [];
+  if(f.geo!=='all')   parts.push(FILTER_LABELS.geo[f.geo]);
+  if(f.phase!=='all') parts.push(FILTER_LABELS.phase[f.phase]);
+  if(f.cat!=='all')   parts.push(FILTER_LABELS.cat[f.cat]);
+  if(f.tier!=='all')  parts.push(FILTER_LABELS.tier[f.tier]);
+  const note = document.getElementById('filter-note');
+  note.textContent = isFiltered
+    ? '⚠ Showing: '+parts.join(' · ')+'  —  data pending live instrumentation'
+    : '⏳ Filters apply once live data is available';
+  note.style.color = isFiltered ? '#0353e9' : '#8d8d8d';
+  note.style.fontWeight = isFiltered ? '600' : '400';
+
+  updateBreadcrumb();
+}
+
+function resetFilters() {
+  ['f-geo','f-phase','f-cat','f-tier'].forEach(id=>{
+    document.getElementById(id).value='all';
+    document.getElementById(id).classList.remove('active-filter');
+  });
+  document.getElementById('filter-reset-btn').style.display='none';
+  const note = document.getElementById('filter-note');
+  note.textContent = '⏳ Filters apply once live data is available';
+  note.style.color = '#8d8d8d';
+  note.style.fontWeight = '400';
+  updateBreadcrumb();
+}
+
 function updateBreadcrumb(){
   const tabName = {executive:'Executive',registration:'Registration',prestream:'Pre-Stream',instream:'In-Stream',poststream:'Post-Stream'}[activeTab];
-  document.getElementById('bc').textContent = tabName+' · Alpha cohort · As of 2026-07-09 · '+activeGrain;
+  const f = getFilterState();
+  const parts = [tabName,'Alpha cohort','As of 2026-07-09',activeGrain];
+  if(f.geo!=='all')   parts.push(FILTER_LABELS.geo[f.geo]);
+  if(f.phase!=='all') parts.push(FILTER_LABELS.phase[f.phase]);
+  if(f.cat!=='all')   parts.push(FILTER_LABELS.cat[f.cat]);
+  if(f.tier!=='all')  parts.push(FILTER_LABELS.tier[f.tier]);
+  document.getElementById('bc').textContent = parts.join(' · ');
 }
 
 // ─── Init charts ───────────────────────────────────────────────────────────
