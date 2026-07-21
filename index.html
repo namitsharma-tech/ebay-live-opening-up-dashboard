@@ -1569,6 +1569,7 @@ function showTab(tab) {
   document.getElementById('tab-'+tab).classList.add('active');
   event.target.classList.add('active');
   activeTab = tab;
+  if (tab === 'prestream') renderPreStream();
   updateBreadcrumb();
   setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
 }
@@ -1578,7 +1579,7 @@ function setGrain(g, btn) {
   document.querySelectorAll('.grain-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   activeGrain = g;
-  if (activeTab === 'prestream') renderPreStream();
+  renderPreStream();
   updateBreadcrumb();
 }
 
@@ -2101,6 +2102,8 @@ window.addEventListener('DOMContentLoaded', () => {
     {n:'21-Day Retention Rate %',d:D.ps2_retention_21d,c:'#0f62fe'},
     {n:'21-Day Churn Rate %',d:D.ps2_churn_21d,c:'#da1e28'}
   ],'%',[{n:'Retention GA target (70%)',v:70,c:'#24a148'},{n:'Churn hard stop (30%)',v:30,c:'#da1e28'}]);
+
+  renderPreStream();
 });
 </script>
 </body>
