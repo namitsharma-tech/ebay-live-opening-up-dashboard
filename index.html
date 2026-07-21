@@ -735,14 +735,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
           <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
           <td class="mono">Sellers who published ≥1 Live event</td>
           <td class="mono">Studio-activated sellers</td>
-          <td class="mono">LIVE_SELLER_MASTER_V2 × COMPLETION_RATE_FINAL_T</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × SELLER_FIRST_SHOW_FUNNEL</td>
         </tr>
         <tr>
           <td class="fw6">Listing Readiness Rate</td>
           <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
           <td class="mono">Sellers with ≥1 listing attached to a live event</td>
           <td class="mono">Studio-activated sellers</td>
-          <td class="mono">LIVE_SELLER_MASTER_V2 × LISTING_ADOPTION_T</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × SELLER_FIRST_SHOW_FUNNEL</td>
         </tr>
         <tr>
           <td class="fw6">First Show Ready Rate</td>
@@ -765,27 +765,53 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
         </tr>
         <tr>
           <td class="fw6">Event Completion Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
           <td class="mono">Studio-activated sellers who published ≥1 event</td>
           <td class="mono">Studio-activated sellers</td>
-          <td class="mono">LIVE_SELLER_MASTER_V2 × COMPLETION_RATE_FINAL_T</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × SELLER_FIRST_SHOW_FUNNEL<br><span style="color:#6f6f6f">= Event Creation Rate (same signal, quality view)</span></td>
         </tr>
         <tr>
           <td class="fw6">Event Abandonment Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Studio-activated sellers who did NOT publish</td>
+          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
+          <td class="mono">Studio-activated sellers who did NOT publish an event</td>
           <td class="mono">Studio-activated sellers</td>
           <td class="mono">= 1 − Event Completion Rate</td>
+        </tr>
+        <tr>
+          <td class="fw6">Event Completion Time</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">P50 / P90 minutes from CTA click → event published</td>
+          <td class="mono">Sessions (not seller-deduplicated)</td>
+          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Event Completion Time' · static snapshot</span></td>
+        </tr>
+
+        <!-- Supplemental (static) -->
+        <tr>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Supplemental (Static — not yet on v2 cohort)</td>
+        </tr>
+        <tr>
+          <td class="fw6">Listing Completion Time</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">P50 minutes from CTA click → listing created via Express Listing</td>
+          <td class="mono">Express Listing sessions (53 total — limited data)</td>
+          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Listing Completion Time' · static snapshot</span></td>
+        </tr>
+        <tr>
+          <td class="fw6">Express Listing Adoption</td>
+          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
+          <td class="mono">Sellers who used Express Listing ≥1 time</td>
+          <td class="mono">All LPG-onboarded sellers (old cohort · 2,366)</td>
+          <td class="mono">LISTING_ADOPTION_T<br><span style="color:#f1c21b;font-weight:700">⚠ Uses LPG cohort denominator · not yet migrated to v2</span></td>
         </tr>
 
         <!-- Availability note -->
         <tr>
           <td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
             <strong style="color:#525252">Data source (v2):</strong>
-            Denominator = sellers with <strong>activated_studio = 1</strong> in LIVE_SELLER_MASTER_V2 (latest snapshot).
-            Funnel steps from SELLER_FIRST_SHOW_FUNNEL (all-time; not rolling-window deflated).
-            Event creation from COMPLETION_RATE_FINAL_T (metric_name = 'Event Completion Rate', numerator &gt; 0).
-            Filters: geography · launch_phase · category · gmv_tier · onboarding_method · seller_background from LIVE_SELLER_UNIFIED_ONBOARDING_DIM.
+            Denominator for all funnel &amp; quality metrics = sellers with <strong>activated_studio = 1</strong> in LIVE_SELLER_MASTER_V2 (latest snapshot · 72 sellers · US + Unknown geo).
+            All funnel steps from SELLER_FIRST_SHOW_FUNNEL joined to LIVE_SELLER_MASTER_V2.
+            Dimensional filters (geo · phase · category · tier · onboarding_method · seller_background) joined from LIVE_SELLER_UNIFIED_ONBOARDING_DIM.
+            Static tiles (completion times, express listing adoption) retain old LPG-cohort sources pending v2 migration.
           </td>
         </tr>
       </tbody>
