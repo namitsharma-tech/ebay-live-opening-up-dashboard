@@ -421,94 +421,68 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 <div id="tab-registration" class="section">
 
   <div style="background:#e0e0e0;margin-bottom:1px">
-    <div class="card-head" style="margin:0"><span class="card-title">Registration — P0 Metrics (L0 North Stars)</span><span class="card-sub">Owner: Sahaj Cheema · Analytics: Roger Yu</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Registration — Onboarding Funnel</span><span class="card-sub">Source: LIVE_SELLER_MASTER_V2 × LIVE_SELLER_UNIFIED_ONBOARDING_DIM · Geo / tier / phase filters active</span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+
+  <!-- KPI tiles -->
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
-      <div class="kpi-label">Live Privilege Granted Rate</div>
-      <div class="kpi-value">58% <span class="badge r">▼ -2pp (-3.3%)</span></div>
-      <div class="kpi-count">115 of 198 apps approved</div>
-      <div class="kpi-note">Target: ≥60% (Ramp &amp; GA)</div>
-      <div class="kpi-guard">⚠ Guardrail: Below threshold = program blocker</div>
+      <div class="kpi-label">LPG Rate</div>
+      <div class="kpi-value xl" id="reg-lpg-rate">—</div>
+      <div class="kpi-count" id="reg-lpg-cnt">—</div>
+      <div class="kpi-note">Studio Activated / Account Created</div>
+      <div class="kpi-guard">⚠ Guardrail: Below 60% = program blocker</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Account Creation Rate</div>
-      <div class="kpi-value">82% <span class="badge g">▲ +2pp (+2.5%)</span></div>
-      <div class="kpi-count">261 of 320 GUIDs entered</div>
-      <div class="kpi-note">Target: ≥75%</div>
+      <div class="kpi-label">Event Creation Rate</div>
+      <div class="kpi-value" id="reg-ec-rate">—</div>
+      <div class="kpi-count" id="reg-ec-cnt">—</div>
+      <div class="kpi-note">First Event Created / LPG Granted</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Streaming Registration Rate</div>
-      <div class="kpi-value">76% <span class="badge g">▲ +1pp (+1.3%)</span></div>
-      <div class="kpi-count">150 of 198 accounts submitted</div>
-      <div class="kpi-note">App submitted / account created · abandonment &lt;30%</div>
+      <div class="kpi-label">Listing Readiness Rate</div>
+      <div class="kpi-value" id="reg-ls-rate">—</div>
+      <div class="kpi-count" id="reg-ls-cnt">—</div>
+      <div class="kpi-note">First Listing Created / LPG Granted</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Median Approval Time</div>
-      <div class="kpi-value">1.8h <span class="badge g">▼ -0.3h (-14.3%)</span></div>
-      <div class="kpi-count">115 sellers approved · lower is better</div>
-      <div class="kpi-note">Target: &lt;2 hrs</div>
-      <div class="kpi-guard">⚠ Guardrail: Alert if &gt;3 hrs (baseline: 1.6 hrs)</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Manual Review Rate</div>
-      <div class="kpi-value">25% <span class="badge g">▼ -3pp (-10.7%)</span></div>
-      <div class="kpi-count">50 of 198 applications flagged</div>
-      <div class="kpi-note">Lower is better</div>
-      <div class="kpi-guard">⚠ Guardrail: Alert if &gt;30%</div>
+      <div class="kpi-label">First Show Rate</div>
+      <div class="kpi-value" id="reg-fs-rate">—</div>
+      <div class="kpi-count" id="reg-fs-cnt">—</div>
+      <div class="kpi-note">First Show / LPG Granted</div>
     </div>
   </div>
 
   <!-- Funnel -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Registration Funnel — Cohort Week Jun-30</span><span class="card-sub">User-id level · GUID-level for Account Creation</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Onboarding Funnel</span><span class="card-sub" id="reg-fn-label">—</span></div>
   </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0">
-    <div style="background:#fff;padding:16px">
-      <div class="funnel">
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>GUIDs Entered Flow</span><span>320 sellers (100%)</span></div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
-        </div>
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>Account Created</span><span>261 sellers — 81.6% of GUIDs</span></div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:81.6%;background:#0353e9">82%</div></div>
-          <div class="funnel-conv">↓ 81.6% conversion from GUIDs</div>
-        </div>
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>Streaming App Submitted</span><span>198 sellers — 75.9% of Accounts</span></div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:61.9%;background:#0043ce">62%</div></div>
-          <div class="funnel-conv">↓ 75.9% conversion from Accounts</div>
-        </div>
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>Live Privilege Granted</span><span>115 sellers — 58.1% of Submitted</span></div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:35.9%;background:#002d9c">36%</div></div>
-          <div class="funnel-conv">↓ 58.1% conversion from Submitted</div>
-        </div>
+  <div style="background:#fff;padding:16px 20px">
+    <div class="funnel">
+      <div class="funnel-row">
+        <div class="funnel-meta"><span>Account Created</span><span id="reg-fn-ac">—</span></div>
+        <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
       </div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Registration Funnel — Seller Counts</div>
-      <div id="ch-reg-funnel" style="height:220px"></div>
-    </div>
-  </div>
-
-  <!-- Trend charts -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Registration Trends — by Cohort Week</span></div>
-  </div>
-  <div class="g3" style="gap:1px;background:#e0e0e0;margin-bottom:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">LPG Rate — Target 60%</div>
-      <div id="ch-reg-lpg" style="height:170px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Median Approval Time (hrs)</div>
-      <div id="ch-reg-approval" style="height:170px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Manual Review Rate — Guardrail 30%</div>
-      <div id="ch-reg-manual" style="height:170px"></div>
+      <div class="funnel-row">
+        <div class="funnel-meta"><span>Studio Activated (LPG)</span><span id="reg-fn-lpg-lbl">—</span></div>
+        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-lpg-bar" style="background:#0353e9;min-width:2px"> </div></div>
+        <div class="funnel-conv" id="reg-fn-lpg-conv">—</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-meta"><span>First Event Created</span><span id="reg-fn-ev-lbl">—</span></div>
+        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-ev-bar" style="background:#0043ce;min-width:2px"> </div></div>
+        <div class="funnel-conv" id="reg-fn-ev-conv">—</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-meta"><span>First Listing Created</span><span id="reg-fn-ls-lbl">—</span></div>
+        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-ls-bar" style="background:#002d9c;min-width:2px"> </div></div>
+        <div class="funnel-conv" id="reg-fn-ls-conv">—</div>
+      </div>
+      <div class="funnel-row">
+        <div class="funnel-meta"><span>First Show</span><span id="reg-fn-fs-lbl">—</span></div>
+        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-fs-bar" style="background:#001d6c;min-width:2px"> </div></div>
+        <div class="funnel-conv" id="reg-fn-fs-conv">—</div>
+      </div>
     </div>
   </div>
 
@@ -520,10 +494,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <table class="tbl">
       <thead><tr><th>Step</th><th>Metric</th><th>Median Target</th><th>P90 Target</th><th>Guardrail</th></tr></thead>
       <tbody>
-        <tr><td class="fw6">GUID → Account Created</td><td>Account Creation Rate (guid-level)</td><td style="color:#0e6027;font-weight:600">&lt;3 min</td><td>≤30 min</td><td style="color:#a2191f;font-size:10px">P90 &gt;30 min alert</td></tr>
-        <tr><td class="fw6">Account → App Submitted</td><td>Streaming Registration Rate (user_id-level)</td><td style="color:#0e6027;font-weight:600">&lt;3 hrs</td><td>≤14 days</td><td style="color:#a2191f;font-size:10px">Abandonment &gt;30%</td></tr>
-        <tr><td class="fw6">App Submitted → Studio Activated (LPG)</td><td>LPG / Approval Rate</td><td style="color:#0e6027;font-weight:600">&lt;2 hrs median</td><td>≤5 days P90</td><td style="color:#a2191f;font-size:10px">Manual review &gt;30% · Approval time &gt;3 hrs</td></tr>
-        <tr><td class="fw6">Studio Activated → First Show</td><td>Approval-to-First-Show Rate</td><td style="color:#0e6027;font-weight:600">&lt;10 days median</td><td>≤21 days P75</td><td style="color:#a2191f;font-size:10px">Drop-off rate &gt;26.2% (historical baseline)</td></tr>
+        <tr><td class="fw6">Account Created → Studio Activated (LPG)</td><td>LPG Rate</td><td style="color:#0e6027;font-weight:600">≥60%</td><td>—</td><td style="color:#a2191f;font-size:10px">Below 60% = program blocker</td></tr>
+        <tr><td class="fw6">Studio Activated → First Event</td><td>Event Creation Rate</td><td style="color:#0e6027;font-weight:600">—</td><td>—</td><td>—</td></tr>
+        <tr><td class="fw6">Studio Activated → First Listing</td><td>Listing Readiness Rate</td><td style="color:#0e6027;font-weight:600">—</td><td>—</td><td>—</td></tr>
+        <tr><td class="fw6">Studio Activated → First Show</td><td>First Show Rate</td><td style="color:#0e6027;font-weight:600">&lt;10 days median</td><td>≤21 days P75</td><td style="color:#a2191f;font-size:10px">Drop-off &gt;26.2% (historical baseline)</td></tr>
       </tbody>
     </table>
   </div>
@@ -532,32 +506,30 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
     <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('reg-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.reg-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
       <span class="card-title">Metric Definitions — Registration</span>
-      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
+      <span class="card-sub">Source tables &amp; computation rules</span>
       <span class="reg-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
     </div>
   </div>
   <div id="reg-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
     <table class="tbl">
       <thead>
-        <tr><th style="width:18%">Metric</th><th style="width:6%">Priority</th><th style="width:24%">Formula</th><th style="width:8%">Status</th><th style="width:24%">Source (LIVE_SELLER_MASTER_V2)</th><th style="width:20%">Notes</th></tr>
+        <tr><th style="width:20%">Metric</th><th style="width:8%">Priority</th><th style="width:28%">Formula</th><th style="width:8%">Status</th><th style="width:36%">Source</th></tr>
       </thead>
       <tbody>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L0 North Star</td></tr>
-        <tr><td class="fw6">Live Privilege Granted Rate (LPG)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(activated_studio) / cohort_size</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q2: lpg_rate (cohort_size = account_created)</td><td class="mono" style="color:#da1e28">⚠ Dashboard uses LPG/submitted; Q2 uses LPG/cohort — denominator differs</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P0 Funnel Steps</td></tr>
-        <tr><td class="fw6">Account Creation Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">n_acct_created / total_in_funnel</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_acct_created, total_in_funnel</td><td class="mono" style="color:#6f6f6f">GUID-level denominator</td></tr>
-        <tr><td class="fw6">Streaming Registration Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">SUM(streaming_app_submitted_ts IS NOT NULL) / n_acct_created</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q2: streaming_app_submitted_ts, account_created_ts</td><td class="mono" style="color:#6f6f6f">Derivable — not a named column but columns exist</td></tr>
-        <tr><td class="fw6">Median Approval Time</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">PERCENTILE(minutes_submitted_to_activated, 0.5) / 60.0</td><td><span style="font-size:10px;color:#da1e28;font-weight:700">⚠ Conflict</span></td><td class="mono">Q2: minutes_submitted_to_activated</td><td class="mono" style="color:#da1e28">Actual data: 0.8–2.1 min (instant). Dashboard shows 1.8h — tile will show ~1 min when live</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P1 Diagnostics</td></tr>
-        <tr><td class="fw6">Manual Review Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td class="mono">Queue depth from USER_FUNNEL + TUV join / total submitted</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">Q4 secondary (USER_FUNNEL × TUV join — not in MASTER directly)</td><td class="mono" style="color:#6f6f6f">Q4 gives queue depth count; rate denominator needs additional join</td></tr>
-        <tr><td colspan="6" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
-          <strong style="color:#525252">Source:</strong> All ready metrics query <span style="font-family:monospace">P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2</span>. Required filter: <span style="font-family:monospace">WHERE report_dt = DATE_FORMAT(CURRENT_DATE(),'yyyy-MM-dd') AND is_test_user = 0</span>. Account Creation Rate grain: GUID-level; all downstream metrics: user_id (seller) level. &nbsp;|&nbsp; <strong style="color:#da1e28">Approval time conflict:</strong> Data guide confirms 0.8–2.1 min (automated) — dashboard target of "&lt;2 hrs" may need revision.
-        </td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Live Metrics (LIVE_SELLER_MASTER_V2)</td></tr>
+        <tr><td class="fw6">LPG Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(activated_studio) / COUNT(*)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono">activated_studio=1 / account_created_ts IS NOT NULL</td></tr>
+        <tr><td class="fw6">Event Creation Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">n_first_event / n_lpg_granted</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono">first_event_created_ts IS NOT NULL (gated on activated_studio=1)</td></tr>
+        <tr><td class="fw6">Listing Readiness Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">n_first_listing / n_lpg_granted</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono">first_listing_created_ts IS NOT NULL (gated on activated_studio=1)</td></tr>
+        <tr><td class="fw6">First Show Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">n_first_show / n_lpg_granted</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono">first_show_date IS NOT NULL (gated on activated_studio=1)</td></tr>
+        <tr><td colspan="5" style="background:#fff8e1;padding:6px 12px;font-size:10px;font-weight:700;color:#7d4e00;text-transform:uppercase;letter-spacing:.06em">Pending Instrumentation</td></tr>
+        <tr><td class="fw6">Account Creation Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P0</span></td><td class="mono">n_acct_created / total_guids</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Pending</span></td><td class="mono">Needs GUID-level denominator not in MASTER_V2</td></tr>
+        <tr><td class="fw6">Median Approval Time</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P0</span></td><td class="mono">PERCENTILE(min_submitted_to_activated, 0.5)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Pending</span></td><td class="mono">minutes_submitted_to_activated — median not aggregatable client-side</td></tr>
+        <tr><td class="fw6">Manual Review Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td><td class="mono">n_flagged / n_submitted</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Pending</span></td><td class="mono">Requires USER_FUNNEL × TUV join — not in MASTER_V2</td></tr>
+        <tr><td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b"><strong>Filters:</strong> geo, tier, phase apply. Category filter uses different naming in MASTER_V2 and is excluded. Method / seller-background not available in registration data.</td></tr>
       </tbody>
     </table>
   </div>
 </div>
-
 <!-- ═══════════════════════════════════════════════════════════════════════
      PRE-STREAM TAB
 ════════════════════════════════════════════════════════════════════════ -->
@@ -1488,6 +1460,7 @@ function showTab(tab) {
   document.getElementById('tab-'+tab).classList.add('active');
   event.target.classList.add('active');
   activeTab = tab;
+  if (tab === 'registration') renderRegistration();
   if (tab === 'prestream') renderPreStream();
   if (tab === 'instream') renderInStream();
   updateBreadcrumb();
@@ -1499,14 +1472,153 @@ function setGrain(g, btn) {
   document.querySelectorAll('.grain-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   activeGrain = g;
+  if (activeTab === 'registration') renderRegistration();
   if (activeTab === 'prestream') renderPreStream();
   if (activeTab === 'instream') renderInStream();
   updateBreadcrumb();
 }
 
 // ─── Pre-Stream data (v2 · LIVE_SELLER_MASTER_V2 · activated_studio=1) ───────
-// ─── Pre-Stream data (v2 · LIVE_SELLER_MASTER_V2 · activated_studio=1) ───────
 // Section 2 of pre_stream_metrics_v2.sql · latest snapshot 2026-07-19
+// ─── Registration funnel data (LIVE_SELLER_MASTER_V2 × LIVE_SELLER_UNIFIED_ONBOARDING_DIM) ──
+const REG_DATA = [
+  {tp:'Daily',cp:'2026-05-27',cat:'Trading Cards STC',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-28',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-29',cat:'Apparel',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-29',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-29',cat:'Other Collectibles',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-29',cat:'Trading Cards CCG',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-29',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-29',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-30',cat:'Apparel',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-30',cat:'Health and Beauty',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-30',cat:'Trading Cards CCG',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-31',cat:'Other',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-05-31',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-06-02',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-06-02',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-06-02',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-06-02',cat:'Toys',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-06-02',cat:'Trading Cards STC',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-06-03',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-06-04',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-09',cat:'Coins and Bullions',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-09',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-09',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-10',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-10',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Coins and Bullions',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:4,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:4,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:4,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Toys and Funko',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:5,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Watches and Jewelry',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-13',cat:'Watches and Jewelry',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-14',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-14',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:4,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-14',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-14',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-14',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-14',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:3,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-14',cat:'Watches and Jewelry',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Electronics',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Toys and Funko',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:5,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Daily',cp:'2026-07-15',cat:'Watches and Jewelry',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Apparel',geo:'US',tier:'T3',phase:'Rest',n_ac:2,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Health and Beauty',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Other',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Other Collectibles',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Trading Cards CCG',geo:'US',tier:'T3',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Trading Cards STC',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:3,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-05',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-06',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-06',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-06',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-06',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-06',cat:'Toys',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-06',cat:'Trading Cards STC',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-06',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Coins and Bullions',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Coins and Bullions',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:8,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:7,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Electronics',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:5,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:8,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Toys and Funko',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Toys and Funko',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:3,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:16,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Watches and Jewelry',geo:'US',tier:'Unknown',phase:'Rest',n_ac:5,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Monthly',cp:'2026-07',cat:'Watches and Jewelry',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Apparel',geo:'US',tier:'T3',phase:'Rest',n_ac:2,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Coins and Bullions',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Coins and Bullions',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:10,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:8,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Electronics',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:6,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:9,n_lpg:5,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Health and Beauty',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Other',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Other Collectibles',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Toys',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Toys and Funko',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Toys and Funko',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Trading Cards CCG',geo:'US',tier:'T3',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Trading Cards STC',geo:'US',tier:'T3',phase:'Rest',n_ac:2,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:6,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:5,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:16,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Watches and Jewelry',geo:'US',tier:'Unknown',phase:'Rest',n_ac:5,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Overall',cp:'Overall',cat:'Watches and Jewelry',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Apparel',geo:'US',tier:'T3',phase:'Rest',n_ac:2,n_lpg:2,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Health and Beauty',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Other',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Other Collectibles',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Trading Cards CCG',geo:'US',tier:'T3',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Trading Cards STC',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:3,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-05-25',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-06-01',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-06-01',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-06-01',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-06-01',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-06-01',cat:'Toys',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-06-01',cat:'Trading Cards STC',geo:'US',tier:'T3',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-06-01',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-06',cat:'Coins and Bullions',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-06',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-06',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-06',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:3,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Coins and Bullions',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Collectibles',geo:'US',tier:'Unknown',phase:'Rest',n_ac:8,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Collectibles',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:6,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Electronics',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Fashion',geo:'US',tier:'Unknown',phase:'Rest',n_ac:5,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Fashion',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:8,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Toys and Funko',geo:'US',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Toys and Funko',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Unknown',geo:'US',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:0,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:2,n_lpg:1,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Unknown',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_ac:13,n_lpg:3,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Watches and Jewelry',geo:'US',tier:'Unknown',phase:'Rest',n_ac:5,n_lpg:4,n_ev:0,n_ls:0,n_fs:0},
+  {tp:'Weekly',cp:'2026-07-13',cat:'Watches and Jewelry',geo:'Unknown',tier:'Unknown',phase:'Rest',n_ac:1,n_lpg:0,n_ev:0,n_ls:0,n_fs:0}
+];
+
 // Columns: geo, phase, cat, tier, method, bg,
 //          s(setup_started), ec(event_created), lr(listing_ready),
 //          fsr(first_show_ready), s14(streamed_within_14d)
@@ -2127,6 +2239,115 @@ function fmt(n, d) {
   return p + '%';
 }
 
+function renderRegistration() {
+  const f = getFilterState();
+  // Get rows for active grain, then latest cohort period (except Overall)
+  const grainRows = REG_DATA.filter(r => r.tp === activeGrain);
+  const latestCp  = activeGrain === 'Overall' ? 'Overall'
+    : grainRows.reduce((mx,r) => r.cp > mx ? r.cp : mx, '');
+  const grainLabelMap = {
+    'Overall': 'All-time through ' + latestCp,
+    'Monthly': 'Cohort month ' + latestCp,
+    'Weekly':  'Cohort week starting ' + latestCp,
+    'Daily':   'Cohort day ' + latestCp
+  };
+  const label = grainLabelMap[activeGrain] || activeGrain;
+
+  // Apply geo / tier / phase only (cat values differ from filter bar; method/bg not in dataset)
+  const rows = grainRows.filter(r =>
+    r.cp === latestCp &&
+    (f.geo   === 'all' || r.geo   === f.geo)  &&
+    (f.tier  === 'all' || r.tier  === f.tier) &&
+    (f.phase === 'all' || r.phase === f.phase)
+  );
+
+  const a = rows.reduce((acc,r) => ({
+    n_ac:  acc.n_ac  + r.n_ac,
+    n_lpg: acc.n_lpg + r.n_lpg,
+    n_ev:  acc.n_ev  + r.n_ev,
+    n_ls:  acc.n_ls  + r.n_ls,
+    n_fs:  acc.n_fs  + r.n_fs,
+  }), {n_ac:0,n_lpg:0,n_ev:0,n_ls:0,n_fs:0});
+
+  function p1(n,d) { return d>0 ? (n/d*100).toFixed(1)+'%' : '—'; }
+  function cnt(n,d,lbl) { return d>0 ? n+' of '+d+' '+lbl+' · '+label : '0 · '+label; }
+  function bar(id,n,d,w_d) {
+    const pct = w_d>0 ? Math.min(100,n/w_d*100) : 0;
+    const el = document.getElementById(id);
+    if (el) { el.style.width = Math.max(pct,2)+'%'; el.textContent = pct.toFixed(1)+'%'; }
+  }
+
+  if (rows.length === 0) {
+    const msg = 'No data for selection';
+    ['reg-lpg-rate','reg-ec-rate','reg-ls-rate','reg-fs-rate'].forEach(id => {
+      const el=document.getElementById(id); if(el) el.textContent='—';
+    });
+    ['reg-lpg-cnt','reg-ec-cnt','reg-ls-cnt','reg-fs-cnt','reg-fn-ac',
+     'reg-fn-lpg-lbl','reg-fn-ev-lbl','reg-fn-ls-lbl','reg-fn-fs-lbl'].forEach(id => {
+      const el=document.getElementById(id); if(el) el.textContent=msg;
+    });
+    return;
+  }
+
+  // KPI tiles
+  const lpgEl = document.getElementById('reg-lpg-rate');
+  if (lpgEl) lpgEl.textContent = p1(a.n_lpg, a.n_ac);
+  const lpgEl2 = document.getElementById('reg-lpg-cnt');
+  if (lpgEl2) lpgEl2.textContent = cnt(a.n_lpg, a.n_ac, 'sellers activated');
+
+  const ecEl = document.getElementById('reg-ec-rate');
+  if (ecEl) ecEl.textContent = p1(a.n_ev, a.n_lpg);
+  const ecEl2 = document.getElementById('reg-ec-cnt');
+  if (ecEl2) ecEl2.textContent = cnt(a.n_ev, a.n_lpg, 'sellers with event');
+
+  const lsEl = document.getElementById('reg-ls-rate');
+  if (lsEl) lsEl.textContent = p1(a.n_ls, a.n_lpg);
+  const lsEl2 = document.getElementById('reg-ls-cnt');
+  if (lsEl2) lsEl2.textContent = cnt(a.n_ls, a.n_lpg, 'sellers with listing');
+
+  const fsEl = document.getElementById('reg-fs-rate');
+  if (fsEl) fsEl.textContent = p1(a.n_fs, a.n_lpg);
+  const fsEl2 = document.getElementById('reg-fs-cnt');
+  if (fsEl2) fsEl2.textContent = cnt(a.n_fs, a.n_lpg, 'sellers with first show');
+
+  // Funnel label
+  const fnLbl = document.getElementById('reg-fn-label');
+  if (fnLbl) fnLbl.textContent = label;
+
+  // Funnel bars (denominator = n_ac for all, to show proportion of total cohort)
+  const acEl = document.getElementById('reg-fn-ac');
+  if (acEl) acEl.textContent = a.n_ac + ' sellers (100%)';
+
+  const lpgP = a.n_ac>0 ? (a.n_lpg/a.n_ac*100).toFixed(1) : 0;
+  const evP  = a.n_ac>0 ? (a.n_ev /a.n_ac*100).toFixed(1) : 0;
+  const lsP  = a.n_ac>0 ? (a.n_ls /a.n_ac*100).toFixed(1) : 0;
+  const fsP  = a.n_ac>0 ? (a.n_fs /a.n_ac*100).toFixed(1) : 0;
+
+  const lpgLbl = document.getElementById('reg-fn-lpg-lbl');
+  if (lpgLbl) lpgLbl.textContent = a.n_lpg+' sellers ('+lpgP+'%)';
+  bar('reg-fn-lpg-bar', a.n_lpg, a.n_lpg, a.n_ac);
+  const lpgConv = document.getElementById('reg-fn-lpg-conv');
+  if (lpgConv) lpgConv.textContent = '↓ '+lpgP+'% of accounts';
+
+  const evLbl = document.getElementById('reg-fn-ev-lbl');
+  if (evLbl) evLbl.textContent = a.n_ev+' sellers ('+evP+'%)';
+  bar('reg-fn-ev-bar', a.n_ev, a.n_ev, a.n_ac);
+  const evConv = document.getElementById('reg-fn-ev-conv');
+  if (evConv) evConv.textContent = '↓ '+evP+'% of accounts';
+
+  const lsLbl = document.getElementById('reg-fn-ls-lbl');
+  if (lsLbl) lsLbl.textContent = a.n_ls+' sellers ('+lsP+'%)';
+  bar('reg-fn-ls-bar', a.n_ls, a.n_ls, a.n_ac);
+  const lsConv = document.getElementById('reg-fn-ls-conv');
+  if (lsConv) lsConv.textContent = '↓ '+lsP+'% of accounts';
+
+  const fsLbl = document.getElementById('reg-fn-fs-lbl');
+  if (fsLbl) fsLbl.textContent = a.n_fs+' sellers ('+fsP+'%)';
+  bar('reg-fn-fs-bar', a.n_fs, a.n_fs, a.n_ac);
+  const fsConv = document.getElementById('reg-fn-fs-conv');
+  if (fsConv) fsConv.textContent = '↓ '+fsP+'% of accounts';
+}
+
 function renderPreStream() {
   const grainDataMap = {
     'Overall': PS_DATA_ALL,
@@ -2387,6 +2608,7 @@ function applyFilters() {
   note.style.fontWeight = isFiltered ? '600' : '400';
 
   // Re-render active tab
+  if (activeTab === 'registration') renderRegistration();
   if (activeTab === 'prestream') renderPreStream();
   if (activeTab === 'instream') renderInStream();
 
