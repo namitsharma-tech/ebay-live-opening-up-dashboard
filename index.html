@@ -824,225 +824,230 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 ════════════════════════════════════════════════════════════════════════ -->
 <div id="tab-instream" class="section">
 
+  <!-- S1 — North Star + Volume -->
   <div style="background:#e0e0e0;margin-bottom:1px">
-    <div class="card-head" style="margin:0"><span class="card-title">In-Stream — North Star &amp; L0 Revenue Metrics</span><span class="card-sub">Owner: Jimmy Forde · Analytics: Sarvesh Pathak</span></div>
+    <div class="card-head" style="margin:0">
+      <span class="card-title">In-Stream — North Star &amp; Volume</span>
+      <span class="card-sub">Owner: Jimmy Forde · Analytics: Sarvesh Pathak · Source: HC_STREAM_METRICS · through Jul 18 2026</span>
+    </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile north-star">
       <div class="kpi-label">GMV / Streaming Hour</div>
-      <div class="kpi-value xl">$47 <span class="badge g">▲ +$6 (+14.6%)</span></div>
-      <div class="kpi-count">115 cohort seller-events</div>
-      <div class="kpi-note">North Star · ≥ category baseline</div>
+      <div class="kpi-value xl" id="is-gmv-hr">—</div>
+      <div class="kpi-count" id="is-gmv-hr-note">—</div>
+      <div class="kpi-note">North Star · SUM(gmv_during) / SUM(event_duration_hrs)</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">GMV During Stream</div>
-      <div class="kpi-value">$640 <span class="badge g">▲ +$80 (+14.3%)</span></div>
-      <div class="kpi-count">median per stream · 115 events</div>
-      <div class="kpi-note">Total revenue from stream</div>
+      <div class="kpi-label">Total GMV During Stream</div>
+      <div class="kpi-value" id="is-gmv">—</div>
+      <div class="kpi-count" id="is-gmv-note">—</div>
+      <div class="kpi-note">SUM(gmv_during) · live-window revenue only</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Stream Duration P50</div>
-      <div class="kpi-value">26 min <span class="badge g">▲ +2 min (+8.3%)</span></div>
-      <div class="kpi-count">median across 115 events</div>
-      <div class="kpi-note">P50 ≥20 min · engagement signal ✓</div>
+      <div class="kpi-label"># Streams</div>
+      <div class="kpi-value" id="is-streams">—</div>
+      <div class="kpi-count" id="is-streams-note">—</div>
+      <div class="kpi-note">COUNT(DISTINCT live_event_id)</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Sell Through Rate (Pinned)</div>
-      <div class="kpi-value">44% <span class="badge g">▲ +4pp (+10.0%)</span></div>
-      <div class="kpi-count">7 of 17 pinned items sold per event</div>
-      <div class="kpi-note">Pinned Items Sold / Pinned Items</div>
+      <div class="kpi-label"># Active Sellers</div>
+      <div class="kpi-value" id="is-sellers">—</div>
+      <div class="kpi-count" id="is-sellers-note">—</div>
+      <div class="kpi-note">COUNT(DISTINCT seller_id)</div>
+    </div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-top:1px">
+    <div class="kpi-tile">
+      <div class="kpi-label">Items Sold During Stream</div>
+      <div class="kpi-value" id="is-items-sold">—</div>
+      <div class="kpi-count" id="is-items-sold-note">—</div>
+      <div class="kpi-note">SUM(items_sold_during) · DDI gold standard</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Total Streaming Hours</div>
+      <div class="kpi-value" id="is-hrs">—</div>
+      <div class="kpi-count" id="is-hrs-note">—</div>
+      <div class="kpi-note">SUM(event_duration_mins) / 60</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Avg Items Listed / Stream</div>
+      <div class="kpi-value" id="is-avg-items">—</div>
+      <div class="kpi-count" id="is-avg-items-note">—</div>
+      <div class="kpi-note">AVG(total_items_listed) per event</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Sell-Through Rate (All Items)</div>
+      <div class="kpi-value" id="is-str">—</div>
+      <div class="kpi-count" id="is-str-note">—</div>
+      <div class="kpi-note">items_sold / items_listed · DDI gold standard</div>
+    </div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">GMV / Streaming Hour — 30-day trend</div>
+      <div id="ch-is-gmv-hr" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Daily Streams &amp; Active Sellers</div>
+      <div id="ch-is-volume" style="height:160px"></div>
     </div>
   </div>
 
-  <div class="chart-pane" style="margin-top:1px">
-    <div class="chart-pane-title">GMV per Streaming Hour &amp; GMV During Stream — by Cohort Week</div>
-    <div id="ch-is-gmv" style="height:210px"></div>
-  </div>
-
-  <!-- Inventory -->
+  <!-- S3a — Viewer Engagement -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Pinned Inventory &amp; Format Mix (L1)</span></div>
+    <div class="card-head" style="margin:0">
+      <span class="card-title">Viewer Engagement</span>
+      <span class="card-sub">Use total_unique_viewers from HC_STREAM_METRICS — NOT DDI VIEWERCOUNT (inflated 3–4×)</span>
+    </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
-      <div class="kpi-label">Total Items Listed</div>
-      <div class="kpi-value">28 <span class="badge g">▲ +2 (+7.7%)</span></div>
-      <div class="kpi-count">avg per event · 115 streams</div>
-      <div class="kpi-note">DISTINCT items per event</div>
+      <div class="kpi-label">Avg Viewers / Stream</div>
+      <div class="kpi-value" id="is-viewers">—</div>
+      <div class="kpi-count" id="is-viewers-note">—</div>
+      <div class="kpi-note">AVG(total_unique_viewers)</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Total Items Pinned</div>
-      <div class="kpi-value">17 <span class="badge g">▲ +2 (+13.3%)</span></div>
-      <div class="kpi-count">avg per event · 61% of listed</div>
-      <div class="kpi-note">Pinned to buyer screen</div>
+      <div class="kpi-label">Quality Viewer Rate</div>
+      <div class="kpi-value" id="is-qvr">—</div>
+      <div class="kpi-count" id="is-qvr-note">—</div>
+      <div class="kpi-note">IS_QUALITY=1 · &gt;60s watch OR engaged action</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">BIN Listings Pinned</div>
-      <div class="kpi-value">10 <span class="badge g">▲ +1 (+11.1%)</span></div>
-      <div class="kpi-count">avg per event · 59% of pinned</div>
-      <div class="kpi-note">Buy-It-Now format</div>
+      <div class="kpi-label">Bounce Rate</div>
+      <div class="kpi-value" id="is-bounce">—</div>
+      <div class="kpi-count" id="is-bounce-note">—</div>
+      <div class="kpi-note">IS_BOUNCED=1 · below quality threshold</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Auction Listings Pinned</div>
-      <div class="kpi-value">7 <span class="badge g">▲ +1 (+16.7%)</span></div>
-      <div class="kpi-count">avg per event · 41% of pinned</div>
-      <div class="kpi-note">Auction format</div>
-    </div>
-  </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Items Listed vs Pinned per Stream</div>
-      <div id="ch-is-items" style="height:160px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Sell Through Rates</div>
-      <div id="ch-is-sellthrough" style="height:160px"></div>
-    </div>
-  </div>
-
-  <!-- Pin Duration & Engagement -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Pin Duration &amp; Engagement Timing (L1)</span></div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi-tile">
-      <div class="kpi-label">Avg Pin Duration P50</div>
-      <div class="kpi-value">6.1 min <span class="badge g">▲ +0.5 min (+8.9%)</span></div>
-      <div class="kpi-count">median per pinned item · 115 events</div>
-      <div class="kpi-note">Median time item pinned to screen</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Time to First Pin</div>
-      <div class="kpi-value">2.6 min <span class="badge g">▼ -0.3 min (-10.3%)</span></div>
-      <div class="kpi-count">median · lower is better</div>
-      <div class="kpi-note">Dead time before monetisation · lower is better</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Engagement Tools / Stream</div>
-      <div class="kpi-value">3.1 <span class="badge g">▲ +0.3 (+10.7%)</span></div>
-      <div class="kpi-count">avg activations per stream</div>
-      <div class="kpi-note">Quiz + Poll + Notice activations</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Chat Messages / Stream</div>
-      <div class="kpi-value">74 <span class="badge g">▲ +6 (+8.8%)</span></div>
-      <div class="kpi-count">avg per stream · inbound + outbound</div>
-      <div class="kpi-note">Total inbound + outbound</div>
-    </div>
-  </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Pin Duration &amp; Time-to-First-Pin</div>
-      <div id="ch-is-pin" style="height:160px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Engagement Tools &amp; Chat per Stream</div>
-      <div id="ch-is-engage" style="height:160px"></div>
-    </div>
-  </div>
-
-  <!-- Guardrails -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Guardrail Metrics — Stream Health</span><span class="card-sub">Per-stream counts · Elevated = action required</span></div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-    <div class="guard-tile ok">
-      <div class="guard-label">Stream Activation Failures</div>
-      <div class="guard-val">1</div>
-      <div class="guard-status">Threshold: 0 acceptable · ✓ Trending down</div>
-    </div>
-    <div class="guard-tile ok">
-      <div class="guard-label">Listings Added In-Stream</div>
-      <div class="guard-val">2</div>
-      <div class="guard-status">0 ideal (dead air signal) · ✓ Improving</div>
-    </div>
-    <div class="guard-tile ok">
-      <div class="guard-label">Auction Resets</div>
-      <div class="guard-val">1</div>
-      <div class="guard-status">0 ideal · ✓ Improving</div>
-    </div>
-    <div class="guard-tile ok">
-      <div class="guard-label">Users Muted</div>
-      <div class="guard-val">2</div>
-      <div class="guard-status">0 ideal — engagement quality · ✓ Improving</div>
+      <div class="kpi-label">Avg Watch Duration</div>
+      <div class="kpi-value" id="is-watch">—</div>
+      <div class="kpi-count" id="is-watch-note">—</div>
+      <div class="kpi-note">AVG(avg_watch_duration_secs)</div>
     </div>
   </div>
   <div class="chart-pane" style="margin-top:1px">
-    <div class="chart-pane-title">Guardrail Trends — All 4 Signals (lower = healthier)</div>
-    <div id="ch-is-guard" style="height:160px"></div>
+    <div class="chart-pane-title">Avg Viewers &amp; Quality Viewer Rate % — 30-day trend</div>
+    <div id="ch-is-viewers" style="height:160px"></div>
   </div>
 
-  <!-- Lifecycle table -->
+  <!-- S3b/3c — Seller Tool Adoption -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">In-Stream Lifecycle — Metric Summary</span></div>
+    <div class="card-head" style="margin:0">
+      <span class="card-title">Seller Tool Adoption</span>
+      <span class="card-sub">UBI-derived · *_global columns are seller-day totals (directional) · Daily grain shows "—" — HC_UBI_BASE lags 3–5 days</span>
+    </div>
   </div>
-  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
-    <table class="tbl">
-      <thead><tr><th>Stage</th><th>Metric</th><th>Formula</th><th>Current</th><th>Level</th></tr></thead>
-      <tbody>
-        <tr><td>Revenue</td><td class="fw6">GMV / Streaming Hour</td><td class="mono">GMV_DURING / (duration_s / 3600)</td><td class="fw6">$47</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
-        <tr><td>Revenue</td><td class="fw6">GMV During Stream</td><td class="mono">GMV_DURING</td><td class="fw6">$640</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
-        <tr><td>Inventory</td><td class="fw6">Total Items Listed</td><td class="mono">COUNT(DISTINCT ITEMID)</td><td class="fw6">28</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Inventory</td><td class="fw6">Total Items Pinned</td><td class="mono">COUNT(listing_pinned events)</td><td class="fw6">17</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Inventory</td><td class="fw6">Sell Through Rate (Pinned)</td><td class="mono">Pinned Sold / Total Pinned</td><td class="fw6">44%</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Timing</td><td class="fw6">Avg Pin Duration P50</td><td class="mono">SUM(unpin.ts - pin.ts) / pinned</td><td class="fw6">6.1 min</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Timing</td><td class="fw6">Time to First Pin</td><td class="mono">first_pin.ts - stream_started.ts</td><td class="fw6">2.6 min</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Engagement</td><td class="fw6">Tool Activations / Stream</td><td class="mono">COUNT distinct tool launches</td><td class="fw6">3.1</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td></tr>
-        <tr><td>Engagement</td><td class="fw6">Chat Messages / Stream</td><td class="mono">Total inbound + outbound</td><td class="fw6">74</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td></tr>
-        <tr><td>Guardrail</td><td class="fw6">Stream Activation Failures</td><td class="mono">start_event fires, no stream_started</td><td class="fw6">1</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
-        <tr><td>Guardrail</td><td class="fw6">Listings Added In-Stream</td><td class="mono">listing.ts after stream_started</td><td class="fw6">2</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
-        <tr><td>Guardrail</td><td class="fw6">Auction Resets</td><td class="mono">COUNT auction_reset events</td><td class="fw6">1</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
-      </tbody>
-    </table>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">% Sellers Sending Chat</div>
+      <div class="kpi-value" id="is-pct-chat">—</div>
+      <div class="kpi-count" id="is-pct-chat-note">—</div>
+      <div class="kpi-note">chats_sent_global &gt; 0 · CHATBC</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">% Sellers Pinning Chat</div>
+      <div class="kpi-value" id="is-pct-chat-pin">—</div>
+      <div class="kpi-count" id="is-pct-chat-pin-note">—</div>
+      <div class="kpi-note">chats_pinned_global &gt; 0 · CHATBC</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">% Sellers Using Notice</div>
+      <div class="kpi-value" id="is-pct-notice">—</div>
+      <div class="kpi-count" id="is-pct-notice-note">—</div>
+      <div class="kpi-note">notice_toggle_count &gt; 0 · LIVECOMM</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">% Sellers Any Tool</div>
+      <div class="kpi-value" id="is-pct-any-tool">—</div>
+      <div class="kpi-count" id="is-pct-any-tool-note">—</div>
+      <div class="kpi-note">chat OR notice OR quiz OR poll (any 1)</div>
+    </div>
+  </div>
+
+  <!-- S4 — Guardrails -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0">
+      <span class="card-title">Guardrail Metrics</span>
+      <span class="card-sub">Lower = healthier · † UBI-derived metrics show "—" for Daily grain (HC_UBI_BASE 3–5 day lag)</span>
+    </div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">% Zero-Sale Streams</div>
+      <div class="kpi-value" id="is-zero-sale">—</div>
+      <div class="kpi-count" id="is-zero-sale-note">—</div>
+      <div class="kpi-note">Streams with 0 items sold · DDI-based · reliable</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Avg Listings Added In-Stream †</div>
+      <div class="kpi-value" id="is-instream-list">—</div>
+      <div class="kpi-count" id="is-instream-list-note">—</div>
+      <div class="kpi-note">add_listing_in_stream_count · 0 ideal · UBI</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Avg Auction Resets †</div>
+      <div class="kpi-value" id="is-resets">—</div>
+      <div class="kpi-count" id="is-resets-note">—</div>
+      <div class="kpi-note">auction_reset_count · 0 ideal · UBI</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Avg Users Muted †</div>
+      <div class="kpi-value" id="is-muted">—</div>
+      <div class="kpi-count" id="is-muted-note">—</div>
+      <div class="kpi-note">users_muted_global · community health · UBI</div>
+    </div>
+  </div>
+  <div class="chart-pane" style="margin-top:1px">
+    <div class="chart-pane-title">Sell-Through Rate % — 30-day trend</div>
+    <div id="ch-is-str" style="height:160px"></div>
   </div>
 
   <!-- Metric Definitions -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
     <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('is-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.is-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
       <span class="card-title">Metric Definitions — In-Stream</span>
-      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
+      <span class="card-sub">Source tables &amp; computation rules · HC_STREAM_METRICS grain: one row per (live_event_id, event_dt)</span>
       <span class="is-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
     </div>
   </div>
   <div id="is-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
     <table class="tbl">
       <thead>
-        <tr><th style="width:18%">Metric</th><th style="width:6%">Level</th><th style="width:22%">Formula</th><th style="width:8%">Status</th><th style="width:24%">Source (HC_STREAM_METRICS)</th><th style="width:22%">Notes</th></tr>
+        <tr><th style="width:18%">Metric</th><th style="width:6%">Level</th><th style="width:22%">Formula</th><th style="width:8%">Reliability</th><th style="width:24%">Source Column</th><th style="width:22%">Notes</th></tr>
       </thead>
       <tbody>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L0 Revenue</td></tr>
-        <tr><td class="fw6">GMV / Streaming Hour</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(gmv_during) / SUM(event_duration_mins / 60)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">gmv_per_streaming_hour (pre-computed)</td><td class="mono" style="color:#6f6f6f">North Star · recompute at rollup level, not AVG of per-event rates</td></tr>
-        <tr><td class="fw6">GMV During Stream</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(gmv_during)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">gmv_during</td><td class="mono" style="color:#6f6f6f">Revenue from items sold during live window only</td></tr>
-        <tr><td class="fw6">Stream Duration P50</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(event_duration_mins, 0.5)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">event_duration_mins</td><td class="mono" style="color:#6f6f6f">Also available: P90 via PERCENTILE(event_duration_mins, 0.90)</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Inventory &amp; Sell-Through</td></tr>
-        <tr><td class="fw6">Total Items Listed</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(total_items_listed)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_items_listed</td><td class="mono" style="color:#6f6f6f">Distinct items per stream from LIVE_EVENT_LISTING (pre-joined)</td></tr>
-        <tr><td class="fw6">Total Items Pinned</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(total_items_pinned)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_items_pinned</td><td class="mono" style="color:#6f6f6f">Items with pin=TRUE at LIVE_EVENT_LISTING (pre-joined)</td></tr>
-        <tr><td class="fw6">BIN Listings Pinned</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(bin_items_pinned)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">bin_items_pinned</td><td class="mono" style="color:#6f6f6f">Buy-It-Now format (auct_type_code = 1) that were pinned</td></tr>
-        <tr><td class="fw6">Auction Listings Pinned</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(auction_items_pinned)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">auction_items_pinned</td><td class="mono" style="color:#6f6f6f">Auction format (auct_type_code = 9) that were pinned</td></tr>
-        <tr><td class="fw6">Sell Through Rate (Pinned)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">items_sold_during / total_items_listed × 100</td><td><span style="font-size:10px;color:#da1e28;font-weight:700">⚠ Def mismatch</span></td><td class="mono">sell_through_rate_all_pct (all items, not pinned-only)</td><td class="mono" style="color:#da1e28">Dashboard label says "Pinned" but column is all-items STR — align definition</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Pin Timing &amp; Engagement</td></tr>
-        <tr><td class="fw6">Avg Pin Duration P50</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(avg_pin_duration_proxy_mins)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Proxy</span></td><td class="mono">avg_pin_duration_proxy_mins</td><td class="mono" style="color:#7d4e00">Avg time pin=TRUE listing stayed in stream — not exact pin window (listing_unpinned not instrumented)</td></tr>
-        <tr><td class="fw6">Time to First Pin</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">first_pin_ts − stream_start_ts</td><td><span style="font-size:10px;color:#a2191f;font-weight:700">✗ Missing</span></td><td class="mono">Not in HC_STREAM_METRICS</td><td class="mono" style="color:#a2191f">Requires exact pin window — blocked (listing_unpinned event not instrumented)</td></tr>
-        <tr><td class="fw6">Engagement Tools / Stream</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td><td class="mono">AVG(quiz_launch_count + notice_toggle_count)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">quiz_launch_count + notice_toggle_count</td><td class="mono" style="color:#7d4e00">No "poll" column in HC_STREAM_METRICS — quiz + notice only</td></tr>
-        <tr><td class="fw6">Chat Messages / Stream</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td><td class="mono">AVG(chats_sent_global)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">chats_sent_global</td><td class="mono" style="color:#7d4e00">Seller-day total — if seller ran multiple streams same day, count appears on all rows (directional only)</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Guardrails (lower = healthier)</td></tr>
-        <tr><td class="fw6">Stream Activation Failures</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">COUNT(live_event_id WHERE stream_proxy_fired = 0)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Proxy</span></td><td class="mono">stream_proxy_fired (0/1 flag)</td><td class="mono" style="color:#7d4e00">Flag indicates if stream-start UBI proxy fired — failure = proxy did not fire</td></tr>
-        <tr><td class="fw6">Listings Added In-Stream</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">AVG(add_listing_in_stream_count)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">add_listing_in_stream_count</td><td class="mono" style="color:#6f6f6f">New listings added mid-stream — 0 is ideal (dead air signal)</td></tr>
-        <tr><td class="fw6">Auction Resets</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">AVG(auction_reset_count)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">auction_reset_count</td><td class="mono" style="color:#6f6f6f">Auction resets triggered during stream — 0 is ideal</td></tr>
-        <tr><td class="fw6">Users Muted</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">AVG(users_muted_global)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">users_muted_global</td><td class="mono" style="color:#7d4e00">Seller-day total — multi-stream day causes double-counting (directional only)</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">New Metrics Available — Not Yet on Dashboard</td></tr>
-        <tr><td class="fw6">Total Unique Viewers</td><td><span class="badge-sm" style="background:#24a148;color:#fff">New</span></td><td class="mono">SUM(total_unique_viewers)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_unique_viewers</td><td class="mono" style="color:#0e6027">Use this — NOT DDI VIEWERCOUNT (inflated 3–4× by session counting)</td></tr>
-        <tr><td class="fw6">Quality Viewer Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">New</span></td><td class="mono">AVG(quality_viewer_rate_pct)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">quality_viewer_rate_pct</td><td class="mono" style="color:#0e6027">Viewers with >60s watch time OR IS_ENGAGED=1</td></tr>
-        <tr><td class="fw6">Avg Watch Duration</td><td><span class="badge-sm" style="background:#24a148;color:#fff">New</span></td><td class="mono">AVG(avg_watch_duration_secs)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">avg_watch_duration_secs</td><td class="mono" style="color:#0e6027">Mean viewer watch time per stream in seconds</td></tr>
-        <tr><td class="fw6">Total Bids / Unique Bidders</td><td><span class="badge-sm" style="background:#24a148;color:#fff">New</span></td><td class="mono">SUM(total_bids) · SUM(unique_bidders)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_bids · unique_bidders</td><td class="mono" style="color:#0e6027">From live_commerce_bids (pre-joined)</td></tr>
-        <tr><td class="fw6">Bid Price Realization</td><td><span class="badge-sm" style="background:#24a148;color:#fff">New</span></td><td class="mono">AVG(avg_bid_price_realization_pct)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">avg_bid_price_realization_pct</td><td class="mono" style="color:#0e6027">(final − start) / start × 100 — auction demand signal</td></tr>
-        <tr><td class="fw6">GMV Halo (Pre + Post)</td><td><span class="badge-sm" style="background:#24a148;color:#fff">New</span></td><td class="mono">SUM(gmv_pre) · SUM(gmv_week)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">gmv_pre · gmv_week · gmv_total</td><td class="mono" style="color:#0e6027">7-day pre-stream and 7-day post-stream GMV attribution windows</td></tr>
+        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L0 North Star</td></tr>
+        <tr><td class="fw6">GMV / Streaming Hour</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(gmv_during) / SUM(event_duration_mins / 60)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">gmv_during · event_duration_mins</td><td class="mono" style="color:#6f6f6f">Recompute at rollup — never AVG of per-stream gmv_per_streaming_hour</td></tr>
+        <tr><td class="fw6">Total GMV During Stream</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(gmv_during)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">gmv_during</td><td class="mono" style="color:#6f6f6f">Live-window revenue only · excludes pre/post attribution</td></tr>
+        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Volume &amp; Inventory</td></tr>
+        <tr><td class="fw6"># Streams / # Sellers</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">COUNT(DISTINCT live_event_id / seller_id)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">live_event_id · seller_id</td><td class="mono" style="color:#6f6f6f">—</td></tr>
+        <tr><td class="fw6">Items Sold During Stream</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(items_sold_during)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">items_sold_during · DDI</td><td class="mono" style="color:#6f6f6f">Gold standard — not from LEL/CDC</td></tr>
+        <tr><td class="fw6">Avg Items Listed / Stream</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(total_items_listed)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_items_listed · LIVE_EVENT_LISTING</td><td class="mono" style="color:#6f6f6f">Distinct items per stream pre-joined at build</td></tr>
+        <tr><td class="fw6">Sell-Through Rate (All Items)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(items_sold) / SUM(items_listed) × 100</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">items_sold_during · total_items_listed</td><td class="mono" style="color:#6f6f6f">Recompute at rollup — not AVG of per-stream rates</td></tr>
+        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Viewer Engagement</td></tr>
+        <tr><td class="fw6">Avg Viewers / Stream</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(total_unique_viewers)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_unique_viewers · EBAYLIVE_QUALITY_VIEWERS</td><td class="mono" style="color:#da1e28">Use this — NOT DDI VIEWERCOUNT (inflated 3–4×)</td></tr>
+        <tr><td class="fw6">Quality Viewer Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(quality_viewers) / SUM(total_unique_viewers) × 100</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">quality_viewers · IS_QUALITY=1</td><td class="mono" style="color:#6f6f6f">Recompute at rollup</td></tr>
+        <tr><td class="fw6">Bounce Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(bounced_viewers) / SUM(total_unique_viewers) × 100</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">bounced_viewers · IS_BOUNCED=1</td><td class="mono" style="color:#6f6f6f">Recompute at rollup</td></tr>
+        <tr><td class="fw6">Avg Watch Duration</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">AVG(avg_watch_duration_secs)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">avg_watch_duration_secs</td><td class="mono" style="color:#6f6f6f">Replaces broken total_watch_mins (v1 bug 3)</td></tr>
+        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Seller Tool Adoption (UBI-derived · 3–5 day lag)</td></tr>
+        <tr><td class="fw6">% Sellers Sending / Pinning Chat</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td><td class="mono">COUNT DISTINCT sellers w/ chats_sent_global &gt; 0 / total sellers</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Directional</span></td><td class="mono">chats_sent_global · chats_pinned_global · CHATBC</td><td class="mono" style="color:#7d4e00">Seller-day totals — if seller ran 3 streams same day all 3 rows get same count</td></tr>
+        <tr><td class="fw6">% Sellers Using Notice</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td><td class="mono">COUNT DISTINCT sellers w/ notice_toggle_count &gt; 0 / total sellers</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">notice_toggle_count · LIVECOMM</td><td class="mono" style="color:#6f6f6f">Stream-attributed (event_id join) — more accurate than *_global</td></tr>
+        <tr><td class="fw6">% Sellers Any Tool (Quiz/Poll/Notice)</td><td><span class="badge-sm" style="background:#6f6f6f;color:#fff">L2</span></td><td class="mono">COUNT DISTINCT sellers w/ any tool &gt; 0 / total sellers</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">quiz_start_count · poll_start_count · notice_toggle_count</td><td class="mono" style="color:#6f6f6f">Quiz/poll = 0% currently (feature not yet adopted)</td></tr>
+        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Guardrails</td></tr>
+        <tr><td class="fw6">% Zero-Sale Streams</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">COUNT DISTINCT live_event_id WHERE items_sold=0 / total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">items_sold_during · DDI-based</td><td class="mono" style="color:#6f6f6f">Reliable across all date ranges</td></tr>
+        <tr><td class="fw6">Avg Listings Added In-Stream</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">AVG(add_listing_in_stream_count)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ UBI lag</span></td><td class="mono">add_listing_in_stream_count · HC_UBI_BASE</td><td class="mono" style="color:#7d4e00">0 for Jul 17–18 (UBI not yet populated) — use Weekly/Monthly grain</td></tr>
+        <tr><td class="fw6">Avg Auction Resets</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">AVG(auction_reset_count)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ UBI lag</span></td><td class="mono">auction_reset_count · HC_UBI_BASE</td><td class="mono" style="color:#7d4e00">Same UBI lag caveat</td></tr>
+        <tr><td class="fw6">Avg Users Muted</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">AVG(users_muted_global)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Directional</span></td><td class="mono">users_muted_global · HC_UBI_BASE</td><td class="mono" style="color:#7d4e00">Seller-day total + UBI lag — directional only</td></tr>
         <tr><td colspan="6" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
-          <strong style="color:#525252">Source:</strong> All ready metrics query <span style="font-family:monospace">P_LIVE_ANALYTICS_T.HC_STREAM_METRICS</span>. Lag: data available through <span style="font-family:monospace">DATE_SUB(CURRENT_DATE(), 2)</span>. UBI columns available from Jul 16 2026. &nbsp;|&nbsp; <strong style="color:#525252">Aggregation:</strong> GMV → SUM; counts → SUM + AVG + P90; rates → AVG only. Always recompute GMV/hr at rollup level. &nbsp;|&nbsp; <strong style="color:#7d4e00">CHATBC caveat:</strong> <span style="font-family:monospace">*_global</span> columns are seller-day totals — directional only if seller ran multiple streams in one day.
+          <strong style="color:#525252">Source:</strong> P_LIVE_ANALYTICS_T.HC_STREAM_METRICS · grain: one row per (live_event_id, event_dt) · US-only (EVENT_SITEID=0) · data through 2026-07-18 (2-day lag from rebuild). &nbsp;|&nbsp;
+          <strong style="color:#525252">Known limitations:</strong> (1) Pin rate unreliable for last 2 weeks (CDC LEL overwrites pin=TRUE after stream ends) — pin-dependent metrics excluded. (2) UBI metrics (chat, tools, guardrails) lag 3–5 days — Daily grain shows "—" for these. (3) Auction STR &gt; 100% due to LEL denominator issue — excluded. (4) stream_proxy_fired unreliable — excluded.
         </td></tr>
       </tbody>
     </table>
   </div>
+
 </div><!-- /in-stream -->
 
 <!-- ═══════════════════════════════════════════════════════════════════════
@@ -1413,6 +1418,27 @@ function mkLine(id, series, yFmt, targets) {
   window.addEventListener('resize',()=>c.resize());
 }
 
+function mkLineDates(id, series, yFmt, dates) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  const c = echarts.init(el);
+  const interval = Math.max(1, Math.floor(dates.length / 8));
+  c.setOption({
+    animation: true, animationDuration: 400,
+    grid:{top:28,right:16,bottom:48,left:52},
+    tooltip:{trigger:'axis',formatter:(params)=>params.map(p=>`<span style="color:${p.color}">●</span> ${p.seriesName}: <b>${fmtVal(p.value,yFmt)}</b>`).join('<br>')},
+    xAxis:{type:'category',data:dates,axisLabel:{fontSize:8,color:'#6f6f6f',rotate:35,interval:interval},axisLine:{lineStyle:{color:'#e0e0e0'}}},
+    yAxis:{type:'value',axisLabel:{fontSize:9,color:'#6f6f6f',formatter:'{value}'+(yFmt||'')},splitLine:{lineStyle:{color:'#f4f4f4',type:'dashed'}}},
+    series: series.map(s=>({
+      name:s.n, type:'line', data:s.d, smooth:false,
+      lineStyle:{color:s.c, width:2}, itemStyle:{color:s.c},
+      symbol:'circle', symbolSize:4
+    })),
+    legend:{bottom:0,textStyle:{fontSize:9,color:'#6f6f6f'}}
+  });
+  window.addEventListener('resize',()=>c.resize());
+}
+
 function mkBar(id, yData, xData, colors) {
   const el = document.getElementById(id);
   if(!el) return;
@@ -1463,6 +1489,7 @@ function showTab(tab) {
   event.target.classList.add('active');
   activeTab = tab;
   if (tab === 'prestream') renderPreStream();
+  if (tab === 'instream') renderInStream();
   updateBreadcrumb();
   setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
 }
@@ -1472,7 +1499,8 @@ function setGrain(g, btn) {
   document.querySelectorAll('.grain-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   activeGrain = g;
-  renderPreStream();
+  if (activeTab === 'prestream') renderPreStream();
+  if (activeTab === 'instream') renderInStream();
   updateBreadcrumb();
 }
 
@@ -1530,6 +1558,72 @@ const PS_DATA_MONTHLY = [
   {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
   {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
   {geo:"Unknown",phase:"Unknown",cat:"Unknown",tier:"Unknown",method:"Unknown",bg:"Unknown",s:5,ec:0,lr:0,fsr:0,s14:0}
+];
+
+// ─── In-Stream data (v2 · HC_STREAM_METRICS · US-only · through Jul 18 2026) ──
+const IS_DATA = {
+  Overall: {
+    streams:52744, sellers:1424, gmv:336665116, items_sold:5015871,
+    hrs:215271.9, gmv_per_hr:1563.91, avg_items:183.0, str_pct:52.0,
+    viewers:923, qvr:29.0, bounce:49.2, watch_secs:416,
+    pct_chat:13.6, pct_chat_pin:12.6, pct_notice:9.3, pct_any_tool:9.3,
+    pct_zero_sale:12.8, avg_instream:0.00, avg_resets:0.00, avg_muted:0.01
+  },
+  Monthly: {
+    streams:11986, sellers:1077, gmv:67719793, items_sold:1122352,
+    hrs:49462.2, gmv_per_hr:1369.12, avg_items:194.0, str_pct:48.3,
+    viewers:875, qvr:29.2, bounce:52.1, watch_secs:406,
+    pct_chat:18.0, pct_chat_pin:16.6, pct_notice:12.3, pct_any_tool:12.3,
+    pct_zero_sale:13.2, avg_instream:0.02, avg_resets:0.01, avg_muted:0.05
+  },
+  Weekly: {
+    streams:4758, sellers:927, gmv:27723976, items_sold:446982,
+    hrs:19543.7, gmv_per_hr:1418.57, avg_items:194.1, str_pct:48.4,
+    viewers:883, qvr:29.3, bounce:52.4, watch_secs:411,
+    pct_chat:20.9, pct_chat_pin:19.3, pct_notice:14.2, pct_any_tool:14.2,
+    pct_zero_sale:13.1, avg_instream:0.04, avg_resets:0.03, avg_muted:0.13
+  },
+  Daily: {
+    streams:530, sellers:358, gmv:3802110, items_sold:56861,
+    hrs:2356.1, gmv_per_hr:1613.70, avg_items:211.8, str_pct:50.6,
+    viewers:1133, qvr:28.2, bounce:53.5, watch_secs:375,
+    pct_chat:null, pct_chat_pin:null, pct_notice:null, pct_any_tool:null,
+    pct_zero_sale:10.8, avg_instream:null, avg_resets:null, avg_muted:null
+  }
+};
+
+// IS_TREND: 30-day daily data Jun 19 – Jul 18 for trend charts
+const IS_TREND = [
+  {dt:'Jun-19',streams:709,sellers:440,gmv:4927656,gmv_per_hr:1690.09,str_pct:49.7,viewers:856,qvr:30.4,watch_secs:448},
+  {dt:'Jun-20',streams:501,sellers:329,gmv:3356140,gmv_per_hr:1494.09,str_pct:51.8,viewers:1060,qvr:28.0,watch_secs:389},
+  {dt:'Jun-21',streams:480,sellers:318,gmv:2918831,gmv_per_hr:1364.02,str_pct:53.7,viewers:1124,qvr:27.8,watch_secs:403},
+  {dt:'Jun-22',streams:586,sellers:378,gmv:2983181,gmv_per_hr:1235.91,str_pct:48.2,viewers:829,qvr:30.4,watch_secs:433},
+  {dt:'Jun-23',streams:669,sellers:445,gmv:4015042,gmv_per_hr:1438.58,str_pct:48.6,viewers:829,qvr:30.2,watch_secs:456},
+  {dt:'Jun-24',streams:722,sellers:440,gmv:4391377,gmv_per_hr:1542.84,str_pct:46.0,viewers:790,qvr:30.0,watch_secs:433},
+  {dt:'Jun-25',streams:753,sellers:489,gmv:5540353,gmv_per_hr:1878.40,str_pct:45.9,viewers:845,qvr:29.2,watch_secs:419},
+  {dt:'Jun-26',streams:738,sellers:454,gmv:5485950,gmv_per_hr:1855.72,str_pct:49.3,viewers:843,qvr:28.8,watch_secs:395},
+  {dt:'Jun-27',streams:507,sellers:326,gmv:3588424,gmv_per_hr:1718.30,str_pct:54.3,viewers:956,qvr:29.6,watch_secs:360},
+  {dt:'Jun-28',streams:513,sellers:350,gmv:3570148,gmv_per_hr:1575.04,str_pct:61.0,viewers:1083,qvr:28.0,watch_secs:385},
+  {dt:'Jun-29',streams:631,sellers:402,gmv:3679410,gmv_per_hr:1352.97,str_pct:46.9,viewers:836,qvr:29.6,watch_secs:400},
+  {dt:'Jun-30',streams:668,sellers:451,gmv:4396175,gmv_per_hr:1554.90,str_pct:49.8,viewers:851,qvr:29.5,watch_secs:403},
+  {dt:'Jul-1', streams:739,sellers:461,gmv:4357904,gmv_per_hr:1486.75,str_pct:48.7,viewers:787,qvr:29.3,watch_secs:405},
+  {dt:'Jul-2', streams:768,sellers:496,gmv:4000697,gmv_per_hr:1288.12,str_pct:48.5,viewers:835,qvr:29.6,watch_secs:409},
+  {dt:'Jul-3', streams:706,sellers:441,gmv:4102928,gmv_per_hr:1386.12,str_pct:48.6,viewers:865,qvr:28.9,watch_secs:392},
+  {dt:'Jul-4', streams:352,sellers:240,gmv:2500147,gmv_per_hr:1449.76,str_pct:55.8,viewers:1247,qvr:28.3,watch_secs:357},
+  {dt:'Jul-5', streams:511,sellers:346,gmv:2868744,gmv_per_hr:1273.35,str_pct:52.6,viewers:1049,qvr:28.1,watch_secs:375},
+  {dt:'Jul-6', streams:608,sellers:389,gmv:2935983,gmv_per_hr:1187.14,str_pct:46.5,viewers:878,qvr:28.4,watch_secs:383},
+  {dt:'Jul-7', streams:729,sellers:471,gmv:3223262,gmv_per_hr:1116.57,str_pct:46.0,viewers:819,qvr:29.0,watch_secs:394},
+  {dt:'Jul-8', streams:717,sellers:454,gmv:3671889,gmv_per_hr:1309.36,str_pct:46.8,viewers:784,qvr:30.1,watch_secs:421},
+  {dt:'Jul-9', streams:819,sellers:521,gmv:4116307,gmv_per_hr:1229.91,str_pct:43.2,viewers:809,qvr:28.8,watch_secs:411},
+  {dt:'Jul-10',streams:742,sellers:461,gmv:4214162,gmv_per_hr:1353.25,str_pct:47.7,viewers:808,qvr:29.9,watch_secs:433},
+  {dt:'Jul-11',streams:537,sellers:358,gmv:4003795,gmv_per_hr:1726.56,str_pct:51.7,viewers:972,qvr:30.3,watch_secs:406},
+  {dt:'Jul-12',streams:547,sellers:384,gmv:3395124,gmv_per_hr:1338.29,str_pct:52.9,viewers:1032,qvr:28.0,watch_secs:420},
+  {dt:'Jul-13',streams:638,sellers:415,gmv:3031167,gmv_per_hr:1178.87,str_pct:47.1,viewers:823,qvr:30.1,watch_secs:425},
+  {dt:'Jul-14',streams:749,sellers:475,gmv:3788752,gmv_per_hr:1300.74,str_pct:43.5,viewers:839,qvr:28.5,watch_secs:403},
+  {dt:'Jul-15',streams:760,sellers:469,gmv:4089857,gmv_per_hr:1392.56,str_pct:45.1,viewers:778,qvr:30.0,watch_secs:429},
+  {dt:'Jul-16',streams:812,sellers:529,gmv:5051817,gmv_per_hr:1581.11,str_pct:49.9,viewers:818,qvr:30.2,watch_secs:412},
+  {dt:'Jul-17',streams:722,sellers:472,gmv:4565150,gmv_per_hr:1504.39,str_pct:50.9,viewers:869,qvr:30.3,watch_secs:408},
+  {dt:'Jul-18',streams:530,sellers:358,gmv:3802110,gmv_per_hr:1613.70,str_pct:50.6,viewers:1133,qvr:28.2,watch_secs:375}
 ];
 
 // ─── Filters ───────────────────────────────────────────────────────────────
@@ -1665,6 +1759,67 @@ function renderPreStream() {
 
 }
 
+function renderInStream() {
+  const d = IS_DATA[activeGrain];
+  if (!d) return;
+  const lagNote = 'No data — UBI 3–5 day lag';
+  const grainLabelMap = {
+    'Overall': 'All-time · Apr 20 – Jul 18 2026 · US',
+    'Monthly': 'Jul 2026 MTD · Jul 1–18 · US',
+    'Weekly':  'Week of Jul 12–18 2026 · US',
+    'Daily':   'Jul 18 2026 · latest available (2-day lag)'
+  };
+  const label = grainLabelMap[activeGrain] || activeGrain;
+
+  function fmtM(n) {
+    if (n == null) return '—';
+    if (n >= 1e9) return '$' + (n/1e9).toFixed(1) + 'B';
+    if (n >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
+    return '$' + n.toFixed(0);
+  }
+  function fmtN(n) {
+    if (n == null) return '—';
+    if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+    return Math.round(n).toLocaleString();
+  }
+  function fmtP(n) { return n == null ? '—' : n.toFixed(1) + '%'; }
+  function fmtD(n, dp) { return n == null ? '—' : n.toFixed(dp != null ? dp : 2); }
+  function set(id, val, note) {
+    const el  = document.getElementById(id);       if (el)  el.textContent  = val;
+    const nel = document.getElementById(id+'-note'); if (nel) nel.textContent = note || label;
+  }
+
+  // S1: North Star + Volume
+  set('is-gmv-hr',     '$' + d.gmv_per_hr.toFixed(2) + '/hr', label);
+  set('is-gmv',        fmtM(d.gmv),                           label);
+  set('is-streams',    fmtN(d.streams),                       label);
+  set('is-sellers',    fmtN(d.sellers),                       label);
+  set('is-items-sold', fmtN(d.items_sold),                    label);
+  set('is-hrs',        d.hrs.toFixed(1) + ' hrs',             label);
+  set('is-avg-items',  d.avg_items.toFixed(1),                label);
+  set('is-str',        fmtP(d.str_pct),                       label);
+
+  // S3a: Viewer Engagement
+  set('is-viewers', fmtN(d.viewers),      label);
+  set('is-qvr',     fmtP(d.qvr),          label);
+  set('is-bounce',  fmtP(d.bounce),        label);
+  set('is-watch',   d.watch_secs + ' s',  label);
+
+  // S3b/c: Tool Adoption (UBI — null when HC_UBI_BASE not yet populated)
+  set('is-pct-chat',     d.pct_chat     != null ? fmtP(d.pct_chat)     : '—', d.pct_chat     != null ? label : lagNote);
+  set('is-pct-chat-pin', d.pct_chat_pin != null ? fmtP(d.pct_chat_pin) : '—', d.pct_chat_pin != null ? label : lagNote);
+  set('is-pct-notice',   d.pct_notice   != null ? fmtP(d.pct_notice)   : '—', d.pct_notice   != null ? label : lagNote);
+  set('is-pct-any-tool', d.pct_any_tool != null ? fmtP(d.pct_any_tool) : '—', d.pct_any_tool != null ? label : lagNote);
+
+  // S4: Guardrails
+  set('is-zero-sale',    fmtP(d.pct_zero_sale),                                  label);
+  set('is-instream-list',d.avg_instream != null ? fmtD(d.avg_instream) : '—', d.avg_instream != null ? label : lagNote);
+  set('is-resets',       d.avg_resets   != null ? fmtD(d.avg_resets)   : '—', d.avg_resets   != null ? label : lagNote);
+  set('is-muted',        d.avg_muted    != null ? fmtD(d.avg_muted)    : '—', d.avg_muted    != null ? label : lagNote);
+}
+
 function applyFilters() {
   const f = getFilterState();
   const isFiltered = f.geo!=='all'||f.phase!=='all'||f.cat!=='all'||f.tier!=='all'||f.method!=='all'||f.bg!=='all';
@@ -1688,13 +1843,14 @@ function applyFilters() {
   if(f.bg!=='all')     parts.push(FILTER_LABELS.bg[f.bg]);
   const note = document.getElementById('filter-note');
   note.textContent = isFiltered
-    ? 'Showing: ' + parts.join(' · ') + ' (Pre-Stream live · other tabs pending)'
-    : 'Pre-Stream filters live · Other tabs pending instrumentation';
+    ? 'Showing: ' + parts.join(' · ') + ' (filters apply to Pre-Stream only)'
+    : 'Filters apply to Pre-Stream tab only · In-Stream data is all-US';
   note.style.color = isFiltered ? '#0353e9' : '#8d8d8d';
   note.style.fontWeight = isFiltered ? '600' : '400';
 
-  // Re-render pre-stream if on that tab
+  // Re-render active tab
   if (activeTab === 'prestream') renderPreStream();
+  if (activeTab === 'instream') renderInStream();
 
   updateBreadcrumb();
 }
@@ -1706,10 +1862,11 @@ function resetFilters() {
   });
   document.getElementById('filter-reset-btn').style.display='none';
   const note = document.getElementById('filter-note');
-  note.textContent = 'Pre-Stream filters live · Other tabs pending instrumentation';
+  note.textContent = 'Filters apply to Pre-Stream tab only · In-Stream data is all-US';
   note.style.color = '#8d8d8d';
   note.style.fontWeight = '400';
   if (activeTab === 'prestream') renderPreStream();
+  if (activeTab === 'instream') renderInStream();
   updateBreadcrumb();
 }
 
@@ -1768,33 +1925,34 @@ window.addEventListener('DOMContentLoaded', () => {
     {n:'Listing Error Rate',d:D.listing_error,c:'#f1c21b'}
   ],'%');
 
-  // In-Stream
-  mkDual('ch-is-gmv',
-    {n:'GMV During Stream',d:D.gmv_stream,yName:'GMV $',fmt:'$'},
-    {n:'GMV/hr',d:D.gmv_per_hour,yName:'$/hr',fmt:'$'}
-  );
-  mkLine('ch-is-items',[
-    {n:'Items Listed',d:D.items_listed,c:'#0f62fe'},
-    {n:'Items Pinned',d:D.items_pinned,c:'#24a148'}
-  ],'');
-  mkLine('ch-is-sellthrough',[
-    {n:'Pinned Listings',d:D.sell_pinned,c:'#0f62fe'},
-    {n:'All Listings',d:D.sell_all,c:'#8d8d8d'}
-  ],'%');
-  mkLine('ch-is-pin',[
-    {n:'Avg Pin Duration (min)',d:D.pin_dur,c:'#0f62fe'},
-    {n:'Time to First Pin (min)',d:D.first_pin_time,c:'#da1e28'}
-  ],' min');
-  mkLine('ch-is-engage',[
-    {n:'Tool Activations',d:D.tools,c:'#24a148'},
-    {n:'Chat Messages',d:D.chat,c:'#0f62fe'}
-  ],'');
-  mkLine('ch-is-guard',[
-    {n:'Activation Failures',d:D.act_fail,c:'#da1e28'},
-    {n:'In-Stream Listings',d:D.instream_list,c:'#f1c21b'},
-    {n:'Auction Resets',d:D.auct_reset,c:'#6929c4'},
-    {n:'Users Muted',d:D.muted,c:'#8d8d8d'}
-  ],'');
+  // In-Stream — 30-day trend charts from IS_TREND
+  (function(){
+    const dates  = IS_TREND.map(r=>r.dt);
+    const gmvHr  = IS_TREND.map(r=>r.gmv_per_hr);
+    const streams = IS_TREND.map(r=>r.streams);
+    const sellers = IS_TREND.map(r=>r.sellers);
+    const viewers = IS_TREND.map(r=>r.viewers);
+    const qvr     = IS_TREND.map(r=>r.qvr);
+    const str     = IS_TREND.map(r=>r.str_pct);
+
+    mkLineDates('ch-is-gmv-hr',[
+      {n:'GMV / Streaming Hour ($)',d:gmvHr,c:'#0f62fe'}
+    ],'$',dates);
+
+    mkLineDates('ch-is-volume',[
+      {n:'Streams',d:streams,c:'#0353e9'},
+      {n:'Active Sellers',d:sellers,c:'#24a148'}
+    ],'',dates);
+
+    mkLineDates('ch-is-viewers',[
+      {n:'Avg Viewers',d:viewers,c:'#6929c4'},
+      {n:'Quality Viewer Rate %',d:qvr,c:'#0f62fe'}
+    ],'',dates);
+
+    mkLineDates('ch-is-str',[
+      {n:'Sell-Through Rate %',d:str,c:'#0353e9'}
+    ],'%',dates);
+  })();
 
   // Post-Stream charts
   mkLine('ch-ps2-northstar',[
