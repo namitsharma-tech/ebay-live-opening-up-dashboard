@@ -665,13 +665,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
         <div class="kpi-tile" style="padding:10px">
           <div class="kpi-label" style="font-size:9px">Event Completion Rate</div>
-          <div class="kpi-value" style="font-size:18px">85.1% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
-          <div class="kpi-note">Published event / CTA clicks · 492 of 578 sellers</div>
+          <div class="kpi-value" style="font-size:18px" id="ec-qual-val">85.1% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
+          <div class="kpi-note" id="ec-qual-note">Published event / LPG sellers · All-time</div>
         </div>
         <div class="kpi-tile" style="padding:10px">
           <div class="kpi-label" style="font-size:9px">Event Abandonment Rate</div>
-          <div class="kpi-value" style="font-size:18px">14.9% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
-          <div class="kpi-note">Lower is better · 86 sellers who clicked CTA but did not publish</div>
+          <div class="kpi-value" style="font-size:18px" id="ea-qual-val">14.9% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
+          <div class="kpi-note" id="ea-qual-note">LPG sellers who did not publish event · All-time</div>
         </div>
       </div>
       <div id="ch-ps-event" style="height:150px"></div>
@@ -696,7 +696,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 
   <!-- Recommendations -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Recommendation Quality</span> <span style="font-size:10px;font-weight:700;background:#da1e28;color:#fff;padding:2px 7px;border-radius:3px;margin-left:8px">⚠ Data Not Accurate</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Recommendation Quality</span> <span style="font-size:10px;font-weight:700;background:#da1e28;color:#fff;padding:2px 7px;border-radius:3px;margin-left:8px">⚠ Data Not Accurate</span> <span id="recos-grain-lbl" style="font-size:10px;color:#6f6f6f;margin-left:6px">All-time · LPG cohort</span></div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:1px">
     <div class="kpi-tile">
@@ -719,7 +719,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 
   <!-- P1 table -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">P1 Diagnostic Metrics — Latest Cohort Week</span> <span style="font-size:10px;font-weight:700;background:#da1e28;color:#fff;padding:2px 7px;border-radius:3px;margin-left:8px">⚠ Data Not Accurate</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">P1 Diagnostic Metrics — Latest Cohort Week</span> <span style="font-size:10px;font-weight:700;background:#da1e28;color:#fff;padding:2px 7px;border-radius:3px;margin-left:8px">⚠ Data Not Accurate</span> <span id="p1diag-grain-lbl" style="font-size:10px;color:#6f6f6f;margin-left:6px">All-time · LPG cohort</span></div>
   </div>
   <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
     <table class="tbl">
@@ -2123,6 +2123,13 @@ function renderPreStream() {
       document.getElementById(id).style.width = '0%';
       document.getElementById(id).textContent = '0%';
     });
+    // Event & Listing Creation Quality — no-data state
+    document.getElementById('ec-qual-val').innerHTML = '— <span class="badge-sm" style="background:#6f6f6f;color:#fff;font-size:9px">' + msg + '</span>';
+    document.getElementById('ec-qual-note').textContent = msg;
+    document.getElementById('ea-qual-val').innerHTML = '—';
+    document.getElementById('ea-qual-note').textContent = msg;
+    // Recommendation Quality + P1 Diagnostics grain label
+    ['recos-grain-lbl','p1diag-grain-lbl'].forEach(id => { document.getElementById(id).textContent = msg; });
     return;
   }
 
@@ -2172,6 +2179,17 @@ function renderPreStream() {
   document.getElementById('ps-fn-fsr-bar').textContent  = fsrP + '%';
   document.getElementById('ps-fn-s14-bar').style.width  = Math.min(s14P, 100) + '%';
   document.getElementById('ps-fn-s14-bar').textContent  = s14P + '%';
+
+  // Event & Listing Creation Quality — Event Completion / Abandonment
+  const ecQP = ecP;
+  const eaQP = pct1(a.s - a.ec, a.s);
+  document.getElementById('ec-qual-val').innerHTML = ecQP + '% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">' + label + '</span>';
+  document.getElementById('ec-qual-note').textContent = a.ec + ' of ' + a.s + ' sellers published event · ' + label;
+  document.getElementById('ea-qual-val').innerHTML = eaQP + '% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">' + label + '</span>';
+  document.getElementById('ea-qual-note').textContent = (a.s - a.ec) + ' of ' + a.s + ' sellers did not publish · ' + label;
+
+  // Recommendation Quality + P1 Diagnostics grain label
+  ['recos-grain-lbl','p1diag-grain-lbl'].forEach(id => { document.getElementById(id).textContent = label; });
 }
 
 function applyFilters() {
