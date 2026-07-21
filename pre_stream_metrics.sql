@@ -1,73 +1,61 @@
 -- ================================================================
--- PRE-STREAM TAB — COMPLETE METRIC SQL
--- Dashboard: https://namitsharma-tech.github.io/ebay-live-opening-up-dashboard/
--- Tab: Pre-Stream
+-- PRE-STREAM TAB — GRAIN & FILTER AWARE SQL
+-- Dashboard: eBay Live Opening Up — Pre-Stream Tab
+-- Repo: github.corp.ebay.com/eBay-Live-DS/ebay-live-opening-up-dashboard
 --
--- Source tables:
---   A  P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
---   B  P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT
---   C  P_LIVE_ANALYTICS_T.EVENT_FORM_NAV_BASE_PT
---   D  P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
---   E  P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T
---   F  P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
---   G  P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T
---   H  P_LIVE_ANALYTICS_T.EXPRESS_LISTING_COMPLETION_RATE_T
---   I  P_LIVE_ANALYTICS_V.LIVE_EVENT
---   J  P_AMER_VERTICALS_T.LIVE_COMMERCE_DAILY_DEMAND_INDICATORS
+-- GRAIN TOGGLE: Overall | Daily | Weekly (retail) | Monthly (MTD)
+-- FILTER DIMS:  geography | launch_phase | category | gmv_tier
 --
--- Run order: each query is independent — run in any order.
--- All rates use SUM(num)/SUM(denom) — never average of rates.
+-- HOW MASTER QUERIES WORK
+--   Each master query returns one row per:
+--     (day_period, rtl_week_beg_dt, rtl_week_end_dt, month_period,
+--      geography, launch_phase, category, gmv_tier)
+--   with RAW COUNTS (numerator + denominator) — NOT pre-computed rates.
+--
+--   Dashboard applies grain by grouping on the right period column:
+--     Overall  → SUM all rows (no GROUP BY on period)
+--     Daily    → GROUP BY day_period
+--     Weekly   → GROUP BY rtl_week_beg_dt, rtl_week_end_dt
+--     Monthly  → WHERE month_period = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM')
+--                GROUP BY month_period        (MTD: rows up to today)
+--
+--   Dashboard applies filter:
+--     WHERE geography = 'US' AND launch_phase = 'Wave 1' ...  (omit for All)
+--
+--   Rate computation: ROUND(SUM(numerator)*100.0/NULLIF(SUM(denominator),0),1)
+--
+-- SOURCE TABLES
+--   A   P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
+--   B   P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT   [no seller_id — grain only]
+--   C   P_LIVE_ANALYTICS_T.EVENT_FORM_NAV_BASE_PT
+--   D   P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
+--   E   P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T
+--   F   P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
+--   G   P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T
+--   DIM P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM
+--   CAL access_views.dw_cal_rtl_week
 -- ================================================================
 
 
 -- ================================================================
--- 0. SHARED CTEs (reference in sections below)
---    Paste these at the top of any multi-section query.
+-- SECTION 1 — SELLER SETUP SUCCESS RATE  (Master Grain + Filter)
+--
+--   Grain date = seller's first CTA click date (cohort-based)
+--   Numerator  = sellers with published event AND ≥1 listing
+--   Denominator = sellers who clicked Create Event CTA
+--
+--   ⚠ Cohort metric: recent cohorts show artificially low rates
+--     because they haven't had enough time to complete setup.
+--     Use Weekly or Monthly grain to see mature cohorts.
 -- ================================================================
-/*
-WITH setup_sellers AS (
-    SELECT DISTINCT user_id AS seller_id
-    FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-    WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-),
-published_event_sellers AS (
-    SELECT DISTINCT seller_id
-    FROM P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T
-    WHERE published_cnt > 0
-),
-has_listing_sellers AS (
-    SELECT DISTINCT seller_id
-    FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
-    WHERE total_listings > 0
-),
-first_cta_date AS (
-    SELECT user_id AS seller_id, MIN(session_start_dt) AS first_cta_dt
+
+WITH first_cta AS (
+    SELECT
+        user_id                                                    AS seller_id,
+        MIN(session_start_dt)                                      AS first_cta_dt
     FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
     WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
     GROUP BY user_id
-),
-first_stream_date AS (
-    SELECT slr_id AS seller_id, MIN(cal_dt) AS first_stream_dt
-    FROM P_AMER_VERTICALS_T.LIVE_COMMERCE_DAILY_DEMAND_INDICATORS
-    WHERE deleted_ind = 0 AND event_duration_min > 0
-    GROUP BY slr_id
-)
-*/
-
-
--- ================================================================
--- SECTION 1 — L0 NORTH STAR: Seller Setup Success Rate
---   Definition: sellers with published event + ≥1 listing
---               divided by sellers who clicked Create Event CTA.
---   ⚠ Cohort-level metric: best run against a fixed onboarding
---     cohort (e.g., all sellers who clicked CTA in a given month).
--- ================================================================
-
--- 1A. Overall rate (all time)
-WITH setup_sellers AS (
-    SELECT DISTINCT user_id AS seller_id
-    FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-    WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
 ),
 setup_success AS (
     SELECT DISTINCT ecr.seller_id
@@ -78,115 +66,49 @@ setup_success AS (
       AND la.total_listings > 0
 )
 SELECT
-    COUNT(DISTINCT ss.seller_id)                                                AS setup_started_sellers,
-    COUNT(DISTINCT su.seller_id)                                                AS setup_success_sellers,
-    ROUND(COUNT(DISTINCT su.seller_id) * 100.0
-          / NULLIF(COUNT(DISTINCT ss.seller_id), 0), 1)                         AS seller_setup_success_rate_pct
-FROM setup_sellers ss
-LEFT JOIN setup_success su ON ss.seller_id = su.seller_id;
-
-
--- 1B. Weekly trend of Seller Setup Success Rate
-WITH seller_first_cta AS (
-    SELECT
-        user_id                                         AS seller_id,
-        MIN(session_start_dt)                           AS first_cta_dt,
-        DATE_TRUNC('week', MIN(session_start_dt))       AS cohort_week
-    FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-    WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-    GROUP BY user_id
-),
-setup_success AS (
-    SELECT DISTINCT ecr.seller_id
-    FROM P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T ecr
-    INNER JOIN P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T la ON ecr.seller_id = la.seller_id
-    WHERE ecr.published_cnt > 0 AND la.total_listings > 0
-)
-SELECT
-    fc.cohort_week,
-    COUNT(DISTINCT fc.seller_id)                                                AS setup_started_sellers,
-    COUNT(DISTINCT su.seller_id)                                                AS setup_success_sellers,
-    ROUND(COUNT(DISTINCT su.seller_id) * 100.0
-          / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1)                         AS seller_setup_success_rate_pct
-FROM seller_first_cta fc
-LEFT JOIN setup_success su ON fc.seller_id = su.seller_id
-GROUP BY fc.cohort_week
-ORDER BY fc.cohort_week DESC;
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM-dd')                    AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM')                       AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(DISTINCT fc.seller_id)                                   AS setup_started,
+    COUNT(DISTINCT ss.seller_id)                                   AS setup_success
+FROM first_cta fc
+LEFT JOIN setup_success ss
+    ON  fc.seller_id = ss.seller_id
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(fc.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  fc.first_cta_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
 -- ================================================================
--- SECTION 2 — P0 FUNNEL: All 5 Steps
---   LPG → Event Creation → Listing Readiness → First Show Ready
---   → 14-Day First Show
+-- SECTION 2 — P0 FULL FUNNEL  (Master Grain + Filter)
 --
---   All rates expressed as % of setup_started (denominator is fixed
---   so steps can be >100% relative to each other if needed, but in
---   practice each step is a subset of the prior).
+--   All 5 steps: Setup Started → Event Created → Listing Ready
+--                → First Show Ready → 14-Day First Show
+--   Grain date = seller's first CTA click date (cohort-based)
+--   Each step is a count of distinct sellers — compute step rates
+--   in the dashboard as step_N / step0_setup_started.
 -- ================================================================
 
--- 2A. Single-row funnel snapshot (all time)
-WITH setup_sellers AS (
-    SELECT DISTINCT user_id AS seller_id
-    FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-    WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-),
-published_sellers AS (
-    SELECT DISTINCT seller_id
-    FROM P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T
-    WHERE published_cnt > 0
-),
-listing_sellers AS (
-    SELECT DISTINCT seller_id
-    FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
-    WHERE total_listings > 0
-),
-ready_sellers AS (
-    SELECT DISTINCT p.seller_id
-    FROM published_sellers p
-    INNER JOIN listing_sellers l ON p.seller_id = l.seller_id
-),
-first_cta_dt AS (
-    SELECT user_id AS seller_id, MIN(session_start_dt) AS first_cta_dt
-    FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-    WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-    GROUP BY user_id
-),
-first_stream_dt AS (
-    SELECT slr_id AS seller_id, MIN(cal_dt) AS first_stream_dt
-    FROM P_AMER_VERTICALS_T.LIVE_COMMERCE_DAILY_DEMAND_INDICATORS
-    WHERE deleted_ind = 0 AND event_duration_min > 0
-    GROUP BY slr_id
-),
-streamed_14d AS (
-    SELECT fc.seller_id
-    FROM first_cta_dt fc
-    INNER JOIN first_stream_dt fsd ON fc.seller_id = fsd.seller_id
-    WHERE fsd.first_stream_dt >= fc.first_cta_dt
-      AND DATEDIFF(fsd.first_stream_dt, fc.first_cta_dt) <= 14
-)
-SELECT
-    COUNT(DISTINCT ss.seller_id)                                                AS step0_setup_started,
-    COUNT(DISTINCT pe.seller_id)                                                AS step1_event_created,
-    COUNT(DISTINCT ls.seller_id)                                                AS step2_listing_ready,
-    COUNT(DISTINCT rs.seller_id)                                                AS step3_first_show_ready,
-    COUNT(DISTINCT s14.seller_id)                                               AS step4_14d_first_show,
-    ROUND(COUNT(DISTINCT pe.seller_id)  * 100.0 / NULLIF(COUNT(DISTINCT ss.seller_id), 0), 1) AS event_creation_rate_pct,
-    ROUND(COUNT(DISTINCT ls.seller_id)  * 100.0 / NULLIF(COUNT(DISTINCT ss.seller_id), 0), 1) AS listing_readiness_rate_pct,
-    ROUND(COUNT(DISTINCT rs.seller_id)  * 100.0 / NULLIF(COUNT(DISTINCT ss.seller_id), 0), 1) AS first_show_ready_rate_pct,
-    ROUND(COUNT(DISTINCT s14.seller_id) * 100.0 / NULLIF(COUNT(DISTINCT ss.seller_id), 0), 1) AS fourteen_day_first_show_rate_pct
-FROM setup_sellers ss
-LEFT JOIN published_sellers pe  ON ss.seller_id = pe.seller_id
-LEFT JOIN listing_sellers   ls  ON ss.seller_id = ls.seller_id
-LEFT JOIN ready_sellers     rs  ON ss.seller_id = rs.seller_id
-LEFT JOIN streamed_14d      s14 ON ss.seller_id = s14.seller_id;
-
-
--- 2B. Funnel by cohort week (for the trend chart)
-WITH seller_first_cta AS (
+WITH first_cta AS (
     SELECT
-        user_id                                         AS seller_id,
-        MIN(session_start_dt)                           AS first_cta_dt,
-        DATE_TRUNC('week', MIN(session_start_dt))       AS cohort_week
+        user_id                                                    AS seller_id,
+        MIN(session_start_dt)                                      AS first_cta_dt
     FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
     WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
     GROUP BY user_id
@@ -201,216 +123,217 @@ listing_sellers AS (
     FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
     WHERE total_listings > 0
 ),
-first_stream_dt AS (
+first_stream AS (
     SELECT slr_id AS seller_id, MIN(cal_dt) AS first_stream_dt
     FROM P_AMER_VERTICALS_T.LIVE_COMMERCE_DAILY_DEMAND_INDICATORS
     WHERE deleted_ind = 0 AND event_duration_min > 0
     GROUP BY slr_id
 )
 SELECT
-    fc.cohort_week,
-    COUNT(DISTINCT fc.seller_id)                                                AS setup_started,
-    COUNT(DISTINCT pe.seller_id)                                                AS event_created,
-    COUNT(DISTINCT ls.seller_id)                                                AS listing_ready,
-    COUNT(DISTINCT CASE WHEN pe.seller_id IS NOT NULL AND ls.seller_id IS NOT NULL THEN fc.seller_id END) AS first_show_ready,
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM-dd')                    AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM')                       AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(DISTINCT fc.seller_id)                                   AS step0_setup_started,
+    COUNT(DISTINCT pe.seller_id)                                   AS step1_event_created,
+    COUNT(DISTINCT ls.seller_id)                                   AS step2_listing_ready,
+    COUNT(DISTINCT CASE
+        WHEN pe.seller_id IS NOT NULL AND ls.seller_id IS NOT NULL
+        THEN fc.seller_id END)                                     AS step3_first_show_ready,
     COUNT(DISTINCT CASE
         WHEN fsd.first_stream_dt >= fc.first_cta_dt
           AND DATEDIFF(fsd.first_stream_dt, fc.first_cta_dt) <= 14
-        THEN fc.seller_id END)                                                  AS streamed_14d,
-    ROUND(COUNT(DISTINCT pe.seller_id) * 100.0 / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1) AS event_creation_rate_pct,
-    ROUND(COUNT(DISTINCT ls.seller_id) * 100.0 / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1) AS listing_readiness_rate_pct,
-    ROUND(COUNT(DISTINCT CASE WHEN pe.seller_id IS NOT NULL AND ls.seller_id IS NOT NULL THEN fc.seller_id END) * 100.0
-          / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1)                         AS first_show_ready_rate_pct,
-    ROUND(COUNT(DISTINCT CASE
-        WHEN fsd.first_stream_dt >= fc.first_cta_dt
-          AND DATEDIFF(fsd.first_stream_dt, fc.first_cta_dt) <= 14
-        THEN fc.seller_id END) * 100.0 / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1) AS fourteen_day_first_show_rate_pct
-FROM seller_first_cta fc
+        THEN fc.seller_id END)                                     AS step4_14d_first_show
+FROM first_cta fc
 LEFT JOIN published_sellers  pe  ON fc.seller_id = pe.seller_id
 LEFT JOIN listing_sellers    ls  ON fc.seller_id = ls.seller_id
-LEFT JOIN first_stream_dt    fsd ON fc.seller_id = fsd.seller_id
-GROUP BY fc.cohort_week
-ORDER BY fc.cohort_week DESC;
-
-
--- 2C. Funnel with seller dimension breakdown (onboarding_method, geography, gmv_tier)
-WITH seller_first_cta AS (
-    SELECT user_id AS seller_id, MIN(session_start_dt) AS first_cta_dt
-    FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-    WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-    GROUP BY user_id
-),
-published_sellers AS (
-    SELECT DISTINCT seller_id
-    FROM P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T
-    WHERE published_cnt > 0
-),
-listing_sellers AS (
-    SELECT DISTINCT seller_id
-    FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
-    WHERE total_listings > 0
-),
-first_stream_dt AS (
-    SELECT slr_id AS seller_id, MIN(cal_dt) AS first_stream_dt
-    FROM P_AMER_VERTICALS_T.LIVE_COMMERCE_DAILY_DEMAND_INDICATORS
-    WHERE deleted_ind = 0 AND event_duration_min > 0
-    GROUP BY slr_id
-),
-seller_dims AS (
-    SELECT DISTINCT seller_id, onboarding_method, geography, gmv_tier, seller_tenure, launch_phase
-    FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
-)
-SELECT
-    d.onboarding_method,
-    d.geography,
-    d.gmv_tier,
-    d.seller_tenure,
-    COUNT(DISTINCT fc.seller_id)                                                AS setup_started,
-    ROUND(COUNT(DISTINCT pe.seller_id) * 100.0 / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1) AS event_creation_rate_pct,
-    ROUND(COUNT(DISTINCT ls.seller_id) * 100.0 / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1) AS listing_readiness_rate_pct,
-    ROUND(COUNT(DISTINCT CASE WHEN pe.seller_id IS NOT NULL AND ls.seller_id IS NOT NULL THEN fc.seller_id END) * 100.0
-          / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1)                         AS first_show_ready_rate_pct,
-    ROUND(COUNT(DISTINCT CASE
-        WHEN fsd.first_stream_dt >= fc.first_cta_dt
-          AND DATEDIFF(fsd.first_stream_dt, fc.first_cta_dt) <= 14
-        THEN fc.seller_id END) * 100.0 / NULLIF(COUNT(DISTINCT fc.seller_id), 0), 1) AS fourteen_day_first_show_rate_pct
-FROM seller_first_cta fc
-LEFT JOIN published_sellers  pe  ON fc.seller_id = pe.seller_id
-LEFT JOIN listing_sellers    ls  ON fc.seller_id = ls.seller_id
-LEFT JOIN first_stream_dt    fsd ON fc.seller_id = fsd.seller_id
-LEFT JOIN seller_dims        d   ON CAST(fc.seller_id AS STRING) = d.seller_id
-GROUP BY d.onboarding_method, d.geography, d.gmv_tier, d.seller_tenure
-ORDER BY d.geography, d.gmv_tier, d.seller_tenure;
+LEFT JOIN first_stream       fsd ON fc.seller_id = fsd.seller_id
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON CAST(fc.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON fc.first_cta_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(fc.first_cta_dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
 -- ================================================================
--- SECTION 3 — EVENT CREATION QUALITY
---   Event Completion Rate, Abandonment Rate, daily trend
+-- SECTION 3 — EVENT COMPLETION QUALITY  (Master Grain + Filter)
+--
+--   Metric: Event Completion Rate = published events / CTA clicks
+--   Grain date = activity date (dt) from COMPLETION_RATE_FINAL_T
+--   Seller dims joined from LIVE_SELLER_UNIFIED_ONBOARDING_DIM.
 -- ================================================================
 
--- 3A. Daily event completion + abandonment rates
 SELECT
-    dt,
-    SUM(numerator)                                                              AS published_events,
-    SUM(denominator)                                                            AS cta_clicks,
-    ROUND(SUM(numerator) * 100.0 / NULLIF(SUM(denominator), 0), 1)             AS event_completion_rate_pct,
-    ROUND((1 - SUM(numerator) / NULLIF(SUM(denominator), 0)) * 100.0, 1)       AS event_abandonment_rate_pct
-FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
-WHERE metric_name = 'Event Completion Rate'
-GROUP BY dt
-ORDER BY dt DESC;
+    DATE_FORMAT(crf.dt, 'yyyy-MM-dd')                             AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(crf.dt, 'yyyy-MM')                                AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    SUM(crf.numerator)                                             AS published_events,
+    SUM(crf.denominator)                                           AS cta_clicks
+FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T crf
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(crf.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  crf.dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+WHERE crf.metric_name = 'Event Completion Rate'
+GROUP BY
+    DATE_FORMAT(crf.dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(crf.dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
--- 3B. Event completion rate by seller dimension (last 30 days)
+-- 3B. CTA click entry point breakdown by grain (diagnostic)
+--     No seller_id join possible — grain only.
 SELECT
-    onboarding_method,
-    geography,
-    gmv_tier,
-    seller_tenure,
-    SUM(numerator)                                                              AS published_events,
-    SUM(denominator)                                                            AS cta_clicks,
-    ROUND(SUM(numerator) * 100.0 / NULLIF(SUM(denominator), 0), 1)             AS event_completion_rate_pct,
-    ROUND((1 - SUM(numerator) / NULLIF(SUM(denominator), 0)) * 100.0, 1)       AS event_abandonment_rate_pct
-FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
-WHERE metric_name = 'Event Completion Rate'
-  AND dt >= DATE_SUB(CURRENT_DATE, 30)
-GROUP BY onboarding_method, geography, gmv_tier, seller_tenure
-ORDER BY event_completion_rate_pct DESC;
-
-
--- 3C. CTA click volume by entry point (Create vs Create First Event)
-SELECT
-    session_start_dt                                                            AS dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd')                   AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')                      AS month_period,
     event_type,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS event_count,
-    COUNT(DISTINCT user_id)                                                     AS unique_sellers
+    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM) AS event_count,
+    COUNT(DISTINCT user_id)                                        AS unique_sellers
 FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
 WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-GROUP BY session_start_dt, event_type
-ORDER BY dt DESC, event_type;
-
-
--- 3D. Onboarding flow distribution (what flow are sellers on when clicking CTA)
-SELECT
-    session_start_dt                                                            AS dt,
-    onboarding_flow,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS event_count,
-    COUNT(DISTINCT user_id)                                                     AS unique_sellers
-FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-GROUP BY session_start_dt, onboarding_flow
-ORDER BY dt DESC, event_count DESC;
+GROUP BY
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM'),
+    event_type
+ORDER BY day_period DESC;
 
 
 -- ================================================================
--- SECTION 4 — LISTING CREATION QUALITY
---   Listing Completion Rate, Express Listing Adoption,
---   Case Break Adoption, daily trend
+-- SECTION 4 — LISTING CREATION QUALITY  (Master Grain + Filter)
 -- ================================================================
 
--- 4A. Daily listing completion rate (Create Listings CTA → Create Listings button)
+-- 4A. Listing Completion Rate
 SELECT
-    dt,
-    SUM(numerator)                                                              AS completed_cnt,
-    SUM(denominator)                                                            AS started_cnt,
-    ROUND(SUM(numerator) * 100.0 / NULLIF(SUM(denominator), 0), 1)             AS listing_completion_rate_pct
-FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
-WHERE metric_name = 'Express Listing Completion Rate'
-GROUP BY dt
-ORDER BY dt DESC;
+    DATE_FORMAT(crf.dt, 'yyyy-MM-dd')                             AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(crf.dt, 'yyyy-MM')                                AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    SUM(crf.numerator)                                             AS completed_listings,
+    SUM(crf.denominator)                                           AS started_listings
+FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T crf
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(crf.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  crf.dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+WHERE crf.metric_name = 'Express Listing Completion Rate'
+GROUP BY
+    DATE_FORMAT(crf.dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(crf.dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
--- 4B. Express Listing Adoption: daily rate
+-- 4B. Express Listing Adoption
 SELECT
-    dt,
-    SUM(total_listings)                                                         AS total_listings,
-    SUM(express_listings)                                                       AS express_listings,
-    SUM(case_break_listings)                                                    AS case_break_listings,
-    ROUND(SUM(express_listings)     * 100.0 / NULLIF(SUM(total_listings), 0), 1) AS express_adoption_pct,
-    ROUND(SUM(case_break_listings)  * 100.0 / NULLIF(SUM(total_listings), 0), 1) AS case_break_adoption_pct
-FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
-GROUP BY dt
-ORDER BY dt DESC;
-
-
--- 4C. Express vs case-break adoption by seller segment
-SELECT
-    d.geography,
-    d.gmv_tier,
-    d.category,
-    d.seller_tenure,
-    SUM(la.total_listings)                                                      AS total_listings,
-    SUM(la.express_listings)                                                    AS express_listings,
-    SUM(la.case_break_listings)                                                 AS case_break_listings,
-    ROUND(SUM(la.express_listings)    * 100.0 / NULLIF(SUM(la.total_listings), 0), 1) AS express_adoption_pct,
-    ROUND(SUM(la.case_break_listings) * 100.0 / NULLIF(SUM(la.total_listings), 0), 1) AS case_break_adoption_pct
+    DATE_FORMAT(la.dt, 'yyyy-MM-dd')                              AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(la.dt, 'yyyy-MM')                                 AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    SUM(la.total_listings)                                         AS total_listings,
+    SUM(la.express_listings)                                       AS express_listings,
+    SUM(la.case_break_listings)                                    AS case_break_listings
 FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T la
 LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
-    ON CAST(la.seller_id AS STRING) = d.seller_id
-WHERE la.dt >= DATE_SUB(CURRENT_DATE, 30)
-GROUP BY d.geography, d.gmv_tier, d.category, d.seller_tenure
-ORDER BY express_adoption_pct DESC;
+    ON  CAST(la.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  la.dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(la.dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(la.dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
--- 4D. Avg listings per event (express vs total) — per day
+-- 4C. Avg listings per event by grain (diagnostic)
 SELECT
-    dt,
-    COUNT(DISTINCT event_id)                                                    AS event_count,
-    ROUND(SUM(total_listings)    / NULLIF(COUNT(DISTINCT event_id), 0), 1)      AS avg_total_listings_per_event,
-    ROUND(SUM(express_listings)  / NULLIF(COUNT(DISTINCT event_id), 0), 1)      AS avg_express_listings_per_event,
-    ROUND(SUM(case_break_listings) / NULLIF(COUNT(DISTINCT event_id), 0), 1)    AS avg_case_break_listings_per_event
-FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
-GROUP BY dt
-ORDER BY dt DESC;
+    DATE_FORMAT(la.dt, 'yyyy-MM-dd')                              AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(la.dt, 'yyyy-MM')                                 AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(DISTINCT la.event_id)                                    AS event_count,
+    SUM(la.total_listings)                                         AS total_listings,
+    SUM(la.express_listings)                                       AS express_listings
+FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T la
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(la.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  la.dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(la.dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(la.dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
--- 4E. Import modal path breakdown (which import method do sellers choose?)
+-- 4D. Import modal path breakdown (grain only — no seller_id in source)
 SELECT
-    session_start_dt                                                            AS dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd')                   AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')                      AS month_period,
     event_type,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS event_count,
-    COUNT(DISTINCT user_id)                                                     AS unique_sellers
+    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM) AS event_count,
+    COUNT(DISTINCT user_id)                                        AS unique_sellers
 FROM P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
 WHERE event_type IN (
     'Import Modal - From Template',
     'Import Modal - From Store',
@@ -419,350 +342,332 @@ WHERE event_type IN (
     'Import Modal - Template Selected',
     'Import Listings - CTA Click'
 )
-GROUP BY session_start_dt, event_type
-ORDER BY dt DESC, event_count DESC;
+GROUP BY
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM'),
+    event_type
+ORDER BY day_period DESC, event_count DESC;
 
 
 -- ================================================================
--- SECTION 5 — RECOMMENDATION QUALITY
---   Category Accept Rate, Shipping Policy Accept Rate
---   Definition: Accept Rate = 1 - (override clicks / modal impressions)
+-- SECTION 5 — RECOMMENDATION QUALITY  (Grain Only)
 --
---   modal_impression = VIEW event with mi='2548'  (Create Modal)
---   category_override = ACTN on p4613028.m183399.l207370
---   shipping_override = ACTN on p4613028.m183399.l207390
---
---   Note: Override click means the seller changed the pre-filled
---   recommendation rather than accepting it.
+--   ⚠ EXPRESS_LISTINGS_BASE_PT has no seller_id.
+--   Filter dimensions (geography / launch_phase / category / gmv_tier)
+--   are NOT available for this section.
+--   Grain toggle applies; filter toggles will show All only.
 -- ================================================================
 
--- 5A. Daily recommendation acceptance rates
 SELECT
-    session_start_dt                                                            AS dt,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression'
-                        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS modal_impressions,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Category'
-                        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS category_overrides,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Shipping Policy'
-                        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS shipping_overrides,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Edit'
-                        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS edit_clicks,
-    -- Accept Rate = sessions without override / sessions with modal impression
-    ROUND((1 - COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Category'
-                                   THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-               * 1.0 / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression'
-                                                   THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END), 0)
-           ) * 100.0, 1)                                                        AS category_accept_rate_pct,
-    ROUND((1 - COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Shipping Policy'
-                                   THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-               * 1.0 / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression'
-                                                   THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END), 0)
-           ) * 100.0, 1)                                                        AS shipping_accept_rate_pct,
-    -- Override Rate (inverse of Accept Rate — for P1 diagnostic)
-    ROUND(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Category'
-                              THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression'
-                                               THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END), 0), 1) AS category_override_rate_pct,
-    ROUND(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Shipping Policy'
-                              THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression'
-                                               THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END), 0), 1) AS shipping_override_rate_pct
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd')                   AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')                      AS month_period,
+    SUM(CASE WHEN event_type = 'Create Modal - Impression'        THEN 1 ELSE 0 END) AS modal_impressions,
+    SUM(CASE WHEN event_type = 'Create Modal - Category'          THEN 1 ELSE 0 END) AS category_overrides,
+    SUM(CASE WHEN event_type = 'Create Modal - Shipping Policy'   THEN 1 ELSE 0 END) AS shipping_overrides,
+    SUM(CASE WHEN event_type = 'Create Modal - Create Listings'   THEN 1 ELSE 0 END) AS modal_conversions,
+    SUM(CASE WHEN event_type = 'Create Modal - Dismiss'           THEN 1 ELSE 0 END) AS modal_dismisses,
+    SUM(CASE WHEN event_type = 'Create Modal - Edit'              THEN 1 ELSE 0 END) AS modal_edits
 FROM P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT
-GROUP BY session_start_dt
-ORDER BY dt DESC;
-
-
--- 5B. Create Modal step-through funnel
---     Impression → Create Listings (key conversion inside modal)
-SELECT
-    session_start_dt                                                            AS dt,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression'         THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS modal_impressions,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Edit'               THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS modal_edit_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Category'           THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS modal_category_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Shipping Policy'    THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS modal_shipping_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Create Listings'    THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS modal_create_listings,
-    COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Dismiss'            THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS modal_dismiss,
-    ROUND(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Create Listings' THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression' THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END), 0), 1) AS modal_conversion_rate_pct,
-    ROUND(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Dismiss'      THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT CASE WHEN event_type = 'Create Modal - Impression' THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END), 0), 1) AS modal_dismiss_rate_pct
-FROM P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT
-GROUP BY session_start_dt
-ORDER BY dt DESC;
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')
+ORDER BY day_period DESC;
 
 
 -- ================================================================
--- SECTION 6 — ERROR GUARDRAILS
---   Event Error Rate: from EVENT_CREATION_BASE_PT.error_code
+-- SECTION 6 — ERROR GUARDRAILS  (Master Grain + Filter)
 --
---   ⚠ Listing Error Rate is NOT available: error_code is NULL
---     in EXPRESS_LISTINGS_BASE_PT.
---   ⚠ Mandatory Field vs Category Restriction split requires
---     knowing specific error_code values in your environment.
+--   Event Error Rate = error events / total events
+--   user_id from EVENT_CREATION_BASE_PT = seller_id → dim join available
 -- ================================================================
 
--- 6A. Daily event error rate (all errors)
 SELECT
-    session_start_dt                                                            AS dt,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS total_events,
-    COUNT(DISTINCT CASE WHEN error_code IS NOT NULL AND error_code != ''
-                        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS error_events,
-    ROUND(COUNT(DISTINCT CASE WHEN error_code IS NOT NULL AND error_code != ''
-                              THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM), 0), 1) AS event_error_rate_pct
-FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-GROUP BY session_start_dt
-ORDER BY dt DESC;
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd')                   AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')                      AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(DISTINCT ec.SESSION_START_DT || ec.GUID || ec.SESSION_SKEY || ec.SEQNUM)  AS total_events,
+    COUNT(DISTINCT CASE WHEN ec.error_code IS NOT NULL AND ec.error_code != ''
+        THEN ec.SESSION_START_DT || ec.GUID || ec.SESSION_SKEY || ec.SEQNUM END)    AS error_events
+FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT ec
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(ec.user_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  ec.session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
--- 6B. Error code distribution — identify top error types
+-- 6B. Error code distribution — identify top error types (diagnostic)
 SELECT
-    session_start_dt                                                            AS dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd')                   AS day_period,
     error_code,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS error_event_count,
-    COUNT(DISTINCT user_id)                                                     AS unique_sellers_affected
+    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM) AS error_event_count,
+    COUNT(DISTINCT user_id)                                        AS unique_sellers_affected
 FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
 WHERE error_code IS NOT NULL AND error_code != ''
-GROUP BY session_start_dt, error_code
-ORDER BY dt DESC, error_event_count DESC;
--- After reviewing: replace <mandatory_field_error_code> and <category_restriction_error_code>
--- below with the actual error codes from query 6B results.
-
-
--- 6C. Mandatory field vs category restriction error split
---     ⚠ Replace error code placeholders after running 6B
-SELECT
-    session_start_dt                                                            AS dt,
-    COUNT(DISTINCT CASE WHEN error_code = '<mandatory_field_error_code>'
-                        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS mandatory_field_errors,
-    COUNT(DISTINCT CASE WHEN error_code = '<category_restriction_error_code>'
-                        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS category_restriction_errors,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS total_events,
-    ROUND(COUNT(DISTINCT CASE WHEN error_code = '<mandatory_field_error_code>'
-                              THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM), 0), 1) AS mandatory_field_error_rate_pct,
-    ROUND(COUNT(DISTINCT CASE WHEN error_code = '<category_restriction_error_code>'
-                              THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM), 0), 1) AS category_restriction_error_rate_pct
-FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-GROUP BY session_start_dt
-ORDER BY dt DESC;
+GROUP BY DATE_FORMAT(session_start_dt, 'yyyy-MM-dd'), error_code
+ORDER BY day_period DESC, error_event_count DESC;
 
 
 -- ================================================================
 -- SECTION 7 — P1 DIAGNOSTICS
---   Draft Save Rate, Draft→Publish Conversion,
---   Updates Before Publish, Category/Shipping Override Rate,
---   Listing Row Edit behavior
+--   Draft Save Rate, Updates Before Publish, Listing Row Edit behavior
+--   Kept as diagnostic queries; not wired to grain toggle KPI tiles.
 -- ================================================================
 
--- 7A. Draft Save Rate + Draft→Publish Conversion
---   ⚠ The shared SID (p4613031.m173558.l191918) cannot distinguish
---     save-as-draft vs publish via UBI — both actions fire the same
---     event. This query treats all saves as "form submissions" and
---     compares to actual published events from LIVE_EVENT.
+-- 7A. Draft Save + Draft→Publish Conversion (grain only)
 SELECT
-    b.session_start_dt                                                          AS dt,
-    COUNT(DISTINCT b.SESSION_START_DT || b.GUID || b.SESSION_SKEY || b.SEQNUM) AS form_save_events,  -- primary save SID
-    COUNT(DISTINCT c.SESSION_START_DT || c.GUID || c.SESSION_SKEY || c.SEQNUM) AS secondary_save_events,  -- secondary save SID
-    COUNT(DISTINCT b.user_id)                                                   AS sellers_with_save,
-    -- Draft→Publish: of sellers who saved (via form), how many eventually published?
-    COUNT(DISTINCT pub.seller_id)                                               AS sellers_who_published
+    DATE_FORMAT(b.session_start_dt, 'yyyy-MM-dd')                 AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(b.session_start_dt, 'yyyy-MM')                    AS month_period,
+    COUNT(DISTINCT b.SESSION_START_DT || b.GUID || b.SESSION_SKEY || b.SEQNUM) AS form_save_events,
+    COUNT(DISTINCT b.user_id)                                      AS sellers_with_save,
+    COUNT(DISTINCT pub.seller_id)                                  AS sellers_who_published
 FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT b
-LEFT JOIN P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT c
-    ON  b.user_id          = c.user_id
-    AND c.event_type        = 'Event Form - Save or Publish (secondary)'
 LEFT JOIN (
     SELECT DISTINCT seller_id
     FROM P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T
     WHERE published_cnt > 0
 ) pub ON b.user_id = pub.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  b.session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
 WHERE b.event_type = 'Event Form - Save as draft or Publish'
-GROUP BY b.session_start_dt
-ORDER BY dt DESC;
+GROUP BY
+    DATE_FORMAT(b.session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(b.session_start_dt, 'yyyy-MM')
+ORDER BY day_period DESC;
 
 
--- 7B. Updates before publish — avg secondary save actions per seller (proxy for edit iterations)
---   'Event Form - Save or Publish (secondary)' fires each time a seller updates the form.
---   High numbers suggest friction in the form or seller confusion.
-WITH secondary_saves_per_seller AS (
+-- 7B. Updates before publish — avg secondary save actions (grain only)
+WITH secondary_saves AS (
     SELECT
-        session_start_dt                                                        AS dt,
-        user_id                                                                 AS seller_id,
-        COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)     AS secondary_save_count
+        session_start_dt,
+        user_id                                                    AS seller_id,
+        COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM) AS save_count
     FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
     WHERE event_type = 'Event Form - Save or Publish (secondary)'
     GROUP BY session_start_dt, user_id
 )
 SELECT
-    dt,
-    COUNT(DISTINCT seller_id)                                                   AS sellers_with_edits,
-    ROUND(AVG(secondary_save_count), 2)                                         AS avg_edits_before_publish,
-    PERCENTILE_APPROX(secondary_save_count, 0.50, 10000)                        AS p50_edits,
-    PERCENTILE_APPROX(secondary_save_count, 0.75, 10000)                        AS p75_edits,
-    PERCENTILE_APPROX(secondary_save_count, 0.90, 10000)                        AS p90_edits,
-    COUNT(DISTINCT CASE WHEN secondary_save_count > 5 THEN seller_id END)       AS sellers_above_5_edits,
-    ROUND(COUNT(DISTINCT CASE WHEN secondary_save_count > 5 THEN seller_id END)
-          * 100.0 / NULLIF(COUNT(DISTINCT seller_id), 0), 1)                    AS pct_above_5_edits_threshold
-FROM secondary_saves_per_seller
-GROUP BY dt
-ORDER BY dt DESC;
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd')                   AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')                      AS month_period,
+    COUNT(DISTINCT ss.seller_id)                                   AS sellers_with_edits,
+    ROUND(AVG(ss.save_count), 2)                                   AS avg_edits_before_publish,
+    PERCENTILE_APPROX(ss.save_count, 0.50, 10000)                  AS p50_edits,
+    PERCENTILE_APPROX(ss.save_count, 0.90, 10000)                  AS p90_edits
+FROM secondary_saves ss
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  ss.session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')
+ORDER BY day_period DESC;
 
 
--- 7C. Category and Shipping Policy Override Rate (P1 Diagnostic)
---     Reuses Section 5A logic — standalone version for the P1 table
+-- 7C. Listing row edit behavior by grain (diagnostic)
 SELECT
-    DATE_TRUNC('week', session_start_dt)                                        AS week_start,
-    SUM(CASE WHEN event_type = 'Create Modal - Impression'      THEN 1 ELSE 0 END) AS modal_impressions,
-    SUM(CASE WHEN event_type = 'Create Modal - Category'         THEN 1 ELSE 0 END) AS category_override_clicks,
-    SUM(CASE WHEN event_type = 'Create Modal - Shipping Policy'  THEN 1 ELSE 0 END) AS shipping_override_clicks,
-    ROUND(SUM(CASE WHEN event_type = 'Create Modal - Category' THEN 1 ELSE 0 END)
-          * 100.0 / NULLIF(SUM(CASE WHEN event_type = 'Create Modal - Impression' THEN 1 ELSE 0 END), 0), 1) AS category_override_rate_pct,
-    ROUND(SUM(CASE WHEN event_type = 'Create Modal - Shipping Policy' THEN 1 ELSE 0 END)
-          * 100.0 / NULLIF(SUM(CASE WHEN event_type = 'Create Modal - Impression' THEN 1 ELSE 0 END), 0), 1) AS shipping_override_rate_pct
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd')                   AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')                      AS month_period,
+    SUM(CASE WHEN event_type = 'Listing Row - Edit (Pencil)'   THEN 1 ELSE 0 END) AS pencil_edit_clicks,
+    SUM(CASE WHEN event_type = 'Listing Row - Overflow Menu'   THEN 1 ELSE 0 END) AS overflow_menu_clicks,
+    SUM(CASE WHEN event_type = 'Listing Row - Save Update'     THEN 1 ELSE 0 END) AS save_update_clicks,
+    SUM(CASE WHEN event_type = 'Listing Row - Close Edit'      THEN 1 ELSE 0 END) AS close_edit_clicks,
+    SUM(CASE WHEN event_type = 'Listing - Duplicate'           THEN 1 ELSE 0 END) AS duplicate_clicks
 FROM P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT
-GROUP BY DATE_TRUNC('week', session_start_dt)
-ORDER BY week_start DESC;
-
-
--- 7D. Listing row edit behavior — how often do sellers edit after creating?
-SELECT
-    session_start_dt                                                            AS dt,
-    COUNT(DISTINCT CASE WHEN event_type = 'Listing Row - Edit (Pencil)'   THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS pencil_edit_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Listing Row - Overflow Menu'   THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS overflow_menu_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Listing Row - Save Update'     THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS save_update_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Listing Row - Close Edit'      THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS close_edit_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Listing - Duplicate'           THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS duplicate_clicks,
-    COUNT(DISTINCT CASE WHEN event_type = 'Listing - Draft Update'        THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS draft_update_clicks,
-    -- Save rate within edit sessions: of edits opened, how many were saved vs closed?
-    ROUND(COUNT(DISTINCT CASE WHEN event_type = 'Listing Row - Save Update' THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END)
-          * 100.0 / NULLIF(COUNT(DISTINCT CASE WHEN event_type IN ('Listing Row - Edit (Pencil)', 'Listing Row - Overflow Menu')
-                                               THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END), 0), 1) AS edit_save_rate_pct
-FROM P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT
-GROUP BY session_start_dt
-ORDER BY dt DESC;
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(session_start_dt, 'yyyy-MM')
+ORDER BY day_period DESC;
 
 
 -- ================================================================
--- SECTION 8 — COMPLETION TIME  (P50 / P75 / P90 / AVG)
---   Event Completion Time: CTA click → event publish
---   Express Listing Completion Time: CTA click → listing created
+-- SECTION 8 — COMPLETION TIME  (Master Grain + Filter)
+--
+--   Event Completion Time:   CTA click → event publish
+--   Listing Completion Time: CTA click → listing created
+--
+--   ⚠ PERCENTILE_APPROX cannot be re-aggregated across rows.
+--     This query computes percentiles AT daily grain per filter combo.
+--     For Weekly: run with date range = rtl_week_beg_dt to rtl_week_end_dt
+--     For Monthly MTD: add WHERE DATE_FORMAT(dt,'yyyy-MM') = DATE_FORMAT(CURRENT_DATE(),'yyyy-MM')
+--     For Overall: remove date filter
+--
+--   ⚠ Verify COMPLETION_TIME_FINAL_T has a seller_id column before
+--     running. If absent, remove the DIM join and filter dims will be unavailable.
 -- ================================================================
 
--- 8A. Daily event completion time percentiles (exclude NULLs = unmatched)
+-- 8A. Event Completion Time — daily grain + filter dims
 SELECT
-    dt,
+    DATE_FORMAT(ctf.dt, 'yyyy-MM-dd')                             AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(ctf.dt, 'yyyy-MM')                                AS month_period,
+    ctf.metric_name,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(*)                                                       AS total_rows,
+    COUNT(ctf.diff_in_minutes)                                     AS matched_rows,
+    PERCENTILE_APPROX(ctf.diff_in_minutes, 0.50, 10000)            AS p50_minutes,
+    PERCENTILE_APPROX(ctf.diff_in_minutes, 0.75, 10000)            AS p75_minutes,
+    PERCENTILE_APPROX(ctf.diff_in_minutes, 0.90, 10000)            AS p90_minutes,
+    ROUND(AVG(ctf.diff_in_minutes), 2)                             AS avg_minutes
+FROM P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T ctf
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(ctf.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  ctf.dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+WHERE ctf.diff_in_minutes IS NOT NULL
+  AND ctf.diff_in_minutes >= 0
+GROUP BY
+    DATE_FORMAT(ctf.dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(ctf.dt, 'yyyy-MM'),
+    ctf.metric_name,
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC, ctf.metric_name;
+
+
+-- 8B. Listing Completion Time — express vs non-express split + filter dims
+SELECT
+    DATE_FORMAT(ctf.dt, 'yyyy-MM-dd')                             AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(ctf.dt, 'yyyy-MM')                                AS month_period,
+    ctf.is_express,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(*)                                                       AS listing_count,
+    COUNT(ctf.diff_in_minutes)                                     AS matched_count,
+    PERCENTILE_APPROX(ctf.diff_in_minutes, 0.50, 10000)            AS p50_minutes,
+    PERCENTILE_APPROX(ctf.diff_in_minutes, 0.75, 10000)            AS p75_minutes,
+    PERCENTILE_APPROX(ctf.diff_in_minutes, 0.90, 10000)            AS p90_minutes,
+    ROUND(AVG(ctf.diff_in_minutes), 2)                             AS avg_minutes
+FROM P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T ctf
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(ctf.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  ctf.dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+WHERE ctf.metric_name = 'Express Listing Completion Time'
+  AND ctf.diff_in_minutes IS NOT NULL
+  AND ctf.diff_in_minutes >= 0
+GROUP BY
+    DATE_FORMAT(ctf.dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(ctf.dt, 'yyyy-MM'),
+    ctf.is_express,
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC, ctf.is_express;
+
+
+-- 8C. CTA-to-publish match rate — data quality check
+SELECT
     metric_name,
-    COUNT(*)                                                                    AS total_rows,
-    COUNT(diff_in_minutes)                                                      AS matched_rows,
-    ROUND(COUNT(diff_in_minutes) * 100.0 / NULLIF(COUNT(*), 0), 1)             AS match_rate_pct,
-    PERCENTILE_APPROX(diff_in_minutes, 0.50, 10000)                            AS p50_minutes,
-    PERCENTILE_APPROX(diff_in_minutes, 0.75, 10000)                            AS p75_minutes,
-    PERCENTILE_APPROX(diff_in_minutes, 0.90, 10000)                            AS p90_minutes,
-    ROUND(AVG(diff_in_minutes), 2)                                              AS avg_minutes
+    DATE_FORMAT(dt, 'yyyy-MM')                                     AS month_period,
+    COUNT(*)                                                        AS total,
+    COUNT(last_cta_ts)                                              AS matched,
+    ROUND(COUNT(last_cta_ts) * 100.0 / NULLIF(COUNT(*), 0), 1)     AS match_rate_pct
 FROM P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T
-WHERE diff_in_minutes IS NOT NULL
-  AND diff_in_minutes >= 0
-GROUP BY dt, metric_name
-ORDER BY dt DESC, metric_name;
-
-
--- 8B. Weekly completion time by metric + seller segment
-SELECT
-    DATE_TRUNC('week', dt)                                                      AS week_start,
-    metric_name,
-    geography,
-    gmv_tier,
-    seller_tenure,
-    COUNT(*)                                                                    AS total_rows,
-    COUNT(diff_in_minutes)                                                      AS matched_rows,
-    PERCENTILE_APPROX(diff_in_minutes, 0.50, 10000)                            AS p50_minutes,
-    PERCENTILE_APPROX(diff_in_minutes, 0.90, 10000)                            AS p90_minutes,
-    ROUND(AVG(diff_in_minutes), 2)                                              AS avg_minutes
-FROM P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T
-WHERE diff_in_minutes IS NOT NULL
-  AND diff_in_minutes >= 0
-GROUP BY DATE_TRUNC('week', dt), metric_name, geography, gmv_tier, seller_tenure
-ORDER BY week_start DESC, metric_name;
-
-
--- 8C. Express listing time — express vs non-express split
-SELECT
-    dt,
-    is_express,
-    COUNT(*)                                                                    AS listing_count,
-    COUNT(diff_in_minutes)                                                      AS matched_count,
-    PERCENTILE_APPROX(diff_in_minutes, 0.50, 10000)                            AS p50_minutes,
-    PERCENTILE_APPROX(diff_in_minutes, 0.75, 10000)                            AS p75_minutes,
-    PERCENTILE_APPROX(diff_in_minutes, 0.90, 10000)                            AS p90_minutes,
-    ROUND(AVG(diff_in_minutes), 2)                                              AS avg_minutes
-FROM P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T
-WHERE metric_name = 'Express Listing Completion Time'
-  AND diff_in_minutes IS NOT NULL
-  AND diff_in_minutes >= 0
-GROUP BY dt, is_express
-ORDER BY dt DESC, is_express;
-
-
--- 8D. CTA-to-publish match rate (data quality check)
---     What % of published events/listings had a preceding CTA click?
-SELECT
-    metric_name,
-    COUNT(*)                                                                    AS total,
-    COUNT(last_cta_ts)                                                          AS matched,
-    ROUND(COUNT(last_cta_ts) * 100.0 / NULLIF(COUNT(*), 0), 1)                 AS match_rate_pct
-FROM P_LIVE_ANALYTICS_T.COMPLETION_TIME_FINAL_T
-WHERE dt >= DATE_SUB(CURRENT_DATE, 30)
-GROUP BY metric_name;
+WHERE dt >= DATE_SUB(CURRENT_DATE(), 30)
+GROUP BY metric_name, DATE_FORMAT(dt, 'yyyy-MM');
 
 
 -- ================================================================
--- SECTION 9 — NAVIGATION FUNNEL (Live Studio entry + side menu)
---   Tracks how sellers navigate into the creation flows.
+-- SECTION 9 — NAVIGATION FUNNEL  (Grain + Filter where possible)
 -- ================================================================
 
--- 9A. Daily navigation event volume by type
-SELECT
-    session_start_dt                                                            AS dt,
-    event_type,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS event_count,
-    COUNT(DISTINCT user_id)                                                     AS unique_sellers
-FROM P_LIVE_ANALYTICS_T.EVENT_FORM_NAV_BASE_PT
-GROUP BY session_start_dt, event_type
-ORDER BY dt DESC, event_count DESC;
-
-
--- 9B. Entry-to-CTA conversion rate
---     How many sellers who entered Live Studio (from Seller Hub) clicked Create Event CTA?
+-- 9A. Entry-to-CTA conversion rate (grain + filter via user_id)
 WITH studio_entries AS (
-    SELECT DISTINCT
+    SELECT
         session_start_dt,
-        user_id AS seller_id
+        user_id                                                    AS seller_id
     FROM P_LIVE_ANALYTICS_T.EVENT_FORM_NAV_BASE_PT
     WHERE event_type = 'Live Studio - Entry (Seller Hub)'
 ),
 cta_clicks AS (
     SELECT DISTINCT
         session_start_dt,
-        user_id AS seller_id
+        user_id                                                    AS seller_id
     FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
     WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
 )
 SELECT
-    se.session_start_dt                                                         AS dt,
-    COUNT(DISTINCT se.seller_id)                                                AS studio_entry_sellers,
-    COUNT(DISTINCT cc.seller_id)                                                AS sellers_who_clicked_cta,
-    ROUND(COUNT(DISTINCT cc.seller_id) * 100.0
-          / NULLIF(COUNT(DISTINCT se.seller_id), 0), 1)                         AS entry_to_cta_rate_pct
+    DATE_FORMAT(se.session_start_dt, 'yyyy-MM-dd')                AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(se.session_start_dt, 'yyyy-MM')                   AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(DISTINCT se.seller_id)                                   AS studio_entry_sellers,
+    COUNT(DISTINCT cc.seller_id)                                   AS cta_click_sellers
 FROM studio_entries se
 LEFT JOIN cta_clicks cc
     ON  se.seller_id = cc.seller_id
     AND se.session_start_dt = cc.session_start_dt
-GROUP BY se.session_start_dt
-ORDER BY dt DESC;
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(se.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  se.session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(se.session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(se.session_start_dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
--- 9C. Events page impression → CTA click rate (same session)
+-- 9B. Events Page impression → CTA rate (grain + filter)
 WITH events_page_views AS (
     SELECT DISTINCT session_start_dt, user_id AS seller_id
     FROM P_LIVE_ANALYTICS_T.EVENT_FORM_NAV_BASE_PT
@@ -774,150 +679,198 @@ cta_clicks AS (
     WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
 )
 SELECT
-    ep.session_start_dt                                                         AS dt,
-    COUNT(DISTINCT ep.seller_id)                                                AS events_page_viewers,
-    COUNT(DISTINCT cc.seller_id)                                                AS sellers_who_clicked_cta,
-    ROUND(COUNT(DISTINCT cc.seller_id) * 100.0
-          / NULLIF(COUNT(DISTINCT ep.seller_id), 0), 1)                         AS events_page_to_cta_rate_pct
+    DATE_FORMAT(ep.session_start_dt, 'yyyy-MM-dd')                AS day_period,
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(ep.session_start_dt, 'yyyy-MM')                   AS month_period,
+    COALESCE(d.geography,    'Unknown')                            AS geography,
+    COALESCE(d.launch_phase, 'Unknown')                            AS launch_phase,
+    COALESCE(d.category,     'Unknown')                            AS category,
+    COALESCE(d.gmv_tier,     'Unknown')                            AS gmv_tier,
+    COUNT(DISTINCT ep.seller_id)                                   AS page_viewers,
+    COUNT(DISTINCT cc.seller_id)                                   AS cta_click_sellers
 FROM events_page_views ep
 LEFT JOIN cta_clicks cc
     ON  ep.seller_id = cc.seller_id
     AND ep.session_start_dt = cc.session_start_dt
-GROUP BY ep.session_start_dt
-ORDER BY dt DESC;
+LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+    ON  CAST(ep.seller_id AS STRING) = d.seller_id
+LEFT JOIN access_views.dw_cal_rtl_week rw
+    ON  ep.session_start_dt BETWEEN rw.rtl_week_beg_dt AND rw.rtl_week_end_dt
+GROUP BY
+    DATE_FORMAT(ep.session_start_dt, 'yyyy-MM-dd'),
+    rw.rtl_week_beg_dt,
+    rw.rtl_week_end_dt,
+    DATE_FORMAT(ep.session_start_dt, 'yyyy-MM'),
+    COALESCE(d.geography, 'Unknown'),
+    COALESCE(d.launch_phase, 'Unknown'),
+    COALESCE(d.category, 'Unknown'),
+    COALESCE(d.gmv_tier, 'Unknown')
+ORDER BY day_period DESC;
 
 
--- 9D. Side menu navigation breakdown (where do sellers navigate from Live Studio?)
+-- ================================================================
+-- SECTION 10 — SUMMARY SCORECARD  (Grain + Filter — all metrics)
+--
+--   Single wide query for the KPI tile row.
+--   Parameterize date range based on grain:
+--     Overall : remove date filters below (show all available data)
+--     Daily   : WHERE dt = DATE_SUB(CURRENT_DATE(), 1)
+--     Weekly  : WHERE dt BETWEEN <rtl_week_beg_dt> AND <rtl_week_end_dt>
+--               (fetch current week from dw_cal_rtl_week where age_for_rtl_week_id = 0)
+--     Monthly : WHERE DATE_FORMAT(dt,'yyyy-MM') = DATE_FORMAT(CURRENT_DATE(),'yyyy-MM')
+-- ================================================================
+
+-- 10A. Fetch current and last complete retail week dates (use output to parameterize §10B)
 SELECT
-    session_start_dt                                                            AS dt,
-    event_type,
-    COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)         AS click_count,
-    COUNT(DISTINCT user_id)                                                     AS unique_sellers
-FROM P_LIVE_ANALYTICS_T.EVENT_FORM_NAV_BASE_PT
-WHERE event_type LIKE 'Side Menu%'
-GROUP BY session_start_dt, event_type
-ORDER BY dt DESC, click_count DESC;
+    rtl_week_beg_dt,
+    rtl_week_end_dt,
+    rtl_week_name,
+    age_for_rtl_week_id
+FROM access_views.dw_cal_rtl_week
+WHERE age_for_rtl_week_id IN (0, -1)
+ORDER BY age_for_rtl_week_id DESC;
 
 
--- ================================================================
--- SECTION 10 — FULL P0/P1 METRIC SUMMARY TABLE
---   Single query outputting all key Pre-Stream rates for a
---   given time window — suitable for a scorecard row.
--- ================================================================
-
+-- 10B. Grain-parameterized scorecard
+--   Replace ${start_dt} and ${end_dt} based on output of §10A or chosen grain.
+--   For Overall: remove the date WHERE clauses entirely.
 WITH event_completion AS (
     SELECT
-        SUM(numerator)                                                          AS published_events,
-        SUM(denominator)                                                        AS cta_clicks
-    FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
-    WHERE metric_name = 'Event Completion Rate'
-      AND dt >= DATE_SUB(CURRENT_DATE, 30)
+        COALESCE(d.geography,    'Unknown')                        AS geography,
+        COALESCE(d.launch_phase, 'Unknown')                        AS launch_phase,
+        COALESCE(d.category,     'Unknown')                        AS category,
+        COALESCE(d.gmv_tier,     'Unknown')                        AS gmv_tier,
+        SUM(crf.numerator)                                         AS published_events,
+        SUM(crf.denominator)                                       AS cta_clicks
+    FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T crf
+    LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+        ON CAST(crf.seller_id AS STRING) = d.seller_id
+    WHERE crf.metric_name = 'Event Completion Rate'
+      AND crf.dt BETWEEN '${start_dt}' AND '${end_dt}'
+    GROUP BY
+        COALESCE(d.geography, 'Unknown'),
+        COALESCE(d.launch_phase, 'Unknown'),
+        COALESCE(d.category, 'Unknown'),
+        COALESCE(d.gmv_tier, 'Unknown')
 ),
-listing_completion AS (
+listing_adoption AS (
     SELECT
-        SUM(numerator)                                                          AS completed_listings,
-        SUM(denominator)                                                        AS started_listings
-    FROM P_LIVE_ANALYTICS_T.COMPLETION_RATE_FINAL_T
-    WHERE metric_name = 'Express Listing Completion Rate'
-      AND dt >= DATE_SUB(CURRENT_DATE, 30)
-),
-express_adoption AS (
-    SELECT
-        SUM(express_listings)                                                   AS express_listings,
-        SUM(total_listings)                                                     AS total_listings
-    FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T
-    WHERE dt >= DATE_SUB(CURRENT_DATE, 30)
-),
-recommendation AS (
-    SELECT
-        SUM(CASE WHEN event_type = 'Create Modal - Impression'    THEN 1 ELSE 0 END) AS modal_impressions,
-        SUM(CASE WHEN event_type = 'Create Modal - Category'      THEN 1 ELSE 0 END) AS category_overrides,
-        SUM(CASE WHEN event_type = 'Create Modal - Shipping Policy' THEN 1 ELSE 0 END) AS shipping_overrides
-    FROM P_LIVE_ANALYTICS_T.EXPRESS_LISTINGS_BASE_PT
-    WHERE session_start_dt >= DATE_SUB(CURRENT_DATE, 30)
-),
-errors AS (
-    SELECT
-        COUNT(DISTINCT SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM)     AS total_events,
-        COUNT(DISTINCT CASE WHEN error_code IS NOT NULL AND error_code != ''
-                            THEN SESSION_START_DT || GUID || SESSION_SKEY || SEQNUM END) AS error_events
-    FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
-    WHERE session_start_dt >= DATE_SUB(CURRENT_DATE, 30)
+        COALESCE(d.geography,    'Unknown')                        AS geography,
+        COALESCE(d.launch_phase, 'Unknown')                        AS launch_phase,
+        COALESCE(d.category,     'Unknown')                        AS category,
+        COALESCE(d.gmv_tier,     'Unknown')                        AS gmv_tier,
+        SUM(la.total_listings)                                     AS total_listings,
+        SUM(la.express_listings)                                   AS express_listings
+    FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T la
+    LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+        ON CAST(la.seller_id AS STRING) = d.seller_id
+    WHERE la.dt BETWEEN '${start_dt}' AND '${end_dt}'
+    GROUP BY
+        COALESCE(d.geography, 'Unknown'),
+        COALESCE(d.launch_phase, 'Unknown'),
+        COALESCE(d.category, 'Unknown'),
+        COALESCE(d.gmv_tier, 'Unknown')
 ),
 setup_funnel AS (
     SELECT
-        COUNT(DISTINCT ss.seller_id)                                            AS setup_started,
-        COUNT(DISTINCT pe.seller_id)                                            AS published,
-        COUNT(DISTINCT ls.seller_id)                                            AS listing_ready,
-        COUNT(DISTINCT CASE WHEN pe.seller_id IS NOT NULL AND ls.seller_id IS NOT NULL THEN ss.seller_id END) AS first_show_ready,
-        COUNT(DISTINCT CASE WHEN fsd.first_stream_dt >= fc.first_cta_dt
-                              AND DATEDIFF(fsd.first_stream_dt, fc.first_cta_dt) <= 14
-                            THEN ss.seller_id END) AS streamed_14d
+        COALESCE(d.geography,    'Unknown')                        AS geography,
+        COALESCE(d.launch_phase, 'Unknown')                        AS launch_phase,
+        COALESCE(d.category,     'Unknown')                        AS category,
+        COALESCE(d.gmv_tier,     'Unknown')                        AS gmv_tier,
+        COUNT(DISTINCT fc.seller_id)                               AS setup_started,
+        COUNT(DISTINCT pe.seller_id)                               AS event_created,
+        COUNT(DISTINCT ls.seller_id)                               AS listing_ready,
+        COUNT(DISTINCT CASE WHEN pe.seller_id IS NOT NULL AND ls.seller_id IS NOT NULL
+                            THEN fc.seller_id END)                 AS first_show_ready,
+        COUNT(DISTINCT CASE
+            WHEN fsd.first_stream_dt >= fc.first_cta_dt
+              AND DATEDIFF(fsd.first_stream_dt, fc.first_cta_dt) <= 14
+            THEN fc.seller_id END)                                 AS streamed_14d
     FROM (
-        SELECT DISTINCT user_id AS seller_id
+        SELECT user_id AS seller_id, MIN(session_start_dt) AS first_cta_dt
         FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT
         WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click')
-          AND session_start_dt >= DATE_SUB(CURRENT_DATE, 30)
-    ) ss
-    LEFT JOIN (SELECT DISTINCT seller_id FROM P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T WHERE published_cnt > 0) pe ON ss.seller_id = pe.seller_id
-    LEFT JOIN (SELECT DISTINCT seller_id FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T WHERE total_listings > 0) ls ON ss.seller_id = ls.seller_id
-    LEFT JOIN (SELECT user_id AS seller_id, MIN(session_start_dt) AS first_cta_dt FROM P_LIVE_ANALYTICS_T.EVENT_CREATION_BASE_PT WHERE event_type IN ('Create Event - CTA Click', 'Create First Event - CTA Click') GROUP BY user_id) fc ON ss.seller_id = fc.seller_id
-    LEFT JOIN (SELECT slr_id AS seller_id, MIN(cal_dt) AS first_stream_dt FROM P_AMER_VERTICALS_T.LIVE_COMMERCE_DAILY_DEMAND_INDICATORS WHERE deleted_ind = 0 AND event_duration_min > 0 GROUP BY slr_id) fsd ON ss.seller_id = fsd.seller_id
+          AND session_start_dt BETWEEN '${start_dt}' AND '${end_dt}'
+        GROUP BY user_id
+    ) fc
+    LEFT JOIN (SELECT DISTINCT seller_id FROM P_LIVE_ANALYTICS_T.EVENT_COMPLETION_RATE_T WHERE published_cnt > 0) pe
+        ON fc.seller_id = pe.seller_id
+    LEFT JOIN (SELECT DISTINCT seller_id FROM P_LIVE_ANALYTICS_T.LISTING_ADOPTION_T WHERE total_listings > 0) ls
+        ON fc.seller_id = ls.seller_id
+    LEFT JOIN (
+        SELECT slr_id AS seller_id, MIN(cal_dt) AS first_stream_dt
+        FROM P_AMER_VERTICALS_T.LIVE_COMMERCE_DAILY_DEMAND_INDICATORS
+        WHERE deleted_ind = 0 AND event_duration_min > 0
+        GROUP BY slr_id
+    ) fsd ON fc.seller_id = fsd.seller_id
+    LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+        ON CAST(fc.seller_id AS STRING) = d.seller_id
+    GROUP BY
+        COALESCE(d.geography, 'Unknown'),
+        COALESCE(d.launch_phase, 'Unknown'),
+        COALESCE(d.category, 'Unknown'),
+        COALESCE(d.gmv_tier, 'Unknown')
 )
 SELECT
-    -- L0
-    ROUND(sf.first_show_ready * 100.0 / NULLIF(sf.setup_started, 0), 1)        AS seller_setup_success_rate_pct,
-    -- P0
-    ROUND(sf.published        * 100.0 / NULLIF(sf.setup_started, 0), 1)        AS event_creation_rate_pct,
-    ROUND(sf.listing_ready    * 100.0 / NULLIF(sf.setup_started, 0), 1)        AS listing_readiness_rate_pct,
-    ROUND(sf.first_show_ready * 100.0 / NULLIF(sf.setup_started, 0), 1)        AS first_show_ready_rate_pct,
-    ROUND(sf.streamed_14d     * 100.0 / NULLIF(sf.setup_started, 0), 1)        AS fourteen_day_first_show_rate_pct,
-    ROUND(ea.express_listings * 100.0 / NULLIF(ea.total_listings, 0), 1)       AS express_listing_adoption_pct,
-    -- Event quality
-    ROUND(ec.published_events * 100.0 / NULLIF(ec.cta_clicks, 0), 1)           AS event_completion_rate_pct,
-    ROUND((1 - ec.published_events / NULLIF(ec.cta_clicks, 0)) * 100.0, 1)     AS event_abandonment_rate_pct,
-    -- Listing quality
-    ROUND(lc.completed_listings * 100.0 / NULLIF(lc.started_listings, 0), 1)   AS listing_completion_rate_pct,
-    -- Recommendation quality
-    ROUND((1 - rec.category_overrides / NULLIF(rec.modal_impressions, 0)) * 100.0, 1) AS category_accept_rate_pct,
-    ROUND((1 - rec.shipping_overrides / NULLIF(rec.modal_impressions, 0)) * 100.0, 1) AS shipping_accept_rate_pct,
-    ROUND(rec.category_overrides * 100.0 / NULLIF(rec.modal_impressions, 0), 1) AS category_override_rate_pct,
-    ROUND(rec.shipping_overrides * 100.0 / NULLIF(rec.modal_impressions, 0), 1) AS shipping_override_rate_pct,
-    -- Error guardrail
-    ROUND(err.error_events * 100.0 / NULLIF(err.total_events, 0), 1)            AS event_error_rate_pct,
-    -- Raw counts for context
+    sf.geography,
+    sf.launch_phase,
+    sf.category,
+    sf.gmv_tier,
+    -- L0 North Star
     sf.setup_started,
-    sf.published,
-    sf.listing_ready,
     sf.first_show_ready,
-    sf.streamed_14d,
+    ROUND(sf.first_show_ready * 100.0 / NULLIF(sf.setup_started, 0), 1)           AS seller_setup_success_rate_pct,
+    -- P0 Funnel steps
+    ROUND(sf.event_created   * 100.0 / NULLIF(sf.setup_started, 0), 1)            AS event_creation_rate_pct,
+    ROUND(sf.listing_ready   * 100.0 / NULLIF(sf.setup_started, 0), 1)            AS listing_readiness_rate_pct,
+    ROUND(sf.first_show_ready * 100.0 / NULLIF(sf.setup_started, 0), 1)           AS first_show_ready_rate_pct,
+    ROUND(sf.streamed_14d    * 100.0 / NULLIF(sf.setup_started, 0), 1)            AS fourteen_day_first_show_rate_pct,
+    -- Event quality
+    ROUND(ec.published_events * 100.0 / NULLIF(ec.cta_clicks, 0), 1)              AS event_completion_rate_pct,
+    ROUND((1 - ec.published_events / NULLIF(ec.cta_clicks, 0)) * 100.0, 1)        AS event_abandonment_rate_pct,
+    -- Listing adoption
+    ROUND(la.express_listings * 100.0 / NULLIF(la.total_listings, 0), 1)          AS express_listing_adoption_pct,
+    la.total_listings,
+    la.express_listings,
     ec.cta_clicks,
-    ec.published_events,
-    ea.total_listings,
-    ea.express_listings,
-    err.total_events,
-    err.error_events
-FROM event_completion ec, listing_completion lc, express_adoption ea,
-     recommendation rec, errors err, setup_funnel sf;
+    ec.published_events
+FROM setup_funnel sf
+LEFT JOIN event_completion ec
+    ON  sf.geography    = ec.geography
+    AND sf.launch_phase = ec.launch_phase
+    AND sf.category     = ec.category
+    AND sf.gmv_tier     = ec.gmv_tier
+LEFT JOIN listing_adoption la
+    ON  sf.geography    = la.geography
+    AND sf.launch_phase = la.launch_phase
+    AND sf.category     = la.category
+    AND sf.gmv_tier     = la.gmv_tier
+ORDER BY sf.geography, sf.launch_phase, sf.category, sf.gmv_tier;
 
 
 -- ================================================================
--- NOTES ON NOT-AVAILABLE METRICS
+-- NOTES
 --
--- 1. Listing Error Rate
---    EXPRESS_LISTINGS_BASE_PT.error_code = NULL for all rows.
---    No listing-level error tracking is wired via UBI on this page.
---    Recommendation: add error_code SID capture in the B section
---    base table when instrumentation is available.
+-- 1. SECTIONS WITH GRAIN BUT NO SELLER DIM FILTER
+--    Sections 5, 7C, 7D: EXPRESS_LISTINGS_BASE_PT has no seller_id.
+--    Grain toggle applies; filter selectors will show All only.
 --
--- 2. Mandatory Field Error Rate vs Category Restriction Error Rate
---    Both are subsets of Section 6A (event_error_rate_pct).
---    Run Section 6B to enumerate actual error_code values, then
---    substitute them into Section 6C placeholders.
+-- 2. COMPLETION TIME PERCENTILES
+--    PERCENTILE_APPROX output cannot be re-aggregated.
+--    Sections 8A/8B compute at daily grain per filter combo.
+--    For Weekly/Monthly views: re-run with date range = full week/month.
 --
--- 3. "Draft Save Rate" vs "Draft Save → Publish Conversion" split
---    SID p4613031.m173558.l191918 fires for BOTH Save as Draft AND
---    Publish (shared SID, cannot split via UBI per code comments).
---    Section 7A approximates this by comparing form save events to
---    actual published count from LIVE_EVENT via EVENT_COMPLETION_RATE_T.
+-- 3. COHORT-BASED METRICS (Sections 1, 2, 10)
+--    Grain applies to first_cta_dt (cohort entry date), not activity date.
+--    Cohorts < 30 days old may show incomplete funnel rates — expected.
+--
+-- 4. MONTHLY = MTD
+--    Filter: WHERE DATE_FORMAT(dt, 'yyyy-MM') = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM')
+--    This includes all data from the 1st of the month through today.
+--
+-- 5. RETAIL WEEK JOIN
+--    access_views.dw_cal_rtl_week — confirmed available in Hermes.
+--    age_for_rtl_week_id = 0 → current (in-flight) week
+--    age_for_rtl_week_id = -1 → last complete retail week
 -- ================================================================
