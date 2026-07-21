@@ -219,6 +219,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </select>
   </div>
 
+  <div class="filter-group">
+    <label class="filter-lbl" for="f-method">Onboarding Method</label>
+    <select class="filter-sel" id="f-method" onchange="applyFilters()">
+      <option value="all">All Methods</option>
+      <option value="BD_Onboarded">BD Onboarded</option>
+      <option value="Self-Serve">Self-Serve</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-lbl" for="f-bg">Seller Background</label>
+    <select class="filter-sel" id="f-bg" onchange="applyFilters()">
+      <option value="all">All Backgrounds</option>
+      <option value="Core_to_Live">Core to Live</option>
+      <option value="Existing_Live">Existing Live</option>
+      <option value="New_to_Ebay">New to eBay</option>
+    </select>
+  </div>
+
   <div class="filter-divider"></div>
   <button class="filter-reset" id="filter-reset-btn" onclick="resetFilters()" style="display:none">✕ Reset filters</button>
   <span class="filter-note" id="filter-note">Pre-Stream filters live · Other tabs pending instrumentation</span>
@@ -2069,12 +2088,23 @@ const PS_DATA_MONTHLY = [
 ];
 
 // ─── Filters ───────────────────────────────────────────────────────────────
+const FILTER_LABELS = {
+  geo:    {US:'United States',UK:'United Kingdom',CA:'Canada',DE:'Germany',FR:'France',IT:'Italy',AU:'Australia',Unknown:'Unknown Geo'},
+  phase:  {Rest:'Rest Phase',Unknown:'Unknown Phase'},
+  cat:    {Apparel:'Apparel','Coins & Bullion':'Coins & Bullion','Comic Books & Memorabilia':'Comics',Electronics:'Electronics',Handbags:'Handbags','Health & Beauty':'Health & Beauty',Jewelry:'Jewelry',Sneakers:'Sneakers','Sports Memorabilia':'Sports Mem',Toys:'Toys','Trading Cards CCG':'TC CCG','Trading Cards STC':'TC STC',Watches:'Watches'},
+  tier:   {T1:'T1',T2:'T2',T3:'T3',Unknown:'Unknown Tier'},
+  method: {BD_Onboarded:'BD Onboarded','Self-Serve':'Self-Serve'},
+  bg:     {Core_to_Live:'Core to Live',Existing_Live:'Existing Live',New_to_Ebay:'New to eBay'}
+};
+
 function getFilterState() {
   return {
-    geo:   document.getElementById('f-geo').value,
-    phase: document.getElementById('f-phase').value,
-    cat:   document.getElementById('f-cat').value,
-    tier:  document.getElementById('f-tier').value
+    geo:    document.getElementById('f-geo').value,
+    phase:  document.getElementById('f-phase').value,
+    cat:    document.getElementById('f-cat').value,
+    tier:   document.getElementById('f-tier').value,
+    method: document.getElementById('f-method').value,
+    bg:     document.getElementById('f-bg').value
   };
 }
 
@@ -2227,10 +2257,10 @@ function renderPreStream() {
 
 function applyFilters() {
   const f = getFilterState();
-  const isFiltered = f.geo!=='all'||f.phase!=='all'||f.cat!=='all'||f.tier!=='all';
+  const isFiltered = f.geo!=='all'||f.phase!=='all'||f.cat!=='all'||f.tier!=='all'||f.method!=='all'||f.bg!=='all';
 
   // Highlight active selects
-  ['f-geo','f-phase','f-cat','f-tier'].forEach(id=>{
+  ['f-geo','f-phase','f-cat','f-tier','f-method','f-bg'].forEach(id=>{
     const el=document.getElementById(id);
     el.classList.toggle('active-filter', el.value!=='all');
   });
@@ -2240,10 +2270,12 @@ function applyFilters() {
 
   // Update note
   const parts = [];
-  if(f.geo!=='all')   parts.push(f.geo);
-  if(f.phase!=='all') parts.push(f.phase);
-  if(f.cat!=='all')   parts.push(f.cat);
-  if(f.tier!=='all')  parts.push(f.tier);
+  if(f.geo!=='all')    parts.push(f.geo);
+  if(f.phase!=='all')  parts.push(f.phase);
+  if(f.cat!=='all')    parts.push(f.cat);
+  if(f.tier!=='all')   parts.push(f.tier);
+  if(f.method!=='all') parts.push(FILTER_LABELS.method[f.method]);
+  if(f.bg!=='all')     parts.push(FILTER_LABELS.bg[f.bg]);
   const note = document.getElementById('filter-note');
   note.textContent = isFiltered
     ? 'Showing: ' + parts.join(' · ') + ' (Pre-Stream live · other tabs pending)'
@@ -2258,7 +2290,7 @@ function applyFilters() {
 }
 
 function resetFilters() {
-  ['f-geo','f-phase','f-cat','f-tier'].forEach(id=>{
+  ['f-geo','f-phase','f-cat','f-tier','f-method','f-bg'].forEach(id=>{
     document.getElementById(id).value='all';
     document.getElementById(id).classList.remove('active-filter');
   });
@@ -2275,10 +2307,12 @@ function updateBreadcrumb(){
   const tabName = {executive:'Executive',registration:'Registration',prestream:'Pre-Stream',instream:'In-Stream',poststream:'Post-Stream'}[activeTab];
   const f = getFilterState();
   const parts = [tabName,'Alpha cohort','As of 2026-07-09',activeGrain];
-  if(f.geo!=='all')   parts.push(FILTER_LABELS.geo[f.geo]);
-  if(f.phase!=='all') parts.push(FILTER_LABELS.phase[f.phase]);
-  if(f.cat!=='all')   parts.push(FILTER_LABELS.cat[f.cat]);
-  if(f.tier!=='all')  parts.push(FILTER_LABELS.tier[f.tier]);
+  if(f.geo!=='all')    parts.push(FILTER_LABELS.geo[f.geo]);
+  if(f.phase!=='all')  parts.push(FILTER_LABELS.phase[f.phase]);
+  if(f.cat!=='all')    parts.push(FILTER_LABELS.cat[f.cat]);
+  if(f.tier!=='all')   parts.push(FILTER_LABELS.tier[f.tier]);
+  if(f.method!=='all') parts.push(FILTER_LABELS.method[f.method]);
+  if(f.bg!=='all')     parts.push(FILTER_LABELS.bg[f.bg]);
   document.getElementById('bc').textContent = parts.join(' · ');
 }
 
