@@ -167,9 +167,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <label class="filter-lbl" for="f-geo">Geography</label>
     <select class="filter-sel" id="f-geo" onchange="applyFilters()">
       <option value="all">All Regions</option>
-      <option value="us">United States</option>
-      <option value="uk">United Kingdom</option>
-      <option value="de">Germany</option>
+      <option value="US">United States</option>
+      <option value="CA">Canada</option>
+      <option value="DE">Germany</option>
+      <option value="Unknown">Unknown</option>
     </select>
   </div>
 
@@ -177,9 +178,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <label class="filter-lbl" for="f-phase">Launch Phase</label>
     <select class="filter-sel" id="f-phase" onchange="applyFilters()">
       <option value="all">All Phases</option>
-      <option value="alpha">Alpha</option>
-      <option value="ramp">Ramp</option>
-      <option value="ga">GA</option>
+      <option value="Rest">Rest</option>
+      <option value="Unknown">Unknown</option>
     </select>
   </div>
 
@@ -187,11 +187,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <label class="filter-lbl" for="f-cat">Category</label>
     <select class="filter-sel" id="f-cat" onchange="applyFilters()">
       <option value="all">All Categories</option>
-      <option value="electronics">Electronics</option>
-      <option value="fashion">Fashion</option>
-      <option value="home">Home &amp; Garden</option>
-      <option value="sports">Sports</option>
-      <option value="collectibles">Collectibles</option>
+      <option value="Apparel">Apparel</option>
+      <option value="Coins &amp; Bullion">Coins &amp; Bullion</option>
+      <option value="Comic Books &amp; Memorabilia">Comic Books &amp; Memorabilia</option>
+      <option value="Electronics">Electronics</option>
+      <option value="Handbags">Handbags</option>
+      <option value="Health &amp; Beauty">Health &amp; Beauty</option>
+      <option value="Jewelry">Jewelry</option>
+      <option value="Sneakers">Sneakers</option>
+      <option value="Sports Memorabilia">Sports Memorabilia</option>
+      <option value="Toys">Toys</option>
+      <option value="Trading Cards">Trading Cards</option>
+      <option value="Trading Cards CCG">Trading Cards CCG</option>
+      <option value="Trading Cards STC">Trading Cards STC</option>
+      <option value="Watches">Watches</option>
     </select>
   </div>
 
@@ -199,15 +208,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <label class="filter-lbl" for="f-tier">Seller Tier</label>
     <select class="filter-sel" id="f-tier" onchange="applyFilters()">
       <option value="all">All Tiers</option>
-      <option value="t1">T1 — Top Sellers</option>
-      <option value="t2">T2 — Mid-Tier</option>
-      <option value="t3">T3 — New Sellers</option>
+      <option value="T1">T1 — Top Sellers</option>
+      <option value="T2">T2 — Mid-Tier</option>
+      <option value="T3">T3 — New Sellers</option>
+      <option value="Unknown">Unknown</option>
     </select>
   </div>
 
   <div class="filter-divider"></div>
   <button class="filter-reset" id="filter-reset-btn" onclick="resetFilters()" style="display:none">✕ Reset filters</button>
-  <span class="filter-note" id="filter-note">⏳ Filters apply once live data is available</span>
+  <span class="filter-note" id="filter-note">Pre-Stream filters live · Other tabs pending instrumentation</span>
 </div>
 
 <div class="main">
@@ -536,14 +546,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile north-star">
       <div class="kpi-label">Seller Setup Success Rate</div>
-      <div class="kpi-value xl">78.2%</div>
-      <div class="kpi-count">452 of 578 sellers · All-time Overall</div>
+      <div class="kpi-value xl" id="ps-val-setup">78.2%</div>
+      <div class="kpi-count" id="ps-cnt-setup">452 of 578 sellers · All-time Overall</div>
       <div class="kpi-note">Published event + ≥1 listing / Sellers who started setup</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Event Creation Rate</div>
-      <div class="kpi-value">85.1%</div>
-      <div class="kpi-count">492 of 578 sellers · All-time Overall</div>
+      <div class="kpi-value" id="ps-val-ec">85.1%</div>
+      <div class="kpi-count" id="ps-cnt-ec">492 of 578 sellers · All-time Overall</div>
       <div class="kpi-note">Ramp: &gt;50% ✓ · GA: &gt;75% ✓</div>
     </div>
     <div class="kpi-tile">
@@ -554,8 +564,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Listing Readiness Rate</div>
-      <div class="kpi-value">78.9%</div>
-      <div class="kpi-count">456 of 578 sellers · All-time Overall</div>
+      <div class="kpi-value" id="ps-val-lr">78.9%</div>
+      <div class="kpi-count" id="ps-cnt-lr">456 of 578 sellers · All-time Overall</div>
       <div class="kpi-note">Ramp: &gt;50% ✓ · GA: &gt;75% ✓</div>
     </div>
   </div>
@@ -568,14 +578,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">First Show Ready Rate</div>
-      <div class="kpi-value">78.2%</div>
-      <div class="kpi-count">452 of 578 sellers · All-time Overall</div>
+      <div class="kpi-value" id="ps-val-fsr">78.2%</div>
+      <div class="kpi-count" id="ps-cnt-fsr">452 of 578 sellers · All-time Overall</div>
       <div class="kpi-note">Ramp: &gt;20% ✓ · GA: &gt;40% ✓</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">14-Day First Show Rate</div>
-      <div class="kpi-value">7.8%</div>
-      <div class="kpi-count">45 of 578 sellers · All-time Overall</div>
+      <div class="kpi-value" id="ps-val-s14">7.8%</div>
+      <div class="kpi-count" id="ps-cnt-s14">45 of 578 sellers · All-time Overall</div>
       <div class="kpi-note">Ramp: &gt;20% · GA: &gt;60%</div>
     </div>
     <div class="kpi-tile">
@@ -594,40 +604,40 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <div style="background:#fff;padding:16px">
       <div class="funnel">
         <div class="funnel-row">
-          <div class="funnel-meta"><span>Setup Started (CTA Click)</span><span>578 sellers (100%)</span></div>
+          <div class="funnel-meta"><span>Setup Started (CTA Click)</span><span id="ps-fn-baseline">578 sellers (100%)</span></div>
           <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
         </div>
         <div class="funnel-row">
-          <div class="funnel-meta"><span>Event Creation Rate</span><span>492 sellers (85.1%)</span></div>
+          <div class="funnel-meta"><span>Event Creation Rate</span><span id="ps-fn-ec-lbl">492 sellers (85.1%)</span></div>
           <div class="funnel-track">
-            <div class="funnel-fill" style="width:85.1%;background:#0353e9">85.1%</div>
+            <div class="funnel-fill" id="ps-fn-ec-bar" style="width:85.1%;background:#0353e9">85.1%</div>
             <div class="funnel-target-ramp" style="left:50%"></div>
             <div class="funnel-target-ga" style="left:75%"></div>
           </div>
           <div class="funnel-targets-legend"><span class="ramp">▏ Ramp: 50%</span><span class="ga">▏ GA: 75%</span></div>
         </div>
         <div class="funnel-row">
-          <div class="funnel-meta"><span>Listing Readiness Rate</span><span>456 sellers (78.9%)</span></div>
+          <div class="funnel-meta"><span>Listing Readiness Rate</span><span id="ps-fn-lr-lbl">456 sellers (78.9%)</span></div>
           <div class="funnel-track">
-            <div class="funnel-fill" style="width:78.9%;background:#0043ce">78.9%</div>
+            <div class="funnel-fill" id="ps-fn-lr-bar" style="width:78.9%;background:#0043ce">78.9%</div>
             <div class="funnel-target-ramp" style="left:50%"></div>
             <div class="funnel-target-ga" style="left:75%"></div>
           </div>
           <div class="funnel-targets-legend"><span class="ramp">▏ Ramp: 50%</span><span class="ga">▏ GA: 75%</span></div>
         </div>
         <div class="funnel-row">
-          <div class="funnel-meta"><span>First Show Ready Rate</span><span>452 sellers (78.2%)</span></div>
+          <div class="funnel-meta"><span>First Show Ready Rate</span><span id="ps-fn-fsr-lbl">452 sellers (78.2%)</span></div>
           <div class="funnel-track">
-            <div class="funnel-fill" style="width:78.2%;background:#002d9c">78.2%</div>
+            <div class="funnel-fill" id="ps-fn-fsr-bar" style="width:78.2%;background:#002d9c">78.2%</div>
             <div class="funnel-target-ramp" style="left:20%"></div>
             <div class="funnel-target-ga" style="left:40%"></div>
           </div>
           <div class="funnel-targets-legend"><span class="ramp">▏ Ramp: 20%</span><span class="ga">▏ GA: 40%</span></div>
         </div>
         <div class="funnel-row">
-          <div class="funnel-meta"><span>14-Day First Show Rate</span><span>45 sellers (7.8%)</span></div>
+          <div class="funnel-meta"><span>14-Day First Show Rate</span><span id="ps-fn-s14-lbl">45 sellers (7.8%)</span></div>
           <div class="funnel-track">
-            <div class="funnel-fill" style="width:7.8%;background:#001d6c">7.8%</div>
+            <div class="funnel-fill" id="ps-fn-s14-bar" style="width:7.8%;background:#001d6c">7.8%</div>
             <div class="funnel-target-ramp" style="left:20%"></div>
             <div class="funnel-target-ga" style="left:60%"></div>
           </div>
@@ -1567,14 +1577,89 @@ function setGrain(g, btn) {
   updateBreadcrumb();
 }
 
-// ─── Filters ───────────────────────────────────────────────────────────────
-const FILTER_LABELS = {
-  geo:   {all:'All Regions',us:'United States',uk:'United Kingdom',de:'Germany'},
-  phase: {all:'All Phases',alpha:'Alpha',ramp:'Ramp',ga:'GA'},
-  cat:   {all:'All Categories',electronics:'Electronics',fashion:'Fashion',home:'Home & Garden',sports:'Sports',collectibles:'Collectibles'},
-  tier:  {all:'All Tiers',t1:'T1',t2:'T2',t3:'T3'}
-};
+// ─── Pre-Stream filter data (Hermes · Jul 21 2026 · Overall grain) ──────────
+// Columns: geo, phase, cat, tier, s(setup_started), ec(event_created),
+//          lr(listing_ready), fsr(first_show_ready), s14(streamed_14d)
+const PS_DATA = [
+  {geo:"CA",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"CA",phase:"Rest",cat:"Toys",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"Unknown",s:2,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"DE",phase:"Rest",cat:"Handbags",tier:"T3",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T2",s:6,ec:5,lr:5,fsr:5,s14:0},
+  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T3",s:34,ec:33,lr:33,fsr:33,s14:3},
+  {geo:"US",phase:"Rest",cat:"Clothing, Shoes & Accessories",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Clothing, Shoes & Accessories",tier:"T3",s:2,ec:0,lr:1,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T1",s:8,ec:8,lr:8,fsr:8,s14:0},
+  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:18,ec:18,lr:18,fsr:18,s14:1},
+  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:30,ec:30,lr:30,fsr:30,s14:4},
+  {geo:"US",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T1",s:9,ec:9,lr:9,fsr:9,s14:0},
+  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T2",s:6,ec:6,lr:3,fsr:3,s14:0},
+  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:30,ec:27,lr:24,fsr:24,s14:4},
+  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T2",s:2,ec:2,lr:2,fsr:2,s14:0},
+  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T3",s:4,ec:4,lr:4,fsr:4,s14:1},
+  {geo:"US",phase:"Rest",cat:"Everything Else",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T2",s:3,ec:3,lr:3,fsr:3,s14:1},
+  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T3",s:11,ec:10,lr:8,fsr:8,s14:0},
+  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:16,ec:15,lr:14,fsr:14,s14:4},
+  {geo:"US",phase:"Rest",cat:"Home Décor",tier:"T3",s:5,ec:5,lr:4,fsr:4,s14:1},
+  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T2",s:4,ec:3,lr:3,fsr:3,s14:0},
+  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T3",s:23,ec:23,lr:22,fsr:22,s14:2},
+  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:3,ec:3,lr:3,fsr:3,s14:0},
+  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:3,ec:3,lr:3,fsr:3,s14:0},
+  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:19,ec:16,lr:14,fsr:14,s14:0},
+  {geo:"US",phase:"Rest",cat:"Other Fashion",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T3",s:2,ec:2,lr:2,fsr:2,s14:0},
+  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T1",s:2,ec:2,lr:2,fsr:2,s14:0},
+  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:8,ec:8,lr:8,fsr:8,s14:0},
+  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T2",s:2,ec:2,lr:2,fsr:2,s14:0},
+  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T3",s:3,ec:3,lr:3,fsr:3,s14:1},
+  {geo:"US",phase:"Rest",cat:"Toys",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Toys",tier:"T2",s:2,ec:2,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Toys",tier:"T3",s:28,ec:26,lr:25,fsr:25,s14:4},
+  {geo:"US",phase:"Rest",cat:"Trading Cards",tier:"T1",s:20,ec:20,lr:17,fsr:17,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards",tier:"T3",s:3,ec:3,lr:2,fsr:2,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:3,ec:3,lr:3,fsr:3,s14:1},
+  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:11,ec:10,lr:10,fsr:10,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:25,ec:24,lr:22,fsr:22,s14:2},
+  {geo:"US",phase:"Rest",cat:"Trading Cards NSTC",tier:"T3",s:3,ec:2,lr:2,fsr:2,s14:2},
+  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:10,ec:10,lr:10,fsr:10,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:20,ec:20,lr:17,fsr:17,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:70,ec:68,lr:62,fsr:62,s14:4},
+  {geo:"US",phase:"Rest",cat:"Unknown",tier:"T3",s:2,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Unknown",tier:"Unknown",s:2,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Watches",tier:"T1",s:4,ec:4,lr:4,fsr:4,s14:0},
+  {geo:"US",phase:"Rest",cat:"Watches",tier:"T3",s:3,ec:2,lr:3,fsr:2,s14:0},
+  {geo:"US",phase:"Rest",cat:"Watches and Jewelry",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Clothing, Shoes & Accessories",tier:"T1",s:2,ec:1,lr:2,fsr:1,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"T1",s:4,ec:4,lr:4,fsr:4,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:2,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Computers/Tablets & Networking",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"Unknown",phase:"Rest",cat:"Fashion",tier:"Unknown",s:3,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"Unknown",phase:"Rest",cat:"Handbags",tier:"T1",s:7,ec:7,lr:7,fsr:7,s14:1},
+  {geo:"Unknown",phase:"Rest",cat:"Handbags",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Handbags",tier:"T3",s:7,ec:6,lr:5,fsr:5,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Home & Garden",tier:"T3",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Jewelry",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Jewelry",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Trading Cards",tier:"T3",s:1,ec:0,lr:1,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",s:9,ec:4,lr:3,fsr:3,s14:2},
+  {geo:"Unknown",phase:"Unknown",cat:"Unknown",tier:"Unknown",s:56,ec:12,lr:7,fsr:7,s14:3}
+];
 
+// ─── Filters ───────────────────────────────────────────────────────────────
 function getFilterState() {
   return {
     geo:   document.getElementById('f-geo').value,
@@ -1582,6 +1667,65 @@ function getFilterState() {
     cat:   document.getElementById('f-cat').value,
     tier:  document.getElementById('f-tier').value
   };
+}
+
+function pct1(n, d) {
+  return d > 0 ? Math.round(n * 1000 / d) / 10 : 0;
+}
+function fmt(n, d) {
+  const p = pct1(n, d);
+  return p + '%';
+}
+
+function renderPreStream() {
+  const f = getFilterState();
+  const rows = PS_DATA.filter(r =>
+    (f.geo   === 'all' || r.geo   === f.geo)   &&
+    (f.phase === 'all' || r.phase === f.phase) &&
+    (f.cat   === 'all' || r.cat   === f.cat)   &&
+    (f.tier  === 'all' || r.tier  === f.tier)
+  );
+  const a = rows.reduce((acc, r) => ({
+    s:   acc.s   + r.s,
+    ec:  acc.ec  + r.ec,
+    lr:  acc.lr  + r.lr,
+    fsr: acc.fsr + r.fsr,
+    s14: acc.s14 + r.s14
+  }), {s:0,ec:0,lr:0,fsr:0,s14:0});
+
+  const suffix = a.s + ' sellers · filtered';
+
+  // KPI tiles
+  document.getElementById('ps-val-setup').textContent = fmt(a.fsr, a.s);
+  document.getElementById('ps-cnt-setup').textContent = a.fsr + ' of ' + a.s + ' sellers';
+  document.getElementById('ps-val-ec').textContent    = fmt(a.ec,  a.s);
+  document.getElementById('ps-cnt-ec').textContent    = a.ec  + ' of ' + a.s + ' sellers';
+  document.getElementById('ps-val-lr').textContent    = fmt(a.lr,  a.s);
+  document.getElementById('ps-cnt-lr').textContent    = a.lr  + ' of ' + a.s + ' sellers';
+  document.getElementById('ps-val-fsr').textContent   = fmt(a.fsr, a.s);
+  document.getElementById('ps-cnt-fsr').textContent   = a.fsr + ' of ' + a.s + ' sellers';
+  document.getElementById('ps-val-s14').textContent   = fmt(a.s14, a.s);
+  document.getElementById('ps-cnt-s14').textContent   = a.s14 + ' of ' + a.s + ' sellers';
+
+  // Funnel bars
+  const ecP  = pct1(a.ec,  a.s);
+  const lrP  = pct1(a.lr,  a.s);
+  const fsrP = pct1(a.fsr, a.s);
+  const s14P = pct1(a.s14, a.s);
+
+  document.getElementById('ps-fn-baseline').textContent = a.s + ' sellers (100%)';
+  document.getElementById('ps-fn-ec-lbl').textContent   = a.ec  + ' sellers (' + ecP  + '%)';
+  document.getElementById('ps-fn-lr-lbl').textContent   = a.lr  + ' sellers (' + lrP  + '%)';
+  document.getElementById('ps-fn-fsr-lbl').textContent  = a.fsr + ' sellers (' + fsrP + '%)';
+  document.getElementById('ps-fn-s14-lbl').textContent  = a.s14 + ' sellers (' + s14P + '%)';
+  document.getElementById('ps-fn-ec-bar').style.width   = Math.min(ecP,  100) + '%';
+  document.getElementById('ps-fn-ec-bar').textContent   = ecP  + '%';
+  document.getElementById('ps-fn-lr-bar').style.width   = Math.min(lrP,  100) + '%';
+  document.getElementById('ps-fn-lr-bar').textContent   = lrP  + '%';
+  document.getElementById('ps-fn-fsr-bar').style.width  = Math.min(fsrP, 100) + '%';
+  document.getElementById('ps-fn-fsr-bar').textContent  = fsrP + '%';
+  document.getElementById('ps-fn-s14-bar').style.width  = Math.min(s14P, 100) + '%';
+  document.getElementById('ps-fn-s14-bar').textContent  = s14P + '%';
 }
 
 function applyFilters() {
@@ -1597,18 +1741,21 @@ function applyFilters() {
   // Show/hide reset button
   document.getElementById('filter-reset-btn').style.display = isFiltered ? 'inline-block' : 'none';
 
-  // Update note to active filter summary when filtered
+  // Update note
   const parts = [];
-  if(f.geo!=='all')   parts.push(FILTER_LABELS.geo[f.geo]);
-  if(f.phase!=='all') parts.push(FILTER_LABELS.phase[f.phase]);
-  if(f.cat!=='all')   parts.push(FILTER_LABELS.cat[f.cat]);
-  if(f.tier!=='all')  parts.push(FILTER_LABELS.tier[f.tier]);
+  if(f.geo!=='all')   parts.push(f.geo);
+  if(f.phase!=='all') parts.push(f.phase);
+  if(f.cat!=='all')   parts.push(f.cat);
+  if(f.tier!=='all')  parts.push(f.tier);
   const note = document.getElementById('filter-note');
   note.textContent = isFiltered
-    ? '⚠ Showing: '+parts.join(' · ')+'  —  data pending live instrumentation'
-    : '⏳ Filters apply once live data is available';
+    ? 'Showing: ' + parts.join(' · ') + ' (Pre-Stream live · other tabs pending)'
+    : 'Pre-Stream filters live · Other tabs pending instrumentation';
   note.style.color = isFiltered ? '#0353e9' : '#8d8d8d';
   note.style.fontWeight = isFiltered ? '600' : '400';
+
+  // Re-render pre-stream if on that tab
+  if (activeTab === 'prestream') renderPreStream();
 
   updateBreadcrumb();
 }
@@ -1620,9 +1767,10 @@ function resetFilters() {
   });
   document.getElementById('filter-reset-btn').style.display='none';
   const note = document.getElementById('filter-note');
-  note.textContent = '⏳ Filters apply once live data is available';
+  note.textContent = 'Pre-Stream filters live · Other tabs pending instrumentation';
   note.style.color = '#8d8d8d';
   note.style.fontWeight = '400';
+  if (activeTab === 'prestream') renderPreStream();
   updateBreadcrumb();
 }
 
