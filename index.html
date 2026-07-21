@@ -151,7 +151,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <button class="tab-btn" onclick="showTab('poststream')">Post-Stream</button>
   </nav>
   <div class="grain-toggle">
-    <button class="grain-btn active" onclick="setGrain('Daily',this)">Daily</button>
+    <button class="grain-btn active" onclick="setGrain('Overall',this)">Overall</button>
+    <button class="grain-btn" onclick="setGrain('Daily',this)">Daily</button>
     <button class="grain-btn" onclick="setGrain('Weekly',this)">Weekly</button>
     <button class="grain-btn" onclick="setGrain('Monthly',this)">Monthly</button>
   </div>
@@ -1558,7 +1559,7 @@ function showTab(tab) {
   setTimeout(()=>window.dispatchEvent(new Event('resize')),50);
 }
 
-let activeGrain = 'Daily';
+let activeGrain = 'Overall';
 function setGrain(g, btn) {
   document.querySelectorAll('.grain-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
