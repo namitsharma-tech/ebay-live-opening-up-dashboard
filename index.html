@@ -1488,6 +1488,13 @@ function showTab(tab) {
   document.getElementById('tab-'+tab).classList.add('active');
   event.target.classList.add('active');
   activeTab = tab;
+  // Filter bar: only meaningful for Pre-Stream (row-level seller dimensions)
+  const fb = document.getElementById('filter-bar');
+  if (tab === 'prestream') {
+    fb.style.display = 'flex';
+  } else {
+    fb.style.display = 'none';
+  }
   if (tab === 'prestream') renderPreStream();
   if (tab === 'instream') renderInStream();
   updateBreadcrumb();
