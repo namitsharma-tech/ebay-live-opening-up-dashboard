@@ -674,83 +674,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
   </div>
 
-  <!-- Event & Listing Quality -->
+  <!-- Event Creation Quality -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Event &amp; Listing Creation Quality</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Event Creation Quality</span></div>
   </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0;margin-bottom:1px">
-    <div style="background:#fff;padding:12px">
-      <div class="sect-sub">Event Creation</div>
-      <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
-        <div class="kpi-tile" style="padding:10px">
-          <div class="kpi-label" style="font-size:9px">Event Completion Rate</div>
-          <div class="kpi-value" style="font-size:18px" id="ec-qual-val">85.1% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
-          <div class="kpi-note" id="ec-qual-note">Published event / LPG sellers · All-time</div>
-        </div>
-        <div class="kpi-tile" style="padding:10px">
-          <div class="kpi-label" style="font-size:9px">Event Abandonment Rate</div>
-          <div class="kpi-value" style="font-size:18px" id="ea-qual-val">14.9% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
-          <div class="kpi-note" id="ea-qual-note">LPG sellers who did not publish event · All-time</div>
-        </div>
+  <div style="background:#fff;padding:12px;margin-bottom:1px">
+    <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
+      <div class="kpi-tile" style="padding:10px">
+        <div class="kpi-label" style="font-size:9px">Event Completion Rate</div>
+        <div class="kpi-value" style="font-size:18px" id="ec-qual-val">—</div>
+        <div class="kpi-note" id="ec-qual-note">—</div>
       </div>
-      <div id="ch-ps-event" style="height:150px"></div>
-    </div>
-    <div style="background:#fff;padding:12px">
-      <div class="sect-sub" style="color:#0353e9">Listing Creation</div>
-      <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
-        <div class="kpi-tile" style="padding:10px">
-          <div class="kpi-label" style="font-size:9px">Listing Completion Rate</div>
-          <div class="kpi-value" style="font-size:18px" id="lc-qual-val">44.0% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
-          <div class="kpi-note" id="lc-qual-note">Completed / Started · 166/377 sessions · 22 of 29 sellers · Global all-time</div>
-        </div>
-        <div class="kpi-tile" style="padding:10px">
-          <div class="kpi-label" style="font-size:9px">Express Listing Adoption</div>
-          <div class="kpi-value" style="font-size:18px" id="el-qual-val">0.1% <span class="badge r" style="font-size:9px">Very Low</span></div>
-          <div class="kpi-note" id="el-qual-note">2 of 2,366 sellers · 53 express listings total · feature ramp in progress</div>
-        </div>
+      <div class="kpi-tile" style="padding:10px">
+        <div class="kpi-label" style="font-size:9px">Event Abandonment Rate</div>
+        <div class="kpi-value" style="font-size:18px" id="ea-qual-val">—</div>
+        <div class="kpi-note" id="ea-qual-note">—</div>
       </div>
-      <div id="ch-ps-listing" style="height:150px"></div>
     </div>
-  </div>
-
-  <!-- Recommendations -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Recommendation Quality</span> <span style="font-size:10px;font-weight:700;background:#da1e28;color:#fff;padding:2px 7px;border-radius:3px;margin-left:8px">⚠ Data Not Accurate</span> <span id="recos-grain-lbl" style="font-size:10px;color:#6f6f6f;margin-left:6px">All-time · LPG cohort</span></div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:1px">
-    <div class="kpi-tile">
-      <div class="kpi-label">Category Accept Rate</div>
-      <div class="kpi-value" id="recos-cat-val">28% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span></div>
-      <div class="kpi-note" id="recos-cat-note">Accepted / Recommended · 8/29 sellers · data inaccurate</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Shipping Policy Accept</div>
-      <div class="kpi-value" id="recos-ship-val">55% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span></div>
-      <div class="kpi-note" id="recos-ship-note">Accepted / Shown · 16/29 sellers · data inaccurate</div>
-    </div>
-  </div>
-  <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Recommendation Acceptance Rates</div>
-      <div id="ch-ps-recos" style="height:150px"></div>
-    </div>
-  </div>
-
-  <!-- P1 table -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">P1 Diagnostic Metrics — Latest Cohort Week</span> <span style="font-size:10px;font-weight:700;background:#da1e28;color:#fff;padding:2px 7px;border-radius:3px;margin-left:8px">⚠ Data Not Accurate</span> <span id="p1diag-grain-lbl" style="font-size:10px;color:#6f6f6f;margin-left:6px">All-time · LPG cohort</span></div>
-  </div>
-  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
-    <table class="tbl">
-      <thead><tr><th>Metric</th><th>Definition</th><th>Current Value</th><th>Alert Threshold</th></tr></thead>
-      <tbody>
-        <tr><td class="fw6">Draft Save Rate</td><td class="mono">Drafts Saved / Event Starts</td><td class="fw6" id="p1-draft-save">44%</td><td style="color:#a2191f;font-size:10px">—</td></tr>
-        <tr><td class="fw6">Draft → Publish Conversion</td><td class="mono">Published Drafts / Drafts Saved</td><td class="fw6" id="p1-draft-pub">71%</td><td style="color:#a2191f;font-size:10px">&lt;60% alert</td></tr>
-        <tr><td class="fw6">Updates Before Publish (Event)</td><td class="mono">Avg edits before publish</td><td class="fw6" id="p1-updates">2.4 edits</td><td style="color:#a2191f;font-size:10px">&gt;5 edits</td></tr>
-        <tr><td class="fw6">Category Override Rate</td><td class="mono">Overrides / Recommendations</td><td class="fw6" id="p1-cat-override" style="color:#da1e28">72.4% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
-        <tr><td class="fw6">Shipping Policy Override Rate</td><td class="mono">Overrides / Recommendations shown</td><td class="fw6" id="p1-ship-override" style="color:#da1e28">44.8% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
-      </tbody>
-    </table>
+    <div id="ch-ps-event" style="height:150px"></div>
   </div>
 
   <!-- Metric Definitions -->
@@ -780,49 +721,42 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
         <tr>
           <td class="fw6">Seller Setup Success Rate</td>
           <td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td>
-          <td class="mono">Sellers who published an event AND created ≥1 listing</td>
-          <td class="mono">Sellers who clicked Event Creation CTA (started setup)</td>
-          <td class="mono">EVENT_COMPLETION_RATE_T × EXPRESS_LISTING_COMPLETION_RATE_T</td>
+          <td class="mono">Sellers who are First-Show-Ready (published event AND ≥1 listing)</td>
+          <td class="mono">Studio-activated sellers</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × SELLER_FIRST_SHOW_FUNNEL</td>
         </tr>
 
         <!-- P0 Funnel -->
         <tr>
-          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P0 — Funnel Steps (Cohort-based)</td>
+          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P0 — Funnel Steps (Studio-Activation Cohort)</td>
         </tr>
         <tr>
           <td class="fw6">Event Creation Rate</td>
           <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
-          <td class="mono">Sellers who published a Live event</td>
-          <td class="mono">LPG sellers in cohort week</td>
-          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × LIVE_EVENT</td>
+          <td class="mono">Sellers who published ≥1 Live event</td>
+          <td class="mono">Studio-activated sellers</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × COMPLETION_RATE_FINAL_T</td>
         </tr>
         <tr>
           <td class="fw6">Listing Readiness Rate</td>
           <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
-          <td class="mono">Sellers who created ≥1 express listing</td>
-          <td class="mono">LPG sellers in cohort week</td>
-          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × SLNG_LSTG_SUPER_FACT</td>
+          <td class="mono">Sellers with ≥1 listing attached to a live event</td>
+          <td class="mono">Studio-activated sellers</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × LISTING_ADOPTION_T</td>
         </tr>
         <tr>
           <td class="fw6">First Show Ready Rate</td>
           <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
-          <td class="mono">Sellers with published event AND ≥1 listing (show-ready)</td>
-          <td class="mono">LPG sellers in cohort week</td>
-          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × LIVE_EVENT × SLNG_LSTG_SUPER_FACT</td>
+          <td class="mono">Sellers with published event AND ≥1 listing</td>
+          <td class="mono">Studio-activated sellers</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × SELLER_FIRST_SHOW_FUNNEL</td>
         </tr>
         <tr>
           <td class="fw6">14-Day First Show Rate</td>
           <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
-          <td class="mono">Sellers who went live within 14 days of becoming show-ready</td>
-          <td class="mono">LPG sellers in cohort week</td>
-          <td class="mono">LIVE_SELLER_UNIFIED_ONBOARDING_DIM × LIVE_COMMERCE_DAILY_DEMAND_INDICATORS</td>
-        </tr>
-        <tr>
-          <td class="fw6">Express Listing Adoption</td>
-          <td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td>
-          <td class="mono">Sellers with ≥1 express listing (APP_ID IN (590363, 456309))</td>
-          <td class="mono">Sellers who created any listing</td>
-          <td class="mono">LISTING_ADOPTION_T (via SLNG_LSTG_SUPER_FACT)</td>
+          <td class="mono">Sellers who streamed within 14 days of studio activation</td>
+          <td class="mono">Studio-activated sellers</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × SELLER_FIRST_SHOW_FUNNEL<br><span style="color:#6f6f6f">streamed_within_14d_of_studio_activation = 1</span></td>
         </tr>
 
         <!-- Event Creation Quality -->
@@ -832,112 +766,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
         <tr>
           <td class="fw6">Event Completion Rate</td>
           <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sellers who clicked CTA AND published an event</td>
-          <td class="mono">Sellers who clicked Event Creation CTA</td>
-          <td class="mono">EVENT_COMPLETION_RATE_T<br><span style="color:#6f6f6f">seller-level: click_cnt &gt; 0 AND published_cnt &gt; 0</span></td>
+          <td class="mono">Studio-activated sellers who published ≥1 event</td>
+          <td class="mono">Studio-activated sellers</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 × COMPLETION_RATE_FINAL_T</td>
         </tr>
         <tr>
           <td class="fw6">Event Abandonment Rate</td>
           <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sellers who clicked CTA but did NOT publish</td>
-          <td class="mono">Sellers who clicked Event Creation CTA</td>
-          <td class="mono">EVENT_COMPLETION_RATE_T<br><span style="color:#6f6f6f">= 1 − Event Completion Rate</span></td>
-        </tr>
-
-        <tr>
-          <td class="fw6">Event Completion Time</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">PERCENTILE(publish_ts − cta_click_ts, 0.5 | 0.9) in minutes</td>
-          <td class="mono">—  (elapsed time, not a rate)</td>
-          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Event Completion Time' · express vs non-express split available</span></td>
-        </tr>
-
-        <!-- Listing Creation Quality -->
-        <tr>
-          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Listing Creation Quality</td>
-        </tr>
-        <tr>
-          <td class="fw6">Listing Completion Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">SUM(completed_cnt) — sessions reaching listing published state</td>
-          <td class="mono">SUM(started_cnt) — sessions that opened listing creation flow</td>
-          <td class="mono">EXPRESS_LISTING_COMPLETION_RATE_T</td>
-        </tr>
-        <tr>
-          <td class="fw6">Listing Completion Time</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">PERCENTILE(listing_created_ts − listing_cta_ts, 0.5 | 0.9) in minutes</td>
-          <td class="mono">—  (elapsed time, not a rate)</td>
-          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Express Listing Completion Time' · express vs non-express split available</span></td>
-        </tr>
-
-        <!-- Recommendation Quality -->
-        <tr>
-          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Recommendation Quality</td>
-        </tr>
-        <tr>
-          <td class="fw6">Category Accept Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sellers who did NOT click "Create Modal - Category" override</td>
-          <td class="mono">Sellers who saw any Create Modal event</td>
-          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − (DISTINCT users with Category click / DISTINCT modal users)</span></td>
-        </tr>
-        <tr>
-          <td class="fw6">Category Override Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sellers who clicked "Create Modal - Category" to change recommendation</td>
-          <td class="mono">Sellers who saw any Create Modal event</td>
-          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − Category Accept Rate. Alert: &gt;40%</span></td>
-        </tr>
-        <tr>
-          <td class="fw6">Shipping Policy Accept Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sellers who did NOT click "Create Modal - Shipping Policy" override</td>
-          <td class="mono">Sellers who saw any Create Modal event</td>
-          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − (DISTINCT users with Shipping click / DISTINCT modal users)</span></td>
-        </tr>
-        <tr>
-          <td class="fw6">Shipping Policy Override Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sellers who clicked "Create Modal - Shipping Policy" to change recommendation</td>
-          <td class="mono">Sellers who saw any Create Modal event</td>
-          <td class="mono">EXPRESS_LISTINGS_BASE_PT<br><span style="color:#6f6f6f">= 1 − Shipping Accept Rate. Alert: &gt;40%</span></td>
-        </tr>
-
-        <!-- P1 Diagnostics -->
-        <tr>
-          <td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P1 Diagnostics</td>
-        </tr>
-        <tr>
-          <td class="fw6">Draft Save Rate</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Sessions that triggered save-as-draft action (SID shared with publish)</td>
-          <td class="mono">Sessions that opened event creation form</td>
-          <td class="mono">EVENT_CREATION_BASE_PT<br><span style="color:#da1e28;font-size:9px">⚠ SID shared between draft-save and publish — cannot split</span></td>
-        </tr>
-        <tr>
-          <td class="fw6">Draft → Publish Conversion</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">Published events that were previously saved as draft</td>
-          <td class="mono">All draft-saved events</td>
-          <td class="mono">EVENT_CREATION_BASE_PT × LIVE_EVENT<br><span style="color:#6f6f6f">Alert: &lt;60%</span></td>
-        </tr>
-        <tr>
-          <td class="fw6">Updates Before Publish (Event)</td>
-          <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
-          <td class="mono">COUNT of edit/update events per seller before first publish</td>
-          <td class="mono">1 (expressed as average edits per seller)</td>
-          <td class="mono">EVENT_CREATION_BASE_PT<br><span style="color:#6f6f6f">Alert: avg &gt;5 edits</span></td>
+          <td class="mono">Studio-activated sellers who did NOT publish</td>
+          <td class="mono">Studio-activated sellers</td>
+          <td class="mono">= 1 − Event Completion Rate</td>
         </tr>
 
         <!-- Availability note -->
         <tr>
           <td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
-            <strong style="color:#525252">Data availability:</strong>
-            Base tables (EVENT_CREATION_BASE_PT, EXPRESS_LISTINGS_BASE_PT, EXPRESS_LISTING_COMPLETION_RATE_T, EVENT_COMPLETION_RATE_T) retain a rolling <strong>7-day</strong> window via daily DELETE + INSERT.
-            LISTING_ADOPTION_T, EVENT_FORM_NAV_BASE_PT, and COMPLETION_TIME_FINAL_T are full-refresh tables populated on a daily schedule.
-            All rates use <strong>SUM(numerator) / SUM(denominator)</strong> aggregation — never an average of rates.
-            Completion time metrics (Event &amp; Listing) are P50 / P90 elapsed minutes from CTA click → published; express vs non-express split available in COMPLETION_TIME_FINAL_T.
+            <strong style="color:#525252">Data source (v2):</strong>
+            Denominator = sellers with <strong>activated_studio = 1</strong> in LIVE_SELLER_MASTER_V2 (latest snapshot).
+            Funnel steps from SELLER_FIRST_SHOW_FUNNEL (all-time; not rolling-window deflated).
+            Event creation from COMPLETION_RATE_FINAL_T (metric_name = 'Event Completion Rate', numerator &gt; 0).
+            Filters: geography · launch_phase · category · gmv_tier · onboarding_method · seller_background from LIVE_SELLER_UNIFIED_ONBOARDING_DIM.
           </td>
         </tr>
       </tbody>
@@ -1602,489 +1450,60 @@ function setGrain(g, btn) {
   updateBreadcrumb();
 }
 
-// ─── Pre-Stream filter data (Hermes · Jul 21 2026 · Overall grain) ──────────
-// Columns: geo, phase, cat, tier, s(setup_started), ec(event_created),
-//          lr(listing_ready), fsr(first_show_ready), s14(streamed_14d)
-const PS_DATA = [
-  {geo:"CA",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Toys",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"Unknown",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Handbags",tier:"T3",s:1,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T2",s:6,ec:5,lr:5,fsr:5,s14:0},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T3",s:34,ec:33,lr:33,fsr:33,s14:3},
-  {geo:"US",phase:"Rest",cat:"Clothing, Shoes & Accessories",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Clothing, Shoes & Accessories",tier:"T3",s:2,ec:0,lr:1,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T1",s:8,ec:8,lr:8,fsr:8,s14:0},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:18,ec:18,lr:18,fsr:18,s14:1},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:30,ec:30,lr:30,fsr:30,s14:4},
-  {geo:"US",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T1",s:9,ec:9,lr:9,fsr:9,s14:0},
-  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T2",s:6,ec:6,lr:3,fsr:3,s14:0},
-  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:30,ec:27,lr:24,fsr:24,s14:4},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T2",s:2,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T3",s:4,ec:4,lr:4,fsr:4,s14:1},
-  {geo:"US",phase:"Rest",cat:"Everything Else",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T2",s:3,ec:3,lr:3,fsr:3,s14:1},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T3",s:11,ec:10,lr:8,fsr:8,s14:0},
-  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:16,ec:15,lr:14,fsr:14,s14:4},
-  {geo:"US",phase:"Rest",cat:"Home Décor",tier:"T3",s:5,ec:5,lr:4,fsr:4,s14:1},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T2",s:4,ec:3,lr:3,fsr:3,s14:0},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T3",s:23,ec:23,lr:22,fsr:22,s14:2},
-  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:3,ec:3,lr:3,fsr:3,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:3,ec:3,lr:3,fsr:3,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:19,ec:16,lr:14,fsr:14,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Fashion",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:1,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T3",s:2,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T1",s:2,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:8,ec:8,lr:8,fsr:8,s14:0},
-  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T2",s:2,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T3",s:3,ec:3,lr:3,fsr:3,s14:1},
-  {geo:"US",phase:"Rest",cat:"Toys",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Toys",tier:"T2",s:2,ec:2,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Toys",tier:"T3",s:28,ec:26,lr:25,fsr:25,s14:4},
-  {geo:"US",phase:"Rest",cat:"Trading Cards",tier:"T1",s:20,ec:20,lr:17,fsr:17,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards",tier:"T3",s:3,ec:3,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:3,ec:3,lr:3,fsr:3,s14:1},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:11,ec:10,lr:10,fsr:10,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:25,ec:24,lr:22,fsr:22,s14:2},
-  {geo:"US",phase:"Rest",cat:"Trading Cards NSTC",tier:"T3",s:3,ec:2,lr:2,fsr:2,s14:2},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:10,ec:10,lr:10,fsr:10,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:20,ec:20,lr:17,fsr:17,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:70,ec:68,lr:62,fsr:62,s14:4},
-  {geo:"US",phase:"Rest",cat:"Unknown",tier:"T3",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Unknown",tier:"Unknown",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Watches",tier:"T1",s:4,ec:4,lr:4,fsr:4,s14:0},
-  {geo:"US",phase:"Rest",cat:"Watches",tier:"T3",s:3,ec:2,lr:3,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Watches and Jewelry",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Clothing, Shoes & Accessories",tier:"T1",s:2,ec:1,lr:2,fsr:1,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"T1",s:4,ec:4,lr:4,fsr:4,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:2,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Computers/Tablets & Networking",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"Unknown",phase:"Rest",cat:"Fashion",tier:"Unknown",s:3,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"Unknown",phase:"Rest",cat:"Handbags",tier:"T1",s:7,ec:7,lr:7,fsr:7,s14:1},
-  {geo:"Unknown",phase:"Rest",cat:"Handbags",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Handbags",tier:"T3",s:7,ec:6,lr:5,fsr:5,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Home & Garden",tier:"T3",s:1,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Jewelry",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Jewelry",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Trading Cards",tier:"T3",s:1,ec:0,lr:1,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",s:9,ec:4,lr:3,fsr:3,s14:2},
-  {geo:"Unknown",phase:"Unknown",cat:"Unknown",tier:"Unknown",s:56,ec:12,lr:7,fsr:7,s14:3}
-];
-
-// ─── Pre-Stream filter data (DIM-based · All-time Overall · LPG cohort) ──────
-// Denominator: all sellers who ever received Live Privilege Granted (LPG)
+// ─── Pre-Stream data (v2 · LIVE_SELLER_MASTER_V2 · activated_studio=1) ───────
+// ─── Pre-Stream data (v2 · LIVE_SELLER_MASTER_V2 · activated_studio=1) ───────
+// Section 2 of pre_stream_metrics_v2.sql · latest snapshot 2026-07-19
+// Columns: geo, phase, cat, tier, method, bg,
+//          s(setup_started), ec(event_created), lr(listing_ready),
+//          fsr(first_show_ready), s14(streamed_within_14d)
 const PS_DATA_ALL = [
-  {geo:"AU",phase:"Rest",cat:"Apparel",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Apparel",tier:"T3",s:19,ec:7,lr:7,fsr:7,s14:2},
-  {geo:"AU",phase:"Rest",cat:"Coins & Bullion",tier:"T1",s:4,ec:3,lr:4,fsr:3,s14:3},
-  {geo:"AU",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:3,ec:1,lr:0,fsr:0,s14:1},
-  {geo:"AU",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:3},
-  {geo:"AU",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"AU",phase:"Rest",cat:"Electronics",tier:"T2",s:2,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"AU",phase:"Rest",cat:"Electronics",tier:"T3",s:4,ec:2,lr:1,fsr:1,s14:1},
-  {geo:"AU",phase:"Rest",cat:"Handbags",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Handbags",tier:"T3",s:7,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Jewelry",tier:"T1",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"AU",phase:"Rest",cat:"Jewelry",tier:"T2",s:3,ec:1,lr:2,fsr:1,s14:2},
-  {geo:"AU",phase:"Rest",cat:"Jewelry",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"AU",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:6,ec:3,lr:3,fsr:3,s14:4},
-  {geo:"AU",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:26,ec:11,lr:10,fsr:9,s14:9},
-  {geo:"AU",phase:"Rest",cat:"Sporting Goods",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Sporting Goods",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Toys",tier:"T1",s:3,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"AU",phase:"Rest",cat:"Toys",tier:"T2",s:8,ec:6,lr:5,fsr:5,s14:3},
-  {geo:"AU",phase:"Rest",cat:"Toys",tier:"T3",s:24,ec:12,lr:10,fsr:10,s14:5},
-  {geo:"AU",phase:"Rest",cat:"Unknown",tier:"T1",s:12,ec:9,lr:10,fsr:9,s14:6},
-  {geo:"AU",phase:"Rest",cat:"Unknown",tier:"T2",s:17,ec:11,lr:12,fsr:11,s14:7},
-  {geo:"AU",phase:"Rest",cat:"Unknown",tier:"T3",s:67,ec:20,lr:20,fsr:18,s14:16},
-  {geo:"CA",phase:"Rest",cat:"Apparel",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Apparel",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Apparel",tier:"T3",s:3,ec:1,lr:2,fsr:1,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Coins & Bullion",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T1",s:5,ec:5,lr:4,fsr:4,s14:4},
-  {geo:"CA",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:7,ec:2,lr:2,fsr:2,s14:2},
-  {geo:"CA",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:11,ec:2,lr:2,fsr:2,s14:2},
-  {geo:"CA",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:5,ec:3,lr:2,fsr:2,s14:4},
-  {geo:"CA",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:6,ec:2,lr:2,fsr:2,s14:4},
-  {geo:"CA",phase:"Rest",cat:"Sports Memorabilia",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Toys",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Toys",tier:"T3",s:6,ec:3,lr:3,fsr:3,s14:2},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:11,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:8,ec:4,lr:1,fsr:1,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:9,ec:2,lr:2,fsr:2,s14:5},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:20,ec:9,lr:8,fsr:8,s14:8},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:4,ec:3,lr:3,fsr:3,s14:2},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:12,ec:4,lr:4,fsr:4,s14:3},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T1",s:17,ec:3,lr:3,fsr:3,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T3",s:5,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Apparel",tier:"T1",s:13,ec:6,lr:7,fsr:6,s14:3},
-  {geo:"DE",phase:"Rest",cat:"Apparel",tier:"T2",s:17,ec:3,lr:2,fsr:2,s14:2},
-  {geo:"DE",phase:"Rest",cat:"Apparel",tier:"T3",s:67,ec:15,lr:16,fsr:14,s14:8},
-  {geo:"DE",phase:"Rest",cat:"Coins & Bullion",tier:"T1",s:14,ec:8,lr:8,fsr:7,s14:3},
-  {geo:"DE",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T1",s:3,ec:3,lr:3,fsr:3,s14:2},
-  {geo:"DE",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Electronics",tier:"T1",s:15,ec:2,lr:3,fsr:2,s14:4},
-  {geo:"DE",phase:"Rest",cat:"Electronics",tier:"T2",s:20,ec:7,lr:7,fsr:6,s14:4},
-  {geo:"DE",phase:"Rest",cat:"Electronics",tier:"T3",s:41,ec:6,lr:6,fsr:4,s14:3},
-  {geo:"DE",phase:"Rest",cat:"Handbags",tier:"T1",s:14,ec:6,lr:7,fsr:6,s14:7},
-  {geo:"DE",phase:"Rest",cat:"Handbags",tier:"T2",s:5,ec:1,lr:3,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Handbags",tier:"T3",s:9,ec:1,lr:0,fsr:0,s14:2},
-  {geo:"DE",phase:"Rest",cat:"Health & Beauty",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Health & Beauty",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:9,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Home Décor",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Home Décor",tier:"T3",s:9,ec:3,lr:3,fsr:3,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Jewelry",tier:"T1",s:6,ec:2,lr:2,fsr:2,s14:5},
-  {geo:"DE",phase:"Rest",cat:"Jewelry",tier:"T2",s:8,ec:0,lr:0,fsr:0,s14:3},
-  {geo:"DE",phase:"Rest",cat:"Jewelry",tier:"T3",s:21,ec:5,lr:5,fsr:3,s14:7},
-  {geo:"DE",phase:"Rest",cat:"Other",tier:"T2",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other",tier:"T3",s:3,ec:1,lr:0,fsr:0,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:8,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:26,ec:9,lr:9,fsr:9,s14:2},
-  {geo:"DE",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:78,ec:24,lr:26,fsr:24,s14:11},
-  {geo:"DE",phase:"Rest",cat:"Other Fashion",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Fashion",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Home & Garden",tier:"T1",s:4,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:9,ec:3,lr:3,fsr:3,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:8,ec:3,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Other Lifestyle",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Lifestyle",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Lifestyle",tier:"T3",s:8,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Sneakers",tier:"T1",s:4,ec:1,lr:1,fsr:1,s14:3},
-  {geo:"DE",phase:"Rest",cat:"Sneakers",tier:"T2",s:8,ec:3,lr:4,fsr:3,s14:2},
-  {geo:"DE",phase:"Rest",cat:"Sneakers",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Sporting Goods",tier:"T3",s:5,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Sports Memorabilia",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Sports Memorabilia",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T1",s:2,ec:0,lr:1,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Toys",tier:"T1",s:16,ec:7,lr:7,fsr:7,s14:6},
-  {geo:"DE",phase:"Rest",cat:"Toys",tier:"T2",s:28,ec:10,lr:9,fsr:9,s14:4},
-  {geo:"DE",phase:"Rest",cat:"Toys",tier:"T3",s:86,ec:20,lr:20,fsr:16,s14:25},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:28,ec:16,lr:17,fsr:16,s14:18},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:21,ec:9,lr:10,fsr:8,s14:8},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:90,ec:28,lr:23,fsr:22,s14:18},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards NSTC",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards NSTC",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:11,ec:4,lr:5,fsr:4,s14:2},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:22,ec:9,lr:8,fsr:7,s14:6},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:70,ec:12,lr:15,fsr:12,s14:15},
-  {geo:"DE",phase:"Rest",cat:"Unknown",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Unknown",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Unknown",tier:"T3",s:13,ec:1,lr:1,fsr:1,s14:3},
-  {geo:"DE",phase:"Rest",cat:"Watches",tier:"T1",s:11,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Watches",tier:"T2",s:4,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Watches",tier:"T3",s:6,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"FR",phase:"Rest",cat:"Handbags",tier:"T3",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Jewelry",tier:"T3",s:4,ec:1,lr:2,fsr:1,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:14,ec:4,lr:5,fsr:4,s14:9},
-  {geo:"FR",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:21,ec:9,lr:10,fsr:8,s14:10},
-  {geo:"FR",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:151,ec:20,lr:22,fsr:18,s14:34},
-  {geo:"FR",phase:"Rest",cat:"Other Fashion",tier:"T3",s:4,ec:1,lr:1,fsr:1,s14:2},
-  {geo:"FR",phase:"Rest",cat:"Other Lifestyle",tier:"T3",s:5,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"FR",phase:"Rest",cat:"Sneakers",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"FR",phase:"Rest",cat:"Sneakers",tier:"T2",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Sneakers",tier:"T3",s:4,ec:1,lr:1,fsr:1,s14:3},
-  {geo:"FR",phase:"Rest",cat:"Toys",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Toys",tier:"T2",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Toys",tier:"T3",s:24,ec:5,lr:5,fsr:4,s14:2},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:15,ec:11,lr:11,fsr:10,s14:10},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:17,ec:7,lr:8,fsr:7,s14:5},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:87,ec:19,lr:17,fsr:16,s14:32},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:3,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"FR",phase:"Rest",cat:"Unknown",tier:"T1",s:5,ec:3,lr:3,fsr:3,s14:3},
-  {geo:"FR",phase:"Rest",cat:"Unknown",tier:"T2",s:16,ec:3,lr:4,fsr:3,s14:8},
-  {geo:"FR",phase:"Rest",cat:"Unknown",tier:"T3",s:76,ec:15,lr:14,fsr:12,s14:25},
-  {geo:"IT",phase:"Rest",cat:"Electronics",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"IT",phase:"Rest",cat:"Electronics",tier:"T3",s:2,ec:0,lr:1,fsr:0,s14:0},
-  {geo:"IT",phase:"Rest",cat:"Unknown",tier:"T1",s:52,ec:11,lr:13,fsr:10,s14:16},
-  {geo:"IT",phase:"Rest",cat:"Unknown",tier:"T2",s:116,ec:23,lr:27,fsr:21,s14:14},
-  {geo:"IT",phase:"Rest",cat:"Unknown",tier:"T3",s:250,ec:72,lr:71,fsr:55,s14:30},
-  {geo:"UK",phase:"Rest",cat:"Apparel",tier:"T1",s:5,ec:1,lr:2,fsr:1,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Apparel",tier:"T2",s:43,ec:19,lr:22,fsr:18,s14:21},
-  {geo:"UK",phase:"Rest",cat:"Apparel",tier:"T3",s:490,ec:111,lr:115,fsr:97,s14:161},
-  {geo:"UK",phase:"Rest",cat:"Coins & Bullion",tier:"T1",s:11,ec:7,lr:8,fsr:6,s14:8},
-  {geo:"UK",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:12,ec:6,lr:6,fsr:6,s14:5},
-  {geo:"UK",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:27,ec:7,lr:7,fsr:6,s14:6},
-  {geo:"UK",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T2",s:6,ec:1,lr:5,fsr:1,s14:4},
-  {geo:"UK",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:49,ec:19,lr:19,fsr:17,s14:22},
-  {geo:"UK",phase:"Rest",cat:"Electronics",tier:"T1",s:13,ec:2,lr:5,fsr:2,s14:4},
-  {geo:"UK",phase:"Rest",cat:"Electronics",tier:"T2",s:21,ec:3,lr:3,fsr:2,s14:6},
-  {geo:"UK",phase:"Rest",cat:"Electronics",tier:"T3",s:97,ec:24,lr:19,fsr:16,s14:21},
-  {geo:"UK",phase:"Rest",cat:"Handbags",tier:"T2",s:4,ec:3,lr:3,fsr:3,s14:2},
-  {geo:"UK",phase:"Rest",cat:"Handbags",tier:"T3",s:16,ec:6,lr:8,fsr:6,s14:3},
-  {geo:"UK",phase:"Rest",cat:"Health & Beauty",tier:"T1",s:4,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Health & Beauty",tier:"T2",s:7,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:102,ec:26,lr:25,fsr:23,s14:30},
-  {geo:"UK",phase:"Rest",cat:"Home Décor",tier:"T2",s:10,ec:1,lr:2,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Home Décor",tier:"T3",s:47,ec:13,lr:12,fsr:11,s14:11},
-  {geo:"UK",phase:"Rest",cat:"Jewelry",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Jewelry",tier:"T2",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Jewelry",tier:"T3",s:60,ec:16,lr:16,fsr:15,s14:14},
-  {geo:"UK",phase:"Rest",cat:"Other",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other",tier:"T2",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other",tier:"T3",s:9,ec:1,lr:1,fsr:1,s14:3},
-  {geo:"UK",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:4,ec:1,lr:2,fsr:1,s14:3},
-  {geo:"UK",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:20,ec:9,lr:12,fsr:9,s14:12},
-  {geo:"UK",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:274,ec:69,lr:64,fsr:59,s14:106},
-  {geo:"UK",phase:"Rest",cat:"Other Fashion",tier:"T2",s:4,ec:2,lr:3,fsr:2,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Other Fashion",tier:"T3",s:29,ec:3,lr:4,fsr:3,s14:5},
-  {geo:"UK",phase:"Rest",cat:"Other Home & Garden",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:6,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:40,ec:7,lr:11,fsr:7,s14:10},
-  {geo:"UK",phase:"Rest",cat:"Other Lifestyle",tier:"T2",s:4,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Other Lifestyle",tier:"T3",s:51,ec:14,lr:11,fsr:10,s14:16},
-  {geo:"UK",phase:"Rest",cat:"Sneakers",tier:"T1",s:5,ec:3,lr:4,fsr:3,s14:4},
-  {geo:"UK",phase:"Rest",cat:"Sneakers",tier:"T2",s:16,ec:6,lr:5,fsr:5,s14:5},
-  {geo:"UK",phase:"Rest",cat:"Sneakers",tier:"T3",s:27,ec:11,lr:13,fsr:10,s14:9},
-  {geo:"UK",phase:"Rest",cat:"Sporting Goods",tier:"T3",s:10,ec:3,lr:4,fsr:3,s14:3},
-  {geo:"UK",phase:"Rest",cat:"Sports Memorabilia",tier:"T2",s:5,ec:2,lr:2,fsr:2,s14:2},
-  {geo:"UK",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:26,ec:5,lr:4,fsr:4,s14:11},
-  {geo:"UK",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Toys",tier:"T2",s:14,ec:4,lr:5,fsr:4,s14:4},
-  {geo:"UK",phase:"Rest",cat:"Toys",tier:"T3",s:176,ec:46,lr:51,fsr:41,s14:60},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:7,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:20,ec:10,lr:10,fsr:9,s14:11},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:258,ec:96,lr:98,fsr:90,s14:114},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:13,ec:8,lr:8,fsr:7,s14:8},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:25,ec:13,lr:13,fsr:12,s14:17},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:237,ec:47,lr:45,fsr:38,s14:80},
-  {geo:"UK",phase:"Rest",cat:"Unknown",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Unknown",tier:"T3",s:12,ec:4,lr:2,fsr:2,s14:4},
-  {geo:"UK",phase:"Rest",cat:"Watches",tier:"T1",s:6,ec:3,lr:5,fsr:3,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Watches",tier:"T2",s:9,ec:3,lr:2,fsr:2,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Watches",tier:"T3",s:16,ec:0,lr:1,fsr:0,s14:3},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T1",s:4,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T2",s:31,ec:5,lr:6,fsr:5,s14:3},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T3",s:395,ec:73,lr:85,fsr:69,s14:41},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T1",s:6,ec:3,lr:4,fsr:3,s14:2},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:44,ec:22,lr:26,fsr:22,s14:9},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:104,ec:47,lr:47,fsr:44,s14:19},
-  {geo:"US",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Collectibles",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"US",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:5,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T2",s:11,ec:3,lr:2,fsr:2,s14:2},
-  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:112,ec:38,lr:42,fsr:33,s14:22},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T1",s:5,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T2",s:16,ec:5,lr:5,fsr:5,s14:1},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T3",s:52,ec:14,lr:15,fsr:12,s14:2},
-  {geo:"US",phase:"Rest",cat:"Fashion",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T1",s:5,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T2",s:12,ec:5,lr:4,fsr:4,s14:1},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T3",s:64,ec:21,lr:24,fsr:19,s14:15},
-  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T1",s:4,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T2",s:13,ec:5,lr:4,fsr:4,s14:3},
-  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:94,ec:26,lr:33,fsr:24,s14:9},
-  {geo:"US",phase:"Rest",cat:"Health and Beauty",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Home Décor",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Home Décor",tier:"T3",s:31,ec:7,lr:7,fsr:6,s14:6},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T2",s:20,ec:3,lr:3,fsr:3,s14:3},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T3",s:146,ec:31,lr:37,fsr:29,s14:12},
-  {geo:"US",phase:"Rest",cat:"Other",tier:"T3",s:6,ec:1,lr:0,fsr:0,s14:2},
-  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:4,ec:3,lr:3,fsr:3,s14:2},
-  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:12,ec:2,lr:3,fsr:2,s14:5},
-  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:102,ec:22,lr:22,fsr:19,s14:20},
-  {geo:"US",phase:"Rest",cat:"Other Fashion",tier:"T2",s:3,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Fashion",tier:"T3",s:6,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:6,ec:2,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:11,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"US",phase:"Rest",cat:"Other Lifestyle",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Lifestyle",tier:"T3",s:9,ec:1,lr:2,fsr:1,s14:4},
-  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T2",s:9,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T3",s:25,ec:3,lr:7,fsr:2,s14:5},
-  {geo:"US",phase:"Rest",cat:"Sporting Goods",tier:"T1",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Sporting Goods",tier:"T2",s:5,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Sporting Goods",tier:"T3",s:34,ec:3,lr:6,fsr:3,s14:4},
-  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T1",s:1,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T2",s:7,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:48,ec:14,lr:13,fsr:11,s14:8},
-  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T2",s:4,ec:3,lr:3,fsr:3,s14:1},
-  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T3",s:16,ec:7,lr:8,fsr:7,s14:0},
-  {geo:"US",phase:"Rest",cat:"Toys",tier:"T2",s:7,ec:1,lr:2,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Toys",tier:"T3",s:128,ec:39,lr:37,fsr:34,s14:27},
-  {geo:"US",phase:"Rest",cat:"Toys and Funko",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:9,ec:3,lr:3,fsr:3,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:34,ec:17,lr:19,fsr:17,s14:10},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:179,ec:51,lr:54,fsr:47,s14:33},
-  {geo:"US",phase:"Rest",cat:"Trading Cards NSTC",tier:"T3",s:7,ec:3,lr:3,fsr:3,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:23,ec:15,lr:15,fsr:15,s14:4},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:73,ec:26,lr:26,fsr:22,s14:11},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:321,ec:126,lr:125,fsr:110,s14:65},
-  {geo:"US",phase:"Rest",cat:"Unknown",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"US",phase:"Rest",cat:"Unknown",tier:"T2",s:2,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Unknown",tier:"T3",s:10,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"US",phase:"Rest",cat:"Unknown",tier:"Unknown",s:8,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Watches",tier:"T1",s:6,ec:4,lr:5,fsr:4,s14:3},
-  {geo:"US",phase:"Rest",cat:"Watches",tier:"T2",s:4,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"US",phase:"Rest",cat:"Watches",tier:"T3",s:25,ec:7,lr:10,fsr:7,s14:3},
-  {geo:"US",phase:"Rest",cat:"Watches and Jewelry",tier:"Unknown",s:3,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:4,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Fashion",tier:"Unknown",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"T3",s:5,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",s:8,ec:1,lr:0,fsr:0,s14:0}
+  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:4,ec:3,lr:3,fsr:3,s14:1},
+  {geo:"US",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Collectibles",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Fashion",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T3",method:"BD_Onboarded",bg:"Existing_Live",s:1,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"US",phase:"Rest",cat:"Health and Beauty",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Other",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:2,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Other",tier:"T3",method:"BD_Onboarded",bg:"Existing_Live",s:1,ec:1,lr:0,fsr:0,s14:1},
+  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Toys",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:3,ec:2,lr:1,fsr:1,s14:0},
+  {geo:"US",phase:"Rest",cat:"Toys and Funko",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:7,ec:3,lr:3,fsr:3,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:5,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T3",method:"BD_Onboarded",bg:"Existing_Live",s:1,ec:0,lr:0,fsr:0,s14:1},
+  {geo:"US",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:8,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Watches and Jewelry",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:2,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:2,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Electronics",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Fashion",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Fashion",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:7,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Unknown",cat:"Unknown",tier:"Unknown",method:"Unknown",bg:"Unknown",s:7,ec:0,lr:0,fsr:0,s14:0}
 ];
 
-// ─── Pre-Stream filter data (DIM-based · Jul 1–21 2026 · Monthly grain) ─────
-// Denominator: sellers who received Live Privilege Granted (LPG) in July 2026
+// ─── Pre-Stream data (v2 · Monthly MTD · Jul 1–21 2026) ──────────────────────
+// CAST(studio_activated_ts AS DATE) BETWEEN '2026-07-01' AND '2026-07-21'
 const PS_DATA_MONTHLY = [
-  {geo:"AU",phase:"Rest",cat:"Toys",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Unknown",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"AU",phase:"Rest",cat:"Unknown",tier:"T3",s:6,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:2,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:1,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T1",s:5,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"CA",phase:"Rest",cat:"Unknown",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Apparel",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Apparel",tier:"T3",s:5,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Electronics",tier:"T2",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Electronics",tier:"T3",s:6,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Home Décor",tier:"T3",s:5,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Toys",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Toys",tier:"T2",s:1,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Toys",tier:"T3",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:3,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:12,ec:5,lr:3,fsr:3,s14:2},
-  {geo:"DE",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Unknown",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"DE",phase:"Rest",cat:"Watches",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"DE",phase:"Rest",cat:"Watches",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Other Collectibles",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"FR",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:18,ec:3,lr:2,fsr:2,s14:2},
-  {geo:"FR",phase:"Rest",cat:"Other Lifestyle",tier:"T3",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Sneakers",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"FR",phase:"Rest",cat:"Toys",tier:"T3",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:4,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"FR",phase:"Rest",cat:"Unknown",tier:"T2",s:4,ec:1,lr:1,fsr:1,s14:3},
-  {geo:"FR",phase:"Rest",cat:"Unknown",tier:"T3",s:14,ec:3,lr:2,fsr:2,s14:6},
-  {geo:"IT",phase:"Rest",cat:"Unknown",tier:"T1",s:7,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"IT",phase:"Rest",cat:"Unknown",tier:"T2",s:22,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"IT",phase:"Rest",cat:"Unknown",tier:"T3",s:29,ec:3,lr:2,fsr:2,s14:1},
-  {geo:"UK",phase:"Rest",cat:"Apparel",tier:"T1",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Apparel",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Apparel",tier:"T3",s:30,ec:10,lr:10,fsr:10,s14:6},
-  {geo:"UK",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:1,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:2,ec:2,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Electronics",tier:"T2",s:2,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Electronics",tier:"T3",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Handbags",tier:"T2",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Health & Beauty",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Health & Beauty",tier:"T2",s:3,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:4,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Home Décor",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Home Décor",tier:"T3",s:8,ec:3,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Jewelry",tier:"T3",s:6,ec:2,lr:2,fsr:2,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other Collectibles",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:20,ec:10,lr:6,fsr:6,s14:2},
-  {geo:"UK",phase:"Rest",cat:"Other Fashion",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other Lifestyle",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Other Lifestyle",tier:"T3",s:2,ec:2,lr:1,fsr:1,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Sneakers",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Toys",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Toys",tier:"T3",s:19,ec:7,lr:7,fsr:6,s14:5},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:25,ec:12,lr:11,fsr:11,s14:8},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"UK",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:5,ec:1,lr:1,fsr:1,s14:2},
-  {geo:"UK",phase:"Rest",cat:"Unknown",tier:"T3",s:3,ec:2,lr:2,fsr:2,s14:2},
-  {geo:"UK",phase:"Rest",cat:"Watches",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T2",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Apparel",tier:"T3",s:50,ec:5,lr:3,fsr:3,s14:1},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T2",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Coins & Bullion",tier:"T3",s:15,ec:2,lr:2,fsr:2,s14:1},
-  {geo:"US",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:5,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T2",s:1,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Comic Books & Memorabilia",tier:"T3",s:15,ec:3,lr:2,fsr:2,s14:1},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T2",s:3,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Electronics",tier:"T3",s:8,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Fashion",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T1",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T2",s:5,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Handbags",tier:"T3",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T2",s:3,ec:2,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Health & Beauty",tier:"T3",s:7,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Home Décor",tier:"T3",s:4,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T2",s:5,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"US",phase:"Rest",cat:"Jewelry",tier:"T3",s:10,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Collectibles",tier:"T3",s:11,ec:2,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Fashion",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T2",s:2,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Home & Garden",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Lifestyle",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Other Lifestyle",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T2",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Sneakers",tier:"T3",s:2,ec:0,lr:1,fsr:0,s14:1},
-  {geo:"US",phase:"Rest",cat:"Sporting Goods",tier:"T3",s:7,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Sports Memorabilia",tier:"T3",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Tools & Workshop Equipment",tier:"T3",s:3,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Toys",tier:"T2",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Toys",tier:"T3",s:12,ec:2,lr:1,fsr:1,s14:1},
-  {geo:"US",phase:"Rest",cat:"Toys and Funko",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T1",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T2",s:4,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",s:27,ec:5,lr:4,fsr:4,s14:5},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T1",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T2",s:11,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Trading Cards STC",tier:"T3",s:21,ec:4,lr:3,fsr:3,s14:2},
-  {geo:"US",phase:"Rest",cat:"Unknown",tier:"T3",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",phase:"Rest",cat:"Watches",tier:"T3",s:3,ec:0,lr:0,fsr:0,s14:1},
-  {geo:"US",phase:"Rest",cat:"Watches and Jewelry",tier:"Unknown",s:3,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",s:4,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Fashion",tier:"Unknown",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",s:1,ec:1,lr:0,fsr:0,s14:0}
+  {geo:"US",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Collectibles",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Fashion",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Toys",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Toys and Funko",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Trading Cards CCG",tier:"T3",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",phase:"Rest",cat:"Watches and Jewelry",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Coins and Bullions",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:2,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Collectibles",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:2,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Electronics",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Fashion",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Rest",cat:"Unknown",tier:"Unknown",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",phase:"Unknown",cat:"Unknown",tier:"Unknown",method:"Unknown",bg:"Unknown",s:5,ec:0,lr:0,fsr:0,s14:0}
 ];
 
 // ─── Filters ───────────────────────────────────────────────────────────────
@@ -2124,10 +1543,10 @@ function renderPreStream() {
     'Daily':   null
   };
   const grainLabelMap = {
-    'Overall': 'All-time · LPG cohort',
-    'Monthly': 'Jul 2026 MTD · LPG cohort',
-    'Weekly':  'Jul 19–25 · LPG cohort',
-    'Daily':   'Jul 21 · LPG cohort'
+    'Overall': 'All-time · studio-activated sellers',
+    'Monthly': 'Jul 2026 MTD · studio-activated sellers',
+    'Weekly':  'Jul 19–25 · studio-activated sellers',
+    'Daily':   'Jul 21 · studio-activated sellers'
   };
   const noDataMsgMap = {
     'Weekly': 'No new sellers onboarded Jul 19–25',
@@ -2153,36 +1572,22 @@ function renderPreStream() {
       document.getElementById(id).style.width = '0%';
       document.getElementById(id).textContent = '0%';
     });
-    // Event & Listing Creation Quality — no-data state
+    // Event Creation Quality — no-data state
     document.getElementById('ec-qual-val').innerHTML = '— <span class="badge-sm" style="background:#6f6f6f;color:#fff;font-size:9px">' + msg + '</span>';
     document.getElementById('ec-qual-note').textContent = msg;
     document.getElementById('ea-qual-val').innerHTML = '—';
     document.getElementById('ea-qual-note').textContent = msg;
-    // Listing & Express Listing — no period data
-    document.getElementById('lc-qual-val').innerHTML = '—';
-    document.getElementById('lc-qual-note').textContent = msg;
-    document.getElementById('el-qual-val').innerHTML = '—';
-    document.getElementById('el-qual-note').textContent = msg;
-    // Recommendation Quality — no period data
-    document.getElementById('recos-cat-val').innerHTML = '—';
-    document.getElementById('recos-cat-note').textContent = msg;
-    document.getElementById('recos-ship-val').innerHTML = '—';
-    document.getElementById('recos-ship-note').textContent = msg;
-    // P1 Diagnostics — no period data
-    ['p1-draft-save','p1-draft-pub','p1-updates'].forEach(id => { document.getElementById(id).textContent = '—'; });
-    document.getElementById('p1-cat-override').innerHTML = '—';
-    document.getElementById('p1-ship-override').innerHTML = '—';
-    // Grain labels
-    ['recos-grain-lbl','p1diag-grain-lbl'].forEach(id => { document.getElementById(id).textContent = msg; });
     return;
   }
 
   const f = getFilterState();
   const rows = data.filter(r =>
-    (f.geo   === 'all' || r.geo   === f.geo)   &&
-    (f.phase === 'all' || r.phase === f.phase) &&
-    (f.cat   === 'all' || r.cat   === f.cat)   &&
-    (f.tier  === 'all' || r.tier  === f.tier)
+    (f.geo    === 'all' || r.geo    === f.geo)    &&
+    (f.phase  === 'all' || r.phase  === f.phase)  &&
+    (f.cat    === 'all' || r.cat    === f.cat)    &&
+    (f.tier   === 'all' || r.tier   === f.tier)   &&
+    (f.method === 'all' || r.method === f.method) &&
+    (f.bg     === 'all' || r.bg     === f.bg)
   );
   const a = rows.reduce((acc, r) => ({
     s:   acc.s   + r.s,
@@ -2232,27 +1637,6 @@ function renderPreStream() {
   document.getElementById('ea-qual-val').innerHTML = eaQP + '% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">' + label + '</span>';
   document.getElementById('ea-qual-note').textContent = (a.s - a.ec) + ' of ' + a.s + ' sellers did not publish · ' + label;
 
-  // Listing Completion Rate & Express Listing — global all-time, no dimensional breakdown
-  document.getElementById('lc-qual-val').innerHTML = '44.0% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Global</span>';
-  document.getElementById('lc-qual-note').textContent = 'Completed / Started · 166/377 sessions · 22 of 29 Express Listing sellers · global all-time';
-  document.getElementById('el-qual-val').innerHTML = '0.1% <span class="badge r" style="font-size:9px">Very Low</span>';
-  document.getElementById('el-qual-note').textContent = '2 of 2,366 sellers use Express Listing · 53 listings total · feature ramp in progress';
-
-  // Recommendation Quality — values static (data inaccurate), restore from hardcoded
-  document.getElementById('recos-cat-val').innerHTML = '28% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span>';
-  document.getElementById('recos-cat-note').textContent = 'Accepted / Recommended · 8/29 sellers · data inaccurate';
-  document.getElementById('recos-ship-val').innerHTML = '55% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span>';
-  document.getElementById('recos-ship-note').textContent = 'Accepted / Shown · 16/29 sellers · data inaccurate';
-
-  // P1 Diagnostics — values static (data inaccurate), restore from hardcoded
-  document.getElementById('p1-draft-save').textContent = '44%';
-  document.getElementById('p1-draft-pub').textContent = '71%';
-  document.getElementById('p1-updates').textContent = '2.4 edits';
-  document.getElementById('p1-cat-override').innerHTML = '<span style="color:#da1e28">72.4% ⚠</span>';
-  document.getElementById('p1-ship-override').innerHTML = '<span style="color:#da1e28">44.8% ⚠</span>';
-
-  // Recommendation Quality + P1 Diagnostics grain label
-  ['recos-grain-lbl','p1diag-grain-lbl'].forEach(id => { document.getElementById(id).textContent = label; });
 }
 
 function applyFilters() {
@@ -2352,14 +1736,6 @@ window.addEventListener('DOMContentLoaded', () => {
   mkLine('ch-ps-event',[
     {n:'Completion Rate',d:D.event_completion,c:'#0f62fe'},
     {n:'Abandonment Rate',d:D.event_abandon,c:'#da1e28'}
-  ],'%');
-  mkLine('ch-ps-listing',[
-    {n:'Completion Rate',d:D.listing_completion,c:'#0353e9'},
-    {n:'Express Adoption',d:D.express_adopt,c:'#24a148'}
-  ],'%');
-  mkLine('ch-ps-recos',[
-    {n:'Category Accept',d:D.cat_accept,c:'#0f62fe'},
-    {n:'Shipping Accept',d:D.ship_accept,c:'#24a148'}
   ],'%');
   mkLine('ch-ps-errors',[
     {n:'Event Error Rate',d:D.event_error,c:'#da1e28'},
