@@ -681,13 +681,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-row" style="grid-template-columns:1fr 1fr;margin-bottom:8px">
         <div class="kpi-tile" style="padding:10px">
           <div class="kpi-label" style="font-size:9px">Listing Completion Rate</div>
-          <div class="kpi-value" style="font-size:18px">44.0% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
-          <div class="kpi-note">Completed / Started · 166/377 sessions · 22 of 29 sellers</div>
+          <div class="kpi-value" style="font-size:18px" id="lc-qual-val">44.0% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Live</span></div>
+          <div class="kpi-note" id="lc-qual-note">Completed / Started · 166/377 sessions · 22 of 29 sellers · Global all-time</div>
         </div>
         <div class="kpi-tile" style="padding:10px">
           <div class="kpi-label" style="font-size:9px">Express Listing Adoption</div>
-          <div class="kpi-value" style="font-size:18px">0.1% <span class="badge r" style="font-size:9px">Very Low</span></div>
-          <div class="kpi-note">2 of 2,366 sellers · 53 express listings total · feature ramp in progress</div>
+          <div class="kpi-value" style="font-size:18px" id="el-qual-val">0.1% <span class="badge r" style="font-size:9px">Very Low</span></div>
+          <div class="kpi-note" id="el-qual-note">2 of 2,366 sellers · 53 express listings total · feature ramp in progress</div>
         </div>
       </div>
       <div id="ch-ps-listing" style="height:150px"></div>
@@ -701,13 +701,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:1px">
     <div class="kpi-tile">
       <div class="kpi-label">Category Accept Rate</div>
-      <div class="kpi-value">28% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13-19</span></div>
-      <div class="kpi-note">Accepted / Recommended · 8/29 sellers</div>
+      <div class="kpi-value" id="recos-cat-val">28% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span></div>
+      <div class="kpi-note" id="recos-cat-note">Accepted / Recommended · 8/29 sellers · data inaccurate</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Shipping Policy Accept</div>
-      <div class="kpi-value">55% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13-19</span></div>
-      <div class="kpi-note">Accepted / Shown · 16/29 sellers</div>
+      <div class="kpi-value" id="recos-ship-val">55% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span></div>
+      <div class="kpi-note" id="recos-ship-note">Accepted / Shown · 16/29 sellers · data inaccurate</div>
     </div>
   </div>
   <div style="background:#fff;border:1px solid #e0e0e0;margin-bottom:1px">
@@ -725,11 +725,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <table class="tbl">
       <thead><tr><th>Metric</th><th>Definition</th><th>Current Value</th><th>Alert Threshold</th></tr></thead>
       <tbody>
-        <tr><td class="fw6">Draft Save Rate</td><td class="mono">Drafts Saved / Event Starts</td><td class="fw6">44%</td><td style="color:#a2191f;font-size:10px">—</td></tr>
-        <tr><td class="fw6">Draft → Publish Conversion</td><td class="mono">Published Drafts / Drafts Saved</td><td class="fw6">71%</td><td style="color:#a2191f;font-size:10px">&lt;60% alert</td></tr>
-        <tr><td class="fw6">Updates Before Publish (Event)</td><td class="mono">Avg edits before publish</td><td class="fw6">2.4 edits</td><td style="color:#a2191f;font-size:10px">&gt;5 edits</td></tr>
-        <tr><td class="fw6">Category Override Rate</td><td class="mono">Overrides / Recommendations</td><td class="fw6" style="color:#da1e28">72.4% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
-        <tr><td class="fw6">Shipping Policy Override Rate</td><td class="mono">Overrides / Recommendations shown</td><td class="fw6" style="color:#da1e28">44.8% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
+        <tr><td class="fw6">Draft Save Rate</td><td class="mono">Drafts Saved / Event Starts</td><td class="fw6" id="p1-draft-save">44%</td><td style="color:#a2191f;font-size:10px">—</td></tr>
+        <tr><td class="fw6">Draft → Publish Conversion</td><td class="mono">Published Drafts / Drafts Saved</td><td class="fw6" id="p1-draft-pub">71%</td><td style="color:#a2191f;font-size:10px">&lt;60% alert</td></tr>
+        <tr><td class="fw6">Updates Before Publish (Event)</td><td class="mono">Avg edits before publish</td><td class="fw6" id="p1-updates">2.4 edits</td><td style="color:#a2191f;font-size:10px">&gt;5 edits</td></tr>
+        <tr><td class="fw6">Category Override Rate</td><td class="mono">Overrides / Recommendations</td><td class="fw6" id="p1-cat-override" style="color:#da1e28">72.4% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
+        <tr><td class="fw6">Shipping Policy Override Rate</td><td class="mono">Overrides / Recommendations shown</td><td class="fw6" id="p1-ship-override" style="color:#da1e28">44.8% ⚠</td><td style="color:#a2191f;font-size:10px">&gt;40%</td></tr>
       </tbody>
     </table>
   </div>
@@ -2128,7 +2128,21 @@ function renderPreStream() {
     document.getElementById('ec-qual-note').textContent = msg;
     document.getElementById('ea-qual-val').innerHTML = '—';
     document.getElementById('ea-qual-note').textContent = msg;
-    // Recommendation Quality + P1 Diagnostics grain label
+    // Listing & Express Listing — no period data
+    document.getElementById('lc-qual-val').innerHTML = '—';
+    document.getElementById('lc-qual-note').textContent = msg;
+    document.getElementById('el-qual-val').innerHTML = '—';
+    document.getElementById('el-qual-note').textContent = msg;
+    // Recommendation Quality — no period data
+    document.getElementById('recos-cat-val').innerHTML = '—';
+    document.getElementById('recos-cat-note').textContent = msg;
+    document.getElementById('recos-ship-val').innerHTML = '—';
+    document.getElementById('recos-ship-note').textContent = msg;
+    // P1 Diagnostics — no period data
+    ['p1-draft-save','p1-draft-pub','p1-updates'].forEach(id => { document.getElementById(id).textContent = '—'; });
+    document.getElementById('p1-cat-override').innerHTML = '—';
+    document.getElementById('p1-ship-override').innerHTML = '—';
+    // Grain labels
     ['recos-grain-lbl','p1diag-grain-lbl'].forEach(id => { document.getElementById(id).textContent = msg; });
     return;
   }
@@ -2187,6 +2201,25 @@ function renderPreStream() {
   document.getElementById('ec-qual-note').textContent = a.ec + ' of ' + a.s + ' sellers published event · ' + label;
   document.getElementById('ea-qual-val').innerHTML = eaQP + '% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">' + label + '</span>';
   document.getElementById('ea-qual-note').textContent = (a.s - a.ec) + ' of ' + a.s + ' sellers did not publish · ' + label;
+
+  // Listing Completion Rate & Express Listing — global all-time, no dimensional breakdown
+  document.getElementById('lc-qual-val').innerHTML = '44.0% <span class="badge-sm" style="background:#42be65;color:#fff;font-size:9px">Global</span>';
+  document.getElementById('lc-qual-note').textContent = 'Completed / Started · 166/377 sessions · 22 of 29 Express Listing sellers · global all-time';
+  document.getElementById('el-qual-val').innerHTML = '0.1% <span class="badge r" style="font-size:9px">Very Low</span>';
+  document.getElementById('el-qual-note').textContent = '2 of 2,366 sellers use Express Listing · 53 listings total · feature ramp in progress';
+
+  // Recommendation Quality — values static (data inaccurate), restore from hardcoded
+  document.getElementById('recos-cat-val').innerHTML = '28% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span>';
+  document.getElementById('recos-cat-note').textContent = 'Accepted / Recommended · 8/29 sellers · data inaccurate';
+  document.getElementById('recos-ship-val').innerHTML = '55% <span class="badge-sm" style="background:#0353e9;color:#fff">Jul 13–19</span>';
+  document.getElementById('recos-ship-note').textContent = 'Accepted / Shown · 16/29 sellers · data inaccurate';
+
+  // P1 Diagnostics — values static (data inaccurate), restore from hardcoded
+  document.getElementById('p1-draft-save').textContent = '44%';
+  document.getElementById('p1-draft-pub').textContent = '71%';
+  document.getElementById('p1-updates').textContent = '2.4 edits';
+  document.getElementById('p1-cat-override').innerHTML = '<span style="color:#da1e28">72.4% ⚠</span>';
+  document.getElementById('p1-ship-override').innerHTML = '<span style="color:#da1e28">44.8% ⚠</span>';
 
   // Recommendation Quality + P1 Diagnostics grain label
   ['recos-grain-lbl','p1diag-grain-lbl'].forEach(id => { document.getElementById(id).textContent = label; });
