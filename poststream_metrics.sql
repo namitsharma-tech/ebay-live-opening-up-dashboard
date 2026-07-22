@@ -1,356 +1,217 @@
--- ================================================================
--- POST-STREAM TAB — COMPLETE METRIC SQL
--- Dashboard: https://namitsharma-tech.github.io/ebay-live-opening-up-dashboard/
--- Tab: Post-Stream
+-- ============================================================
+-- P_LIVE_ANALYTICS_T.POST_STREAM_SHIPMENT_QUERIES_V2
 --
--- Source tables:
---   PRIMARY  P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2 (Q1, Q5)
+-- Grain:   time_period x seller_grouping x seller_id x metric_name
+--          x numerator x denominator
+-- Source:  P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
+--          joined to LIVE_SELLER_UNIFIED_ONBOARDING_DIM by seller_id
+-- Cohort:  account_created_ts (seller account creation date) --
+--          applied uniformly to every metric
+-- Scope:   Shipment / fulfillment metrics calculable from MASTER only.
+--          All seven metrics below are scoped to a seller's FIRST SHOW --
+--          MASTER has no lifetime/all-show shipment columns
+--          (total_gmv exists lifetime, but there is no
+--          total_shipped_gmv / total_shipped_order_count equivalent).
 --
--- Mandatory filter (ALL queries):
---   WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
---     AND is_test_user = 0
+-- Additivity: every numerator/denominator pair here is a ratio-of-sums
+-- (GMV or order-count values), so SUM(numerator) / SUM(denominator) is
+-- valid at ANY rollup level (any subset of dims, any time grain).
 --
--- ⚠ NOTE: As of Jul-14-2026 no sellers have streamed yet.
---   All first_show_* columns return NULL — this is expected.
---   Queries are structurally complete; data populates automatically
---   once sellers complete their first live stream.
+-- Out of scope: SLA/handling-time-based fulfillment (no handling-time
+-- source in MASTER) and BBE-based metrics (no BBE source in MASTER or
+-- any pipeline table -- see dashboard data guide).
 --
--- ✗ INSIGHTS PAGE METRICS (4 metrics) — NO SOURCE:
---   Insights Landing Rate, Report Download Rate, Non-Default View
---   Adoption, and Repeat Insights Revisit Rate are NOT in
---   LIVE_SELLER_MASTER_V2. They require a separate UBI / page-event
---   instrumentation table. Stubs are included below.
+-- ------------------------------------------------------------
+-- README -- Metric Definitions
+-- ------------------------------------------------------------
+-- Order Fulfilled Rate
+--   At least one order from the seller's first show was shipped
+--   (carrier acceptance scan recorded).
+--   num: first_show_first_fulfillment_ts IS NOT NULL
+--   den: first_show_txn_cnt > 0  (sellers with first-show sales)
 --
--- ✗ BBE RATE — NO SOURCE:
---   BBE is not in LIVE_SELLER_MASTER_V2 or any current pipeline.
---   Stub included below.
+-- Full Fulfillment Rate
+--   Every order from the seller's first show was shipped
+--   (shipped_count >= paid_count).
+--   num: first_show_all_fulfilled_ts IS NOT NULL
+--   den: first_show_txn_cnt > 0
 --
--- Run order: each section is independent.
--- All rates: SUM(numerator) / SUM(denominator) — never AVG of rates.
--- ================================================================
+-- Shipped GMV Rate
+--   Share of first-show order GMV that was actually shipped.
+--   num: first_show_shipped_gmv
+--   den: first_show_gmv
+--
+-- Paid-to-Shipped Order Gap Rate
+--   Share of paid first-show orders that were shipped -- surfaces
+--   sellers who took payment but haven't fulfilled.
+--   num: first_show_shipped_order_count
+--   den: first_show_paid_order_count
+--
+-- eBay Label Usage Rate
+--   Share of shipped first-show orders sent with an eBay-issued label.
+--   num: first_show_ebay_label_cnt
+--   den: first_show_shipped_order_count
+--
+-- Off-Platform Carrier Rate
+--   Share of shipped first-show orders sent via the seller's own
+--   carrier/label (outside eBay's label system).
+--   num: first_show_off_platform_cnt
+--   den: first_show_shipped_order_count
+--
+-- Untracked Shipment Rate
+--   Share of shipped first-show orders with no tracking recorded.
+--   num: first_show_untracked_cnt
+--   den: first_show_shipped_order_count
+-- ------------------------------------------------------------
+-- ============================================================
 
+DROP TABLE IF EXISTS P_LIVE_ANALYTICS_T.POST_STREAM_SHIPMENT_QUERIES_V2;
+CREATE TABLE P_LIVE_ANALYTICS_T.POST_STREAM_SHIPMENT_QUERIES_V2 AS
 
--- ================================================================
--- SECTION 1 — L0 NORTH STARS: FULFILLMENT RATES
---   Order Fulfillment Rate (1-Order): ≥1 item shipped
---   Full Fulfillment Rate: ALL items shipped
---   GA gates: 1-Order ≥ 90%, Full ≥ 80%.
---   Hard stop: 1-Order < 60%.
---   ⚠ NULL until first seller streams.
--- ================================================================
+WITH cal_ref AS (
+    SELECT DISTINCT CAL_DT, RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID
+    FROM ACCESS_VIEWS.DW_CAL_DT
+),
 
-SELECT
-    -- Sellers with any sales
-    COUNT(CASE WHEN n_show_w_sales >= 1 THEN 1 END)                  AS n_sellers_with_sales,
+base AS (
+    SELECT
+        m.user_id_ubi,
+        CAST(m.account_created_ts AS DATE)           AS account_created_dt,
+        m.first_show_gmv,
+        m.first_show_shipped_gmv,
+        m.first_show_paid_order_count,
+        m.first_show_shipped_order_count,
+        m.first_show_ebay_label_cnt,
+        m.first_show_off_platform_cnt,
+        m.first_show_untracked_cnt,
+        m.first_show_txn_cnt,
+        m.first_show_first_fulfillment_ts,
+        m.first_show_all_fulfilled_ts,
+        COALESCE(d.geography,         'Unknown')     AS geography,
+        COALESCE(d.launch_phase,      'Unknown')     AS launch_phase,
+        COALESCE(d.category,          'Unknown')     AS category,
+        COALESCE(d.gmv_tier,          'Unknown')     AS gmv_tier,
+        COALESCE(d.onboarding_method, 'Unknown')     AS onboarding_method,
+        COALESCE(d.seller_background, 'Unknown')     AS seller_background,
+        cal.RETAIL_YEAR,
+        cal.RETAIL_WEEK,
+        cal.AGE_FOR_RTL_WEEK_ID,
+        cal.MONTH_ID
+    FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2 m
+    LEFT JOIN P_LIVE_ANALYTICS_T.LIVE_SELLER_UNIFIED_ONBOARDING_DIM d
+        ON CAST(m.user_id_ubi AS BIGINT) = CAST(d.seller_id AS BIGINT)
+    INNER JOIN cal_ref cal
+        ON CAST(m.account_created_ts AS DATE) = cal.CAL_DT
+    WHERE m.report_dt = (SELECT MAX(report_dt) FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2)
+      AND m.is_test_user = 0
+      AND m.account_created_ts IS NOT NULL
+),
 
-    -- 1-Order Fulfillment Rate
-    COUNT(CASE WHEN n_order_fulfilled >= 1 THEN 1 END)               AS n_sellers_1order_fulfilled,
-    ROUND(
-        COUNT(CASE WHEN n_order_fulfilled >= 1 THEN 1 END) * 100.0
-        / NULLIF(COUNT(CASE WHEN n_show_w_sales >= 1 THEN 1 END), 0), 1)
-                                                                      AS order_fulfill_rate_pct,
+-- One row per seller per metric (long/tall format). Every
+-- numerator/denominator is a ratio-of-sums value -- GMV or order
+-- counts, all scoped to first show.
+metric_flags AS (
 
-    -- Full Fulfillment Rate
-    COUNT(CASE WHEN n_all_fulfilled >= 1 THEN 1 END)                 AS n_sellers_full_fulfilled,
-    ROUND(
-        COUNT(CASE WHEN n_all_fulfilled >= 1 THEN 1 END) * 100.0
-        / NULLIF(COUNT(CASE WHEN n_show_w_sales >= 1 THEN 1 END), 0), 1)
-                                                                      AS full_fulfill_rate_pct,
+    SELECT user_id_ubi, account_created_dt, geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+           RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID,
+           'Order Fulfilled Rate'                                    AS metric_name,
+           CAST(CASE WHEN first_show_first_fulfillment_ts IS NOT NULL THEN 1 ELSE 0 END AS DOUBLE) AS numerator,
+           CAST(CASE WHEN first_show_txn_cnt > 0 THEN 1 ELSE 0 END AS DOUBLE) AS denominator
+    FROM base
 
-    -- Order-level counts
-    SUM(first_show_paid_order_count)                                  AS total_paid_orders,
-    SUM(first_show_shipped_order_count)                               AS total_shipped_orders
+    UNION ALL
+    SELECT user_id_ubi, account_created_dt, geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+           RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID,
+           'Full Fulfillment Rate'                                   AS metric_name,
+           CAST(CASE WHEN first_show_all_fulfilled_ts IS NOT NULL THEN 1 ELSE 0 END AS DOUBLE) AS numerator,
+           CAST(CASE WHEN first_show_txn_cnt > 0 THEN 1 ELSE 0 END AS DOUBLE) AS denominator
+    FROM base
 
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0;
+    UNION ALL
+    SELECT user_id_ubi, account_created_dt, geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+           RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID,
+           'Shipped GMV Rate'                                        AS metric_name,
+           CAST(first_show_shipped_gmv AS DOUBLE)                    AS numerator,
+           CAST(first_show_gmv AS DOUBLE)                            AS denominator
+    FROM base
 
+    UNION ALL
+    SELECT user_id_ubi, account_created_dt, geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+           RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID,
+           'Paid-to-Shipped Order Gap Rate'                          AS metric_name,
+           CAST(first_show_shipped_order_count AS DOUBLE)            AS numerator,
+           CAST(first_show_paid_order_count AS DOUBLE)                AS denominator
+    FROM base
 
--- ================================================================
--- SECTION 2 — FULFILLMENT TIMING (median + P90 days)
---   first_show_first_fulfillment_ts: timestamp of first shipment
---   first_show_all_fulfilled_ts: timestamp all items shipped
---   ⚠ NULL until first seller streams.
--- ================================================================
+    UNION ALL
+    SELECT user_id_ubi, account_created_dt, geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+           RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID,
+           'eBay Label Usage Rate'                                   AS metric_name,
+           CAST(first_show_ebay_label_cnt AS DOUBLE)                 AS numerator,
+           CAST(first_show_shipped_order_count AS DOUBLE)            AS denominator
+    FROM base
 
-SELECT
-    COUNT(CASE WHEN first_show_first_fulfillment_ts IS NOT NULL THEN 1 END)
-                                                                      AS n_sellers_with_fulfillment,
+    UNION ALL
+    SELECT user_id_ubi, account_created_dt, geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+           RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID,
+           'Off-Platform Carrier Rate'                                AS metric_name,
+           CAST(first_show_off_platform_cnt AS DOUBLE)               AS numerator,
+           CAST(first_show_shipped_order_count AS DOUBLE)            AS denominator
+    FROM base
 
-    -- Median days: first show date → first item shipped
-    ROUND(
-        PERCENTILE_APPROX(
-            DATEDIFF(
-                CAST(first_show_first_fulfillment_ts AS DATE),
-                first_show_date
-            ), 0.5), 1)                                               AS median_days_to_first_fulfillment,
-    ROUND(
-        PERCENTILE_APPROX(
-            DATEDIFF(
-                CAST(first_show_first_fulfillment_ts AS DATE),
-                first_show_date
-            ), 0.9), 1)                                               AS p90_days_to_first_fulfillment,
+    UNION ALL
+    SELECT user_id_ubi, account_created_dt, geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+           RETAIL_YEAR, RETAIL_WEEK, AGE_FOR_RTL_WEEK_ID, MONTH_ID,
+           'Untracked Shipment Rate'                                  AS metric_name,
+           CAST(first_show_untracked_cnt AS DOUBLE)                  AS numerator,
+           CAST(first_show_shipped_order_count AS DOUBLE)            AS denominator
+    FROM base
 
-    -- Median days: first show date → all items shipped
-    ROUND(
-        PERCENTILE_APPROX(
-            DATEDIFF(
-                CAST(first_show_all_fulfilled_ts AS DATE),
-                first_show_date
-            ), 0.5), 1)                                               AS median_days_to_full_fulfillment,
-    ROUND(
-        PERCENTILE_APPROX(
-            DATEDIFF(
-                CAST(first_show_all_fulfilled_ts AS DATE),
-                first_show_date
-            ), 0.9), 1)                                               AS p90_days_to_full_fulfillment
+),
 
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0
-  AND n_first_show >= 1;
+-- Relabeling passes, not aggregation -- each seller has exactly one
+-- account_created_ts, so each seller-metric row appears exactly once
+-- per time grain.
+daily AS (
+    SELECT
+        DATE_FORMAT(account_created_dt, 'yyyy-MM-dd')  AS label,
+        'Daily'                                         AS timeframe,
+        geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+        user_id_ubi, metric_name, numerator, denominator
+    FROM metric_flags
+),
 
+weekly AS (
+    SELECT
+        CAST(RETAIL_YEAR AS STRING) || 'RW' ||
+            CASE WHEN LENGTH(CAST(RETAIL_WEEK AS STRING)) = 1 THEN '0' ELSE '' END ||
+            CAST(RETAIL_WEEK AS STRING)                 AS label,
+        'Weekly'                                         AS timeframe,
+        geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+        user_id_ubi, metric_name, numerator, denominator
+    FROM metric_flags
+    WHERE AGE_FOR_RTL_WEEK_ID <= -1
+),
 
--- ================================================================
--- SECTION 3 — UNPAID ORDER RATE
---   Unpaid = txn created but not paid.
---   Lower is better. Guardrail watch: >6% = elevated.
---   ⚠ NULL until first seller streams.
--- ================================================================
+monthly AS (
+    SELECT
+        CAST(MONTH_ID AS STRING)                        AS label,
+        'Monthly'                                        AS timeframe,
+        geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+        user_id_ubi, metric_name, numerator, denominator
+    FROM metric_flags
+),
 
-SELECT
-    SUM(first_show_txn_cnt)                                           AS total_orders_created,
-    SUM(first_show_paid_order_count)                                  AS total_paid_orders,
-    SUM(first_show_txn_cnt) - SUM(first_show_paid_order_count)        AS total_unpaid_orders,
-    ROUND(
-        (SUM(first_show_txn_cnt) - SUM(first_show_paid_order_count)) * 100.0
-        / NULLIF(SUM(first_show_txn_cnt), 0), 1)                     AS unpaid_order_rate_pct
+overall AS (
+    SELECT
+        'Overall'                                        AS label,
+        'Overall'                                        AS timeframe,
+        geography, launch_phase, category, gmv_tier, onboarding_method, seller_background,
+        user_id_ubi, metric_name, numerator, denominator
+    FROM metric_flags
+)
 
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0
-  AND n_first_show >= 1;
-
-
--- ================================================================
--- SECTION 4 — PAID BUT UNFULFILLED (7-DAY)
---   Paid orders with no shipment event after 7 days from show.
---   ⚠ 7-day threshold requires comparing fulfillment timestamp
---   to first_show_date. Count derivable; exact SLA threshold
---   needs a fulfillment_deadline column (not confirmed in guide).
--- ================================================================
-
-SELECT
-    SUM(first_show_paid_order_count)                                  AS total_paid_orders,
-    SUM(first_show_paid_order_count) - SUM(first_show_shipped_order_count)
-                                                                      AS total_paid_not_shipped,
-    ROUND(
-        (SUM(first_show_paid_order_count) - SUM(first_show_shipped_order_count)) * 100.0
-        / NULLIF(SUM(first_show_paid_order_count), 0), 1)            AS paid_unfulfilled_rate_pct
-    -- NOTE: this is total unshipped, not strictly 7-day SLA.
-    -- To enforce 7-day window, add: AND first_show_date <= DATE_SUB(CURRENT_DATE(), 7)
-
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0
-  AND n_first_show >= 1
-  AND first_show_date <= DATE_SUB(CURRENT_DATE(), 7);  -- only cohorts old enough to evaluate
-
-
--- ================================================================
--- SECTION 5 — 21-DAY SELLER RETENTION RATE
---   Sellers with ≥1 show between day 8 and day 21 post first show.
---   LIVE_SELLER_MASTER_V2 has no pre-built d8–21 flag;
---   derived using DATEDIFF(last_show_date, first_show_date).
---   ⚠ NULL until first seller streams.
--- ================================================================
-
-SELECT
-    COUNT(CASE WHEN n_first_show >= 1 THEN 1 END)                    AS n_first_show_sellers,
-    COUNT(CASE WHEN
-        n_first_show >= 1
-        AND last_show_date IS NOT NULL
-        AND DATEDIFF(last_show_date, first_show_date) BETWEEN 8 AND 21
-    THEN 1 END)                                                       AS n_retained_21d,
-    ROUND(
-        COUNT(CASE WHEN
-            n_first_show >= 1
-            AND last_show_date IS NOT NULL
-            AND DATEDIFF(last_show_date, first_show_date) BETWEEN 8 AND 21
-        THEN 1 END) * 100.0
-        / NULLIF(COUNT(CASE WHEN n_first_show >= 1 THEN 1 END), 0), 1)
-                                                                      AS retention_21d_rate_pct
-
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0;
-
-
--- ================================================================
--- SECTION 6 — 21-DAY SELLER CHURN (guardrail)
---   Hard stop: > 30% churn for ≥ 2 consecutive weeks.
---   Churn: sellers who have streamed but have no activity for 21+ days.
--- ================================================================
-
-SELECT
-    COUNT(CASE WHEN n_first_show >= 1 THEN 1 END)                    AS n_ever_streamed,
-    COUNT(CASE WHEN
-        n_first_show >= 1
-        AND days_since_last_show > 21
-    THEN 1 END)                                                       AS n_churned_21d,
-    ROUND(
-        COUNT(CASE WHEN
-            n_first_show >= 1
-            AND days_since_last_show > 21
-        THEN 1 END) * 100.0
-        / NULLIF(COUNT(CASE WHEN n_first_show >= 1 THEN 1 END), 0), 1)
-                                                                      AS churn_21d_rate_pct
-
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0;
-
-
--- ================================================================
--- SECTION 7 — LATE SHIPMENT RATE (guardrail)
---   Label type breakdown as a proxy.
---   Exact SLA breach requires a fulfillment_deadline column
---   not confirmed in the data guide — partial derivation below.
--- ================================================================
-
-SELECT
-    SUM(first_show_shipped_order_count)                               AS total_shipped_orders,
-
-    -- Label type breakdown (shipping method distribution)
-    SUM(first_show_ebay_label_cnt)                                    AS orders_ebay_label,
-    SUM(first_show_off_platform_cnt)                                  AS orders_off_platform,
-    SUM(first_show_untracked_cnt)                                     AS orders_untracked,
-
-    -- eBay label adoption (proxy for trackable shipments)
-    ROUND(
-        SUM(first_show_ebay_label_cnt) * 100.0
-        / NULLIF(SUM(first_show_shipped_order_count), 0), 1)         AS ebay_label_pct,
-    ROUND(
-        SUM(first_show_untracked_cnt) * 100.0
-        / NULLIF(SUM(first_show_shipped_order_count), 0), 1)         AS untracked_pct
-    -- NOTE: true late shipment rate requires SLA deadline column — confirm with data team.
-
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0
-  AND n_first_show >= 1;
-
-
--- ================================================================
--- SECTION 8 — BBE RATE (14-DAY) — GUARDRAIL
---   ✗ SOURCE NOT IDENTIFIED — stub only.
---   BBE is not in LIVE_SELLER_MASTER_V2 or any current pipeline.
--- ================================================================
-
--- TODO: replace with actual BBE pipeline table once confirmed.
-SELECT
-    0.0                                                               AS bbe_rate_14d_pct,
-    'Source TBD — not in LIVE_SELLER_MASTER_V2'                       AS data_status;
-
-
--- ================================================================
--- SECTION 9 — INSIGHTS PAGE METRICS — ALL MISSING
---   ✗ NO SOURCE — requires UBI / page-event instrumentation.
---   Four metrics: Insights Landing Rate, Report Download Rate,
---   Non-Default View Adoption, Repeat Insights Revisit Rate.
--- ================================================================
-
--- TODO: once LIVE_INSIGHTS_PAGE_EVENTS_T or equivalent UBI table
--- is available, implement these queries:
-/*
--- Insights Landing Rate (same day)
-SELECT
-    n_streaming_sellers,
-    n_insights_landers_1d,
-    ROUND(n_insights_landers_1d * 100.0 / NULLIF(n_streaming_sellers, 0), 1) AS insights_landing_rate_1d_pct
-FROM ...
-
--- Report Download Rate
--- Non-Default View Adoption
--- Repeat Insights Revisit Rate (sellers with 2+ sessions)
-*/
-SELECT 'Insights page metrics require UBI page-event instrumentation — source pending' AS data_status;
-
-
--- ================================================================
--- SECTION 10 — WEEKLY TREND (post-stream metrics by first show week)
--- ================================================================
-
-SELECT
-    DATE_FORMAT(first_show_date, 'yyyy-MM-dd')                       AS first_show_week,
-    COUNT(*)                                                          AS n_sellers,
-
-    -- Fulfillment rates
-    ROUND(COUNT(CASE WHEN n_order_fulfilled >= 1 THEN 1 END) * 100.0
-          / NULLIF(COUNT(CASE WHEN n_show_w_sales >= 1 THEN 1 END), 0), 1)
-                                                                      AS order_fulfill_rate_pct,
-    ROUND(COUNT(CASE WHEN n_all_fulfilled >= 1 THEN 1 END) * 100.0
-          / NULLIF(COUNT(CASE WHEN n_show_w_sales >= 1 THEN 1 END), 0), 1)
-                                                                      AS full_fulfill_rate_pct,
-
-    -- Timing medians
-    ROUND(PERCENTILE_APPROX(
-        DATEDIFF(CAST(first_show_first_fulfillment_ts AS DATE), first_show_date), 0.5), 1)
-                                                                      AS median_days_to_first_fulfill,
-    ROUND(PERCENTILE_APPROX(
-        DATEDIFF(CAST(first_show_all_fulfilled_ts AS DATE), first_show_date), 0.5), 1)
-                                                                      AS median_days_to_full_fulfill,
-
-    -- 21-day retention
-    ROUND(COUNT(CASE WHEN
-        n_first_show >= 1
-        AND last_show_date IS NOT NULL
-        AND DATEDIFF(last_show_date, first_show_date) BETWEEN 8 AND 21
-    THEN 1 END) * 100.0
-    / NULLIF(COUNT(CASE WHEN n_first_show >= 1 THEN 1 END), 0), 1)  AS retention_21d_rate_pct,
-
-    -- Churn
-    ROUND(COUNT(CASE WHEN n_first_show >= 1 AND days_since_last_show > 21 THEN 1 END) * 100.0
-          / NULLIF(COUNT(CASE WHEN n_first_show >= 1 THEN 1 END), 0), 1)
-                                                                      AS churn_21d_rate_pct
-
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0
-  AND n_first_show >= 1
-GROUP BY DATE_FORMAT(first_show_date, 'yyyy-MM-dd')
-ORDER BY first_show_week;
-
-
--- ================================================================
--- SECTION 11 — SELLER OUTREACH SNAPSHOT (lapsed + at-risk)
---   For Seller Success team: identify sellers who streamed but
---   haven't returned (lapsed) or have low fulfillment.
--- ================================================================
-
-SELECT
-    seller_id,
-    seller_name,
-    seller_category_name,
-    first_show_date,
-    last_show_date,
-    days_since_last_show,
-    n_first_show,
-    days_to_second_show,
-    first_show_paid_order_count,
-    first_show_shipped_order_count,
-    ok_to_email,
-    ok_to_call,
-
-    CASE
-        WHEN days_since_last_show > 21            THEN 'Lapsed (>21d no stream)'
-        WHEN days_since_last_show BETWEEN 14 AND 21 THEN 'At Risk (14–21d no stream)'
-        WHEN n_first_show >= 1 AND days_to_second_show IS NULL THEN 'One-Time Streamer'
-        WHEN n_first_show >= 2                    THEN 'Active Repeat Streamer'
-        ELSE 'No Stream Yet'
-    END                                                               AS seller_status
-
-FROM P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2
-WHERE report_dt = DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-dd')
-  AND is_test_user = 0
-ORDER BY days_since_last_show DESC NULLS LAST;
+SELECT * FROM daily
+UNION ALL SELECT * FROM weekly
+UNION ALL SELECT * FROM monthly
+UNION ALL SELECT * FROM overall;
