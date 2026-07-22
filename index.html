@@ -407,6 +407,18 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
   </div>
 
+  <!-- Charts -->
+  <div class="g2" style="gap:1px;margin-top:16px;margin-bottom:1px">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Seller Pipeline — Current Period Funnel</div>
+      <div id="ch-exec-funnel" style="height:210px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Monthly Cohort Trend — Sellers &amp; Key Rates</div>
+      <div id="ch-exec-trend" style="height:210px"></div>
+    </div>
+  </div>
+
   <!-- Gate table -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0"><span class="card-title">Alpha → GA Gate Progress</span><span class="card-sub">Live data as of 2026-07-22 · n=82 total sellers</span></div>
@@ -1675,23 +1687,42 @@ function setGrain(g, btn) {
   document.querySelectorAll('.grain-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   activeGrain = g;
+  if (activeTab === 'executive') renderExecutive();
   if (activeTab === 'registration') renderRegistration();
   if (activeTab === 'prestream') renderPreStream();
   if (activeTab === 'instream') renderInStream();
   updateBreadcrumb();
 }
 
-// ─── Executive summary totals (executive_summary_granular_agg.sql · snapshot 2026-07-22) ──────
-const EXEC_TOTALS = {
-  n_total:82, n_app:15, n_lpg:37,
-  n_event:7, n_listing:3, n_ready:3, n_14d:1,
-  n_show:2, n_commerce:1, n_sales:1,
-  n_1ord:0, n_fulfil:0, n_repeat7:1,
-  sum_gmv:6.53, sum_min:28.8,
-  n_gcx:0, sum_gcx:0,
-  e2e_med_days:0.884, e2e_p90_days:48.1,
-  as_of:'2026-07-22'
-};
+// ─── Executive granular data (snapshot 2026-07-22 · tp×cp×geo×tier×phase) ───────────────────
+// e2e_med/p90 are days; NaN rows stored as null (PERCENTILE_APPROX needs ≥1 streamer)
+const EXEC_DATA = [
+  {tp:'Monthly',cp:'2026-05',geo:'US',tier:'T3',phase:'Rest',n_total:7,n_app:0,n_lpg:6,n_event:1,n_listing:1,n_ready:1,n_14d:0,n_show:1,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:26.5,n_gcx:0,sum_gcx:0,e2e_med:48.116,e2e_p90:48.116},
+  {tp:'Monthly',cp:'2026-05',geo:'US',tier:'Unknown',phase:'Rest',n_total:5,n_app:0,n_lpg:1,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Monthly',cp:'2026-05',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:2,n_app:0,n_lpg:0,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Monthly',cp:'2026-06',geo:'US',tier:'T3',phase:'Rest',n_total:2,n_app:0,n_lpg:2,n_event:1,n_listing:1,n_ready:1,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Monthly',cp:'2026-06',geo:'US',tier:'Unknown',phase:'Rest',n_total:2,n_app:0,n_lpg:0,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Monthly',cp:'2026-06',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:3,n_app:0,n_lpg:1,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Monthly',cp:'2026-07',geo:'US',tier:'Unknown',phase:'Rest',n_total:24,n_app:7,n_lpg:11,n_event:2,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Monthly',cp:'2026-07',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:21,n_app:3,n_lpg:12,n_event:3,n_listing:1,n_ready:1,n_14d:1,n_show:1,n_commerce:1,n_sales:1,n_1ord:0,n_fulfil:0,n_repeat7:1,sum_gmv:6.53,sum_min:2.3,n_gcx:0,sum_gcx:0,e2e_med:0.884,e2e_p90:0.884},
+  {tp:'Monthly',cp:'2026-07',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_total:16,n_app:5,n_lpg:4,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Overall',cp:'Overall',geo:'US',tier:'T3',phase:'Rest',n_total:9,n_app:0,n_lpg:8,n_event:2,n_listing:2,n_ready:2,n_14d:0,n_show:1,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:26.5,n_gcx:0,sum_gcx:0,e2e_med:48.116,e2e_p90:48.116},
+  {tp:'Overall',cp:'Overall',geo:'US',tier:'Unknown',phase:'Rest',n_total:31,n_app:7,n_lpg:12,n_event:2,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Overall',cp:'Overall',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:26,n_app:3,n_lpg:13,n_event:3,n_listing:1,n_ready:1,n_14d:1,n_show:1,n_commerce:1,n_sales:1,n_1ord:0,n_fulfil:0,n_repeat7:1,sum_gmv:6.53,sum_min:2.3,n_gcx:0,sum_gcx:0,e2e_med:0.884,e2e_p90:0.884},
+  {tp:'Overall',cp:'Overall',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_total:16,n_app:5,n_lpg:4,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-05-25',geo:'US',tier:'T3',phase:'Rest',n_total:7,n_app:0,n_lpg:6,n_event:1,n_listing:1,n_ready:1,n_14d:0,n_show:1,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:26.5,n_gcx:0,sum_gcx:0,e2e_med:48.116,e2e_p90:48.116},
+  {tp:'Weekly',cp:'2026-05-25',geo:'US',tier:'Unknown',phase:'Rest',n_total:5,n_app:0,n_lpg:1,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-05-25',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:2,n_app:0,n_lpg:0,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-06-01',geo:'US',tier:'T3',phase:'Rest',n_total:2,n_app:0,n_lpg:2,n_event:1,n_listing:1,n_ready:1,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-06-01',geo:'US',tier:'Unknown',phase:'Rest',n_total:2,n_app:0,n_lpg:0,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-06-01',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:3,n_app:0,n_lpg:1,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-07-06',geo:'US',tier:'Unknown',phase:'Rest',n_total:1,n_app:0,n_lpg:0,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-07-06',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:2,n_app:1,n_lpg:1,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-07-06',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_total:3,n_app:1,n_lpg:1,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-07-13',geo:'US',tier:'Unknown',phase:'Rest',n_total:23,n_app:7,n_lpg:11,n_event:2,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+  {tp:'Weekly',cp:'2026-07-13',geo:'Unknown',tier:'Unknown',phase:'Rest',n_total:19,n_app:2,n_lpg:11,n_event:3,n_listing:1,n_ready:1,n_14d:1,n_show:1,n_commerce:1,n_sales:1,n_1ord:0,n_fulfil:0,n_repeat7:1,sum_gmv:6.53,sum_min:2.3,n_gcx:0,sum_gcx:0,e2e_med:0.884,e2e_p90:0.884},
+  {tp:'Weekly',cp:'2026-07-13',geo:'Unknown',tier:'Unknown',phase:'Unknown',n_total:13,n_app:4,n_lpg:3,n_event:0,n_listing:0,n_ready:0,n_14d:0,n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0,e2e_med:null,e2e_p90:null},
+];
 
 // ─── Pre-Stream data (v2 · LIVE_SELLER_MASTER_V2 · activated_studio=1) ───────
 // Section 2 of pre_stream_metrics_v2.sql · latest snapshot 2026-07-19
@@ -2454,64 +2485,167 @@ function fmt(n, d) {
   return p + '%';
 }
 
-function renderExecutive() {
-  const d = EXEC_TOTALS;
-  function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
-  function pct(n, denom) { return denom > 0 ? (n/denom*100).toFixed(1)+'%' : '—'; }
-  function cnt(n, denom, lbl) { return n+' of '+denom+' '+lbl; }
+let execFunnelChart = null;
+let execTrendChart  = null;
 
-  set('ex-as-of', d.as_of);
+function renderExecutive() {
+  const f = getFilterState();
+  const grainRows = EXEC_DATA.filter(r => r.tp === activeGrain);
+  const latestCp  = activeGrain === 'Overall' ? 'Overall'
+    : grainRows.reduce((mx,r) => r.cp > mx ? r.cp : mx, '');
+  const grainLabelMap = {
+    'Overall': 'All-time through 2026-07-22',
+    'Monthly': 'Cohort month ' + latestCp,
+    'Weekly':  'Cohort week starting ' + latestCp
+  };
+  const rows = grainRows.filter(r =>
+    r.cp === latestCp &&
+    (f.geo   === 'all' || r.geo   === f.geo)  &&
+    (f.tier  === 'all' || r.tier  === f.tier) &&
+    (f.phase === 'all' || r.phase === f.phase)
+  );
+
+  const ZERO = {n_total:0,n_app:0,n_lpg:0,n_event:0,n_listing:0,n_ready:0,n_14d:0,
+    n_show:0,n_commerce:0,n_sales:0,n_1ord:0,n_fulfil:0,n_repeat7:0,sum_gmv:0,sum_min:0,n_gcx:0,sum_gcx:0};
+  const a = rows.reduce((acc,r) => {
+    Object.keys(ZERO).forEach(k => { acc[k] = (acc[k]||0) + r[k]; });
+    return acc;
+  }, {...ZERO});
+
+  // e2e velocity: use the row with the most streaming time (non-null e2e)
+  const e2eRow = [...rows].filter(r => r.e2e_med !== null)
+    .sort((x,y) => y.sum_min - x.sum_min)[0];
+  const e2eMed = e2eRow ? e2eRow.e2e_med : null;
+  const e2eP90 = e2eRow ? e2eRow.e2e_p90 : null;
+
+  function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+  function pct(n, d) { return d > 0 ? (n/d*100).toFixed(1)+'%' : '—'; }
+  function cnt(n, d, lbl) { return n+' of '+d+' '+lbl; }
+  const label = grainLabelMap[activeGrain] || activeGrain;
+
+  set('ex-as-of', label);
+
+  if (rows.length === 0) {
+    ['ex-e2e-show','ex-e2e-sales','ex-e2e-ord','ex-e2e-fulfil','ex-e2e-vel',
+     'ex-reg-rate','ex-lpg-rate','ex-event-rate','ex-listing-rate','ex-ready-rate','ex-14d-rate',
+     'ex-show-rate','ex-commerce-rate','ex-gmv-hr','ex-1ord-rate','ex-fulfil-rate',
+     'ex-repeat-rate','ex-gcx-rate','ex-gcx-avg'].forEach(id => set(id,'—'));
+    return;
+  }
 
   // North Stars
-  set('ex-e2e-show',       pct(d.n_show, d.n_total));
-  set('ex-e2e-show-cnt',   cnt(d.n_show, d.n_total, 'sellers'));
-  set('ex-e2e-sales',      pct(d.n_sales, d.n_total));
-  set('ex-e2e-sales-cnt',  cnt(d.n_sales, d.n_total, 'sellers'));
-  set('ex-e2e-ord',        pct(d.n_1ord, d.n_total));
-  set('ex-e2e-ord-cnt',    cnt(d.n_1ord, d.n_total, 'sellers'));
-  set('ex-e2e-fulfil',     pct(d.n_fulfil, d.n_total));
-  set('ex-e2e-fulfil-cnt', cnt(d.n_fulfil, d.n_total, 'sellers'));
-  set('ex-e2e-vel',        d.e2e_med_days.toFixed(1)+'d');
-  set('ex-e2e-vel-p90',    'p90: '+d.e2e_p90_days.toFixed(1)+'d · '+d.n_show+' sellers with first show');
+  set('ex-e2e-show',       pct(a.n_show, a.n_total));
+  set('ex-e2e-show-cnt',   cnt(a.n_show, a.n_total, 'sellers'));
+  set('ex-e2e-sales',      pct(a.n_sales, a.n_total));
+  set('ex-e2e-sales-cnt',  cnt(a.n_sales, a.n_total, 'sellers'));
+  set('ex-e2e-ord',        pct(a.n_1ord, a.n_total));
+  set('ex-e2e-ord-cnt',    cnt(a.n_1ord, a.n_total, 'sellers'));
+  set('ex-e2e-fulfil',     pct(a.n_fulfil, a.n_total));
+  set('ex-e2e-fulfil-cnt', cnt(a.n_fulfil, a.n_total, 'sellers'));
+  set('ex-e2e-vel',        e2eMed !== null ? e2eMed.toFixed(1)+'d' : '—');
+  set('ex-e2e-vel-p90',    e2eP90 !== null
+    ? 'p90: '+e2eP90.toFixed(1)+'d · '+a.n_show+' sellers with first show'
+    : a.n_show+' sellers with first show · e2e vel unavailable at this filter');
 
-  // Registration (denom: n_total — n_lpg > n_app due to BD-onboarded sellers)
-  set('ex-reg-rate', pct(d.n_app, d.n_total));
-  set('ex-reg-cnt',  cnt(d.n_app, d.n_total, 'submitted streaming app'));
-  set('ex-lpg-rate', pct(d.n_lpg, d.n_total));
-  set('ex-lpg-cnt',  cnt(d.n_lpg, d.n_total, 'granted LPG (incl. BD-onboarded)'));
+  // Registration
+  set('ex-reg-rate', pct(a.n_app, a.n_total));
+  set('ex-reg-cnt',  cnt(a.n_app, a.n_total, 'submitted streaming app'));
+  set('ex-lpg-rate', pct(a.n_lpg, a.n_total));
+  set('ex-lpg-cnt',  cnt(a.n_lpg, a.n_total, 'granted LPG (incl. BD-onboarded)'));
 
-  // Pre-Stream (denom: n_lpg)
-  set('ex-event-rate',   pct(d.n_event, d.n_lpg));
-  set('ex-event-cnt',    cnt(d.n_event, d.n_lpg, 'LPG sellers created first event'));
-  set('ex-listing-rate', pct(d.n_listing, d.n_lpg));
-  set('ex-listing-cnt',  cnt(d.n_listing, d.n_lpg, 'LPG sellers added first listing'));
-  set('ex-ready-rate',   pct(d.n_ready, d.n_lpg));
-  set('ex-ready-cnt',    cnt(d.n_ready, d.n_lpg, 'LPG sellers are first-show ready'));
-  set('ex-14d-rate',     pct(d.n_14d, d.n_lpg));
-  set('ex-14d-cnt',      cnt(d.n_14d, d.n_lpg, 'LPG sellers scheduled within 14 days'));
+  // Pre-Stream
+  set('ex-event-rate',   pct(a.n_event, a.n_lpg));
+  set('ex-event-cnt',    cnt(a.n_event, a.n_lpg, 'LPG sellers created first event'));
+  set('ex-listing-rate', pct(a.n_listing, a.n_lpg));
+  set('ex-listing-cnt',  cnt(a.n_listing, a.n_lpg, 'LPG sellers added first listing'));
+  set('ex-ready-rate',   pct(a.n_ready, a.n_lpg));
+  set('ex-ready-cnt',    cnt(a.n_ready, a.n_lpg, 'LPG sellers first-show ready'));
+  set('ex-14d-rate',     pct(a.n_14d, a.n_lpg));
+  set('ex-14d-cnt',      cnt(a.n_14d, a.n_lpg, 'LPG sellers scheduled within 14 days'));
 
   // In-Stream
-  set('ex-show-rate',     pct(d.n_show, d.n_lpg));
-  set('ex-show-cnt',      cnt(d.n_show, d.n_lpg, 'LPG sellers completed first show'));
-  set('ex-commerce-rate', d.n_show > 0 ? pct(d.n_commerce, d.n_show) : '—');
-  set('ex-commerce-cnt',  cnt(d.n_commerce, d.n_show, 'shows had transactions'));
-  const gmvHr = d.sum_min > 0 ? d.sum_gmv / (d.sum_min / 60) : 0;
-  set('ex-gmv-hr',     '$'+gmvHr.toFixed(2));
-  set('ex-gmv-hr-cnt', '$'+d.sum_gmv.toFixed(2)+' GMV · '+d.sum_min.toFixed(1)+' streaming min total');
+  set('ex-show-rate',     pct(a.n_show, a.n_lpg));
+  set('ex-show-cnt',      cnt(a.n_show, a.n_lpg, 'LPG sellers completed first show'));
+  set('ex-commerce-rate', a.n_show > 0 ? pct(a.n_commerce, a.n_show) : '—');
+  set('ex-commerce-cnt',  cnt(a.n_commerce, a.n_show, 'shows had transactions'));
+  const gmvHr = a.sum_min > 0 ? a.sum_gmv / (a.sum_min / 60) : 0;
+  set('ex-gmv-hr',     a.sum_min > 0 ? '$'+gmvHr.toFixed(2) : '—');
+  set('ex-gmv-hr-cnt', '$'+a.sum_gmv.toFixed(2)+' GMV · '+a.sum_min.toFixed(1)+' streaming min');
 
   // Post-Stream
-  set('ex-1ord-rate',   d.n_sales > 0 ? pct(d.n_1ord, d.n_sales) : '—');
-  set('ex-1ord-cnt',    cnt(d.n_1ord, d.n_sales, 'shows with sales fulfilled ≥1 order'));
-  set('ex-fulfil-rate', d.n_sales > 0 ? pct(d.n_fulfil, d.n_sales) : '—');
-  set('ex-fulfil-cnt',  cnt(d.n_fulfil, d.n_sales, 'shows with sales fully fulfilled'));
-  set('ex-repeat-rate', d.n_show > 0 ? pct(d.n_repeat7, d.n_show) : '—');
-  set('ex-repeat-cnt',  cnt(d.n_repeat7, d.n_show, 'first-show sellers returned within 7d'));
+  set('ex-1ord-rate',   a.n_sales > 0 ? pct(a.n_1ord, a.n_sales) : '—');
+  set('ex-1ord-cnt',    cnt(a.n_1ord, a.n_sales, 'shows with sales fulfilled ≥1 order'));
+  set('ex-fulfil-rate', a.n_sales > 0 ? pct(a.n_fulfil, a.n_sales) : '—');
+  set('ex-fulfil-cnt',  cnt(a.n_fulfil, a.n_sales, 'shows with sales fully fulfilled'));
+  set('ex-repeat-rate', a.n_show > 0 ? pct(a.n_repeat7, a.n_show) : '—');
+  set('ex-repeat-cnt',  cnt(a.n_repeat7, a.n_show, 'first-show sellers returned within 7d'));
 
   // Self-Serve Health
-  set('ex-gcx-rate',    pct(d.n_gcx, d.n_total));
-  set('ex-gcx-cnt',     cnt(d.n_gcx, d.n_total, 'sellers with GCX contact'));
-  set('ex-gcx-avg',     d.n_total > 0 ? (d.sum_gcx/d.n_total).toFixed(2) : '—');
-  set('ex-gcx-avg-cnt', d.sum_gcx.toFixed(0)+' total contacts across '+d.n_total+' sellers');
+  set('ex-gcx-rate',    pct(a.n_gcx, a.n_total));
+  set('ex-gcx-cnt',     cnt(a.n_gcx, a.n_total, 'sellers with GCX contact'));
+  set('ex-gcx-avg',     a.n_total > 0 ? (a.sum_gcx/a.n_total).toFixed(2) : '—');
+  set('ex-gcx-avg-cnt', a.sum_gcx.toFixed(0)+' total contacts across '+a.n_total+' sellers');
+
+  // ── Funnel bar chart (current period/filter) ──────────────────────────────
+  if (execFunnelChart) {
+    const stages  = ['Account Created','App Submitted','LPG Granted','Event Created',
+                     'Listing Ready','First Show Ready','First Show','Show w/ Sales','Fulfilled'];
+    const values  = [a.n_total, a.n_app, a.n_lpg, a.n_event,
+                     a.n_listing, a.n_ready, a.n_show, a.n_sales, a.n_1ord];
+    const colors  = ['#0353e9','#0353e9','#0353e9','#0353e9',
+                     '#0353e9','#0353e9','#24a148','#24a148','#24a148'];
+    execFunnelChart.setOption({
+      tooltip: {trigger:'axis', axisPointer:{type:'none'},
+        formatter: p => p[0].name+': <b>'+p[0].value+'</b> sellers'},
+      grid: {left:110,right:30,top:10,bottom:20},
+      xAxis: {type:'value', minInterval:1},
+      yAxis: {type:'category', data:stages, axisLabel:{fontSize:10}},
+      series:[{type:'bar', data:values.map((v,i)=>({value:v,itemStyle:{color:colors[i]}})),
+        barMaxWidth:18, label:{show:true, position:'right', fontSize:10,
+          formatter:p=>p.value>0?p.value:''}}]
+    }, true);
+  }
+
+  // ── Monthly cohort trend chart (always Monthly grain, respects filters) ───
+  if (execTrendChart) {
+    const f2 = getFilterState();
+    const mths = [...new Set(EXEC_DATA.filter(r=>r.tp==='Monthly').map(r=>r.cp))].sort();
+    function mSum(cp, field) {
+      return EXEC_DATA.filter(r => r.tp==='Monthly' && r.cp===cp &&
+        (f2.geo==='all'||r.geo===f2.geo) &&
+        (f2.tier==='all'||r.tier===f2.tier) &&
+        (f2.phase==='all'||r.phase===f2.phase)
+      ).reduce((s,r)=>s+r[field],0);
+    }
+    const totals  = mths.map(m => mSum(m,'n_total'));
+    const lpgs    = mths.map(m => mSum(m,'n_lpg'));
+    const shows   = mths.map(m => mSum(m,'n_show'));
+    const lpgPct  = mths.map((m,i) => totals[i]>0 ? +(lpgs[i]/totals[i]*100).toFixed(1) : 0);
+    const showPct = mths.map((m,i) => totals[i]>0 ? +(shows[i]/totals[i]*100).toFixed(1) : 0);
+    execTrendChart.setOption({
+      tooltip:{trigger:'axis'},
+      legend:{bottom:0,textStyle:{fontSize:10}},
+      grid:{left:40,right:50,top:10,bottom:45},
+      xAxis:{type:'category',data:mths,axisLabel:{fontSize:10}},
+      yAxis:[
+        {type:'value',name:'Sellers',nameTextStyle:{fontSize:9},axisLabel:{fontSize:9}},
+        {type:'value',name:'Rate %',nameTextStyle:{fontSize:9},axisLabel:{fontSize:9},
+          axisLabel:{formatter:v=>v+'%',fontSize:9}}
+      ],
+      series:[
+        {name:'Account Created',type:'bar',data:totals,barMaxWidth:24,
+          itemStyle:{color:'#c6c6c6'},yAxisIndex:0},
+        {name:'LPG Granted',type:'bar',data:lpgs,barMaxWidth:24,
+          itemStyle:{color:'#0353e9'},yAxisIndex:0},
+        {name:'First Show',type:'bar',data:shows,barMaxWidth:24,
+          itemStyle:{color:'#24a148'},yAxisIndex:0},
+        {name:'LPG Rate %',type:'line',data:lpgPct,symbol:'circle',symbolSize:5,
+          lineStyle:{color:'#0353e9',type:'dashed'},itemStyle:{color:'#0353e9'},yAxisIndex:1},
+        {name:'First Show Rate %',type:'line',data:showPct,symbol:'circle',symbolSize:5,
+          lineStyle:{color:'#24a148'},itemStyle:{color:'#24a148'},yAxisIndex:1}
+      ]
+    }, true);
+  }
 }
 
 function renderRegistration() {
@@ -2863,6 +2997,7 @@ function applyFilters() {
   note.style.fontWeight = isFiltered ? '600' : '400';
 
   // Re-render active tab
+  if (activeTab === 'executive') renderExecutive();
   if (activeTab === 'registration') renderRegistration();
   if (activeTab === 'prestream') renderPreStream();
   if (activeTab === 'instream') renderInStream();
@@ -2880,6 +3015,7 @@ function resetFilters() {
   note.textContent = '';
   note.style.color = '#8d8d8d';
   note.style.fontWeight = '400';
+  if (activeTab === 'executive') renderExecutive();
   if (activeTab === 'prestream') renderPreStream();
   if (activeTab === 'instream') renderInStream();
   updateBreadcrumb();
@@ -2900,7 +3036,9 @@ function updateBreadcrumb(){
 
 // ─── Init charts ───────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-  // Executive — populate tiles from EXEC_TOTALS
+  // Executive — init charts then render tiles
+  execFunnelChart = echarts.init(document.getElementById('ch-exec-funnel'));
+  execTrendChart  = echarts.init(document.getElementById('ch-exec-trend'));
   renderExecutive();
 
   // Registration
