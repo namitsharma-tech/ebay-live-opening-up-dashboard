@@ -789,9 +789,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-top:1px">
     <div class="kpi-tile">
       <div class="kpi-label">Listing Completion Time</div>
-      <div class="kpi-value" style="font-size:18px">P50: 0.4 min <span class="badge-sm" style="background:#f1c21b;color:#161616">Limited Data</span></div>
-      <div class="kpi-count">53 sessions only · express listing adoption very low</div>
-      <div class="kpi-note">CTA click → listing created · Source: COMPLETION_TIME_FINAL_T</div>
+      <div class="kpi-value" style="font-size:18px">P50: 0.43 min <span class="badge-sm" style="background:#42be65;color:#fff">Live</span></div>
+      <div class="kpi-count">P90: 0.43 min · 53 sessions (all-time) · very low adoption</div>
+      <div class="kpi-note">CTA click → listing created · Source: COMPLETION_TIME_FINAL_T · as of Jul 22 2026</div>
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">First Show Ready Rate</div>
@@ -807,9 +807,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Express Listing Adoption</div>
-      <div class="kpi-value">0.1% <span class="badge r">Very Low</span></div>
-      <div class="kpi-count">2 of 2,366 sellers · feature ramp in progress</div>
-      <div class="kpi-note">Ramp: &gt;50% · Express listings: 53 total</div>
+      <div class="kpi-value">5.6% <span class="badge-sm" style="background:#42be65;color:#fff">Live</span></div>
+      <div class="kpi-count">1 of 18 v2 sellers · studio-activated cohort as of Jul 22 2026</div>
+      <div class="kpi-note">Ramp: &gt;50% · Express listings: 53 total · Source: LISTING_ADOPTION_T × LIVE_SELLER_MASTER_V2</div>
     </div>
   </div>
 
@@ -988,13 +988,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
           <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
           <td class="mono">P50 minutes from CTA click → listing created via Express Listing</td>
           <td class="mono">Express Listing sessions (53 total — limited data)</td>
-          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Listing Completion Time' · static snapshot</span></td>
+          <td class="mono">COMPLETION_TIME_FINAL_T<br><span style="color:#6f6f6f">metric_name = 'Express Listing Completion Time' · as of Jul 22 2026</span></td>
         </tr>
         <tr>
           <td class="fw6">Express Listing Adoption</td>
           <td><span class="badge-sm" style="background:#8d8d8d;color:#fff">P1</span></td>
           <td class="mono">Sellers who used Express Listing ≥1 time</td>
-          <td class="mono">All LPG-onboarded sellers (old cohort · 2,366)</td>
+          <td class="mono">LIVE_SELLER_MASTER_V2 v2 cohort · 18 studio-activated sellers · as of Jul 22 2026</td>
           <td class="mono">LISTING_ADOPTION_T<br><span style="color:#f1c21b;font-weight:700">⚠ Uses LPG cohort denominator · not yet migrated to v2</span></td>
         </tr>
 
