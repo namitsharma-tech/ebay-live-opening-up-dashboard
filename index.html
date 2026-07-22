@@ -251,131 +251,179 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 ════════════════════════════════════════════════════════════════════════ -->
 <div id="tab-executive" class="section active">
 
-  <!-- North Stars -->
+  <!-- Program North Stars -->
   <div style="background:#e0e0e0;margin-bottom:1px">
-    <div class="card-head" style="margin:0"><span class="card-title">Program North Stars (L0) — E2E Registration → Outcome Rates</span><span class="card-sub">Cohort-matured · 14-day window · Alpha phase</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Program North Stars</span><span class="card-sub">5 metrics · E2E Registration → Outcome Rates · All-time cohort as of <span id="ex-as-of">—</span></span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
     <div class="kpi-tile north-star">
-      <div class="kpi-label">E2E Reg → First Show Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value xl">18% <span class="badge g">▲ +3pp (+20.0%)</span></div>
-      <div class="kpi-count">21 of 115 cohort sellers</div>
-      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
-      <div class="kpi-note">120% of GA target (15%) · ✓ On track</div>
-      <div class="kpi-guard">Gate 2: ≥15% for ≥2 consecutive cohort weeks</div>
+      <div class="kpi-label">E2E Reg → First Show</div>
+      <div class="kpi-value xl" id="ex-e2e-show">—</div>
+      <div class="kpi-count" id="ex-e2e-show-cnt">—</div>
+      <div class="kpi-note">first_show_date IS NOT NULL / account_created</div>
     </div>
     <div class="kpi-tile north-star">
-      <div class="kpi-label">E2E Reg → Show with Sales Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value xl">14% <span class="badge g">▲ +3pp (+27.3%)</span></div>
-      <div class="kpi-count">16 of 115 cohort sellers</div>
-      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
-      <div class="kpi-note">140% of GA target (10%) · ✓ On track</div>
-      <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
+      <div class="kpi-label">E2E Reg → First Show w/ Sales</div>
+      <div class="kpi-value xl" id="ex-e2e-sales">—</div>
+      <div class="kpi-count" id="ex-e2e-sales-cnt">—</div>
+      <div class="kpi-note">first_show_txn_cnt &gt; 0 / account_created</div>
     </div>
     <div class="kpi-tile north-star">
-      <div class="kpi-label">E2E Reg → Order Fulfilled Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value xl">11% <span class="badge g">▲ +2pp (+22.2%)</span></div>
-      <div class="kpi-count">13 of 115 cohort sellers</div>
-      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
-      <div class="kpi-note">110% of GA target (10%) · ✓ On track</div>
-      <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
+      <div class="kpi-label">E2E Reg → Order Fulfilled</div>
+      <div class="kpi-value xl" id="ex-e2e-ord">—</div>
+      <div class="kpi-count" id="ex-e2e-ord-cnt">—</div>
+      <div class="kpi-note">first_show_first_fulfillment_ts / account_created</div>
     </div>
     <div class="kpi-tile north-star">
-      <div class="kpi-label">E2E Reg → Full Fulfillment Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value xl">10% <span class="badge g">▲ +2pp (+25.0%)</span></div>
-      <div class="kpi-count">12 of 115 cohort sellers</div>
-      <div class="prog-wrap"><div class="prog-bar" style="width:100%;background:#24a148"></div></div>
-      <div class="kpi-note">100% of GA target (10%) · ✓ On track</div>
-      <div class="kpi-guard">Gate 2: ≥10% for ≥2 consecutive cohort weeks</div>
+      <div class="kpi-label">E2E Reg → Full Fulfillment</div>
+      <div class="kpi-value xl" id="ex-e2e-fulfil">—</div>
+      <div class="kpi-count" id="ex-e2e-fulfil-cnt">—</div>
+      <div class="kpi-note">first_show_all_fulfilled_ts / account_created</div>
+    </div>
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">E2E Velocity (Median Days)</div>
+      <div class="kpi-value xl" id="ex-e2e-vel">—</div>
+      <div class="kpi-count" id="ex-e2e-vel-p90">—</div>
+      <div class="kpi-note">PERCENTILE_APPROX(min_entry_to_first_show/1440, 0.5) · lower is better</div>
     </div>
   </div>
 
-  <div class="chart-pane">
-    <div class="chart-pane-title">E2E North Star Rates by Cohort Week</div>
-    <div id="ch-exec-northstar" style="height:220px"></div>
-  </div>
-
-  <!-- Supporting -->
+  <!-- Registration -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Supporting Program Metrics</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Registration</span><span class="card-sub">2 metrics · Denominator: account_created sellers</span></div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi-tile">
-      <div class="kpi-label">GMV / Streaming Hour <span class="badge-sm" style="background:#6929c4;color:#fff">In-Stream</span> <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">$47 <span class="badge g">▲ +$6 (+14.6%)</span></div>
-      <div class="kpi-count">115 active seller-events</div>
-      <div class="kpi-note">North Star — ≥ category baseline</div>
+      <div class="kpi-label">Registration Rate</div>
+      <div class="kpi-value" id="ex-reg-rate">—</div>
+      <div class="kpi-count" id="ex-reg-cnt">—</div>
+      <div class="kpi-note">streaming_app_submitted_ts IS NOT NULL / account_created</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">7-Day Repeat Streaming Rate <span class="badge-sm" style="background:#6929c4;color:#fff">In-Stream</span> <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">47% <span class="badge g">▲ +4pp (+9.3%)</span></div>
-      <div class="kpi-count">54 of 115 first-show sellers</div>
-      <div class="kpi-note">GA target: ≥40% · ✓ On track</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Order Fulfillment Rate <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span> <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">91% <span class="badge g">▲ +4pp (+4.6%)</span></div>
-      <div class="kpi-count">717 of 788 paid orders</div>
-      <div class="kpi-note">GA gate: ≥90% · Hard stop if &lt;60%</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">21-Day Seller Retention <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span> <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">67% <span class="badge g">▲ +6pp (+10.0%)</span></div>
-      <div class="kpi-count">77 of 115 first-show sellers</div>
-      <div class="kpi-note">≥1 show d8–21 / first-show sellers · GA: &gt;70%</div>
-    </div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
-    <div class="kpi-tile">
-      <div class="kpi-label">E2E Velocity (Median Days) <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">15d <span class="badge g">▼ -2d (-11.8%)</span></div>
-      <div class="kpi-count">median across 21 first-show sellers</div>
-      <div class="kpi-note">Acct created → first fulfilled order · lower is better</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">BBE Rate (14-day) <span class="badge-sm" style="background:#005d5d;color:#fff">Post-Stream</span> <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">1.6% <span class="badge g">▼ -0.1pp (-5.9%)</span></div>
-      <div class="kpi-count">vs. category baseline · lower is better</div>
-      <div class="kpi-note">Guardrail: ≤ baseline+5pp · Hard stop if &gt;baseline+15pp</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">S1 Proactive Outreach <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value" style="font-size:18px">20% <span class="badge g" style="font-size:10px">▼ -4pp (-16.7%)</span></div>
-      <div class="kpi-count">S2 Inbound GCX: <strong>11%</strong> <span class="badge g" style="font-size:9px">▼ -2pp (-15.4%)</span></div>
-      <div class="kpi-note">Both lower is better</div>
+      <div class="kpi-label">Live Privilege Granted Rate</div>
+      <div class="kpi-value" id="ex-lpg-rate">—</div>
+      <div class="kpi-count" id="ex-lpg-cnt">—</div>
+      <div class="kpi-note">activated_studio / account_created · incl. BD-onboarded sellers</div>
     </div>
   </div>
 
-  <div class="g2" style="gap:1px;margin-bottom:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">GMV / Streaming Hour — by Cohort Week</div>
-      <div id="ch-exec-gmv" style="height:160px"></div>
+  <!-- Pre-Stream -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Pre-Stream</span><span class="card-sub">4 metrics · Denominator: LPG-granted sellers</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Event Creation Rate</div>
+      <div class="kpi-value" id="ex-event-rate">—</div>
+      <div class="kpi-count" id="ex-event-cnt">—</div>
+      <div class="kpi-note">first_event_created_ts IS NOT NULL / LPG-granted</div>
     </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Self-Serve Health — Outreach & GCX Contact Rates</div>
-      <div id="ch-exec-selfserve" style="height:160px"></div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Listing Readiness Rate</div>
+      <div class="kpi-value" id="ex-listing-rate">—</div>
+      <div class="kpi-count" id="ex-listing-cnt">—</div>
+      <div class="kpi-note">first_listing_created_ts IS NOT NULL / LPG-granted</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">First Show Ready Rate</div>
+      <div class="kpi-value" id="ex-ready-rate">—</div>
+      <div class="kpi-count" id="ex-ready-cnt">—</div>
+      <div class="kpi-note">is_first_show_ready / LPG · event+listing only, tutorial &amp; shipping stubbed</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">14-Day First Show Schedule Rate</div>
+      <div class="kpi-value" id="ex-14d-rate">—</div>
+      <div class="kpi-count" id="ex-14d-cnt">—</div>
+      <div class="kpi-note">first_show_date within 14d of studio_activated_ts / LPG</div>
+    </div>
+  </div>
+
+  <!-- In-Stream -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">In-Stream</span><span class="card-sub">3 metrics</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">First Show Completion Rate</div>
+      <div class="kpi-value" id="ex-show-rate">—</div>
+      <div class="kpi-count" id="ex-show-cnt">—</div>
+      <div class="kpi-note">first_show_date IS NOT NULL / LPG-granted</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Show Commerce Rate</div>
+      <div class="kpi-value" id="ex-commerce-rate">—</div>
+      <div class="kpi-count" id="ex-commerce-cnt">—</div>
+      <div class="kpi-note">first_show_txn_cnt &gt; 0 / completed first shows</div>
+    </div>
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">GMV per Streaming Hour</div>
+      <div class="kpi-value xl" id="ex-gmv-hr">—</div>
+      <div class="kpi-count" id="ex-gmv-hr-cnt">—</div>
+      <div class="kpi-note">SUM(total_gmv) / SUM(total_streaming_min / 60) · lower denom = less reliable</div>
+    </div>
+  </div>
+
+  <!-- Post-Stream -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Post-Stream</span><span class="card-sub">3 metrics</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">1-Order Fulfillment Rate</div>
+      <div class="kpi-value" id="ex-1ord-rate">—</div>
+      <div class="kpi-count" id="ex-1ord-cnt">—</div>
+      <div class="kpi-note">first_show_first_fulfillment_ts / shows with &gt;$0 GMV</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Full Fulfillment Rate</div>
+      <div class="kpi-value" id="ex-fulfil-rate">—</div>
+      <div class="kpi-count" id="ex-fulfil-cnt">—</div>
+      <div class="kpi-note">first_show_all_fulfilled_ts / shows with &gt;$0 GMV</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">7-Day Repeat Streaming Rate</div>
+      <div class="kpi-value" id="ex-repeat-rate">—</div>
+      <div class="kpi-count" id="ex-repeat-cnt">—</div>
+      <div class="kpi-note">days_to_second_show ≤ 7 / first-show sellers</div>
+    </div>
+  </div>
+
+  <!-- Self-Serve Health -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+    <div class="card-head" style="margin:0"><span class="card-title">Self-Serve Health</span><span class="card-sub">2 metrics · Lower is better · Proactive outreach not in source table</span></div>
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Inbound GCX Contact Rate</div>
+      <div class="kpi-value" id="ex-gcx-rate">—</div>
+      <div class="kpi-count" id="ex-gcx-cnt">—</div>
+      <div class="kpi-note">gcx_has_any_contact / cohort sellers · lower is better</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Support Requests (avg / seller)</div>
+      <div class="kpi-value" id="ex-gcx-avg">—</div>
+      <div class="kpi-count" id="ex-gcx-avg-cnt">—</div>
+      <div class="kpi-note">SUM(gcx_total_contacts) / cohort size · lower is better</div>
     </div>
   </div>
 
   <!-- Gate table -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Alpha → GA Gate Progress</span><span class="card-sub">Gate 2 requires ≥2 consecutive cohort weeks above target</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Alpha → GA Gate Progress</span><span class="card-sub">Live data as of 2026-07-22 · n=82 total sellers</span></div>
   </div>
   <div class="tbl-overflow card-body" style="background:#fff;border:1px solid #e0e0e0">
     <table class="tbl">
-      <thead><tr><th>Domain</th><th>Metric</th><th>Alpha Gate</th><th>Current (Jun-30)</th><th>GA Gate</th><th>Status</th></tr></thead>
+      <thead><tr><th>Domain</th><th>Metric</th><th>Alpha Gate</th><th>Current (Jul-22)</th><th>GA Gate</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → First Show Rate</td><td>10 sellers</td><td class="fw6">18%</td><td>≥15%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Show with Sales Rate</td><td>8 sellers</td><td class="fw6">14%</td><td>≥10%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Order Fulfilled Rate</td><td>7 sellers</td><td class="fw6">11%</td><td>≥10%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Full Fulfillment Rate</td><td>6 sellers</td><td class="fw6">10%</td><td>≥10%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">Registration</td><td class="fw6">Live Privilege Granted Rate</td><td>40–50 sellers</td><td class="fw6">58%</td><td>≥60%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">In-Stream</td><td class="fw6">GMV / Streaming Hour</td><td>≥ cat. baseline</td><td class="fw6">$47</td><td>≥ category baseline</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">In-Stream</td><td class="fw6">7-Day Repeat Streaming Rate</td><td>5 sellers</td><td class="fw6">47%</td><td>≥40%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">1-Order Fulfillment Rate</td><td>1 seller / category</td><td class="fw6">91%</td><td>≥90%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">Full Fulfillment Rate</td><td>1 seller / category</td><td class="fw6">82%</td><td>≥80%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">21-Day Seller Retention Rate</td><td>—</td><td class="fw6">67%</td><td>&gt;70%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
-        <tr><td style="font-size:9px;color:#6f6f6f">Trust</td><td class="fw6">BBE Rate (14-day)</td><td>No P1 bugs</td><td class="fw6">1.6%</td><td>≤ baseline+5pp</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → First Show Rate</td><td>10 sellers</td><td class="fw6">2.4% (2/82)</td><td>≥15%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Show with Sales Rate</td><td>8 sellers</td><td class="fw6">1.2% (1/82)</td><td>≥10%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Order Fulfilled Rate</td><td>7 sellers</td><td class="fw6">0.0% (0/82)</td><td>≥10%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">E2E North Stars</td><td class="fw6">E2E Reg → Full Fulfillment Rate</td><td>6 sellers</td><td class="fw6">0.0% (0/82)</td><td>≥10%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Registration</td><td class="fw6">Live Privilege Granted Rate</td><td>40–50 sellers</td><td class="fw6">45.1% (37/82)</td><td>≥60%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">In-Stream</td><td class="fw6">GMV / Streaming Hour</td><td>≥ cat. baseline</td><td class="fw6">$13.60</td><td>≥ category baseline</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">— No Baseline</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">7-Day Repeat Streaming Rate</td><td>5 sellers</td><td class="fw6">50.0% (1/2 sellers)</td><td>≥40%</td><td><span class="badge-sm g">✓ On Track</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">1-Order Fulfillment Rate</td><td>1 seller / category</td><td class="fw6">0.0% (0/1)</td><td>≥90%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
+        <tr><td style="font-size:9px;color:#6f6f6f">Post-Stream</td><td class="fw6">Full Fulfillment Rate</td><td>1 seller / category</td><td class="fw6">0.0% (0/1)</td><td>≥80%</td><td><span class="badge-sm r">⚠ Below Target</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -391,24 +439,36 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div id="exec-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
     <table class="tbl">
       <thead>
-        <tr><th style="width:18%">Metric</th><th style="width:6%">Level</th><th style="width:24%">Formula</th><th style="width:8%">Status</th><th style="width:24%">Source (LIVE_SELLER_MASTER_V2)</th><th style="width:20%">Notes</th></tr>
+        <tr><th style="width:20%">Metric</th><th style="width:6%">Group</th><th style="width:26%">Formula</th><th style="width:8%">Status</th><th style="width:40%">Notes</th></tr>
       </thead>
       <tbody>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">E2E North Stars (Cohort-matured, 14-day window)</td></tr>
-        <tr><td class="fw6">E2E Reg → First Show Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">n_first_show / total_in_funnel</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_first_show, total_in_funnel</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">E2E Reg → Show with Sales Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">n_show_w_sales / total_in_funnel</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_show_w_sales</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">E2E Reg → Order Fulfilled Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">n_order_fulfilled / total_in_funnel</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_order_fulfilled</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">E2E Reg → Full Fulfillment Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">n_all_fulfilled / total_in_funnel</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_all_fulfilled</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Supporting Program Metrics</td></tr>
-        <tr><td class="fw6">GMV / Streaming Hour</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">SUM(total_gmv) / SUM(total_streaming_min / 60)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: total_gmv, total_streaming_min</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">7-Day Repeat Streaming Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">days_to_second_show ≤ 7 / n_first_show</td><td><span style="font-size:10px;color:#da1e28;font-weight:700">⚠ Conflict</span></td><td class="mono">Q1: days_to_second_show (14-day window only)</td><td class="mono" style="color:#da1e28">Table has 14-day window — rename to "14-Day Repeat" before GA</td></tr>
-        <tr><td class="fw6">Order Fulfillment Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">n_order_fulfilled / n_show_w_sales</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_order_fulfilled, n_show_w_sales</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">21-Day Seller Retention Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Sellers with ≥1 show d8–21 / n_first_show</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">Q1: days_since_last_show + last_show_date (no pre-built d8–21 flag)</td><td class="mono" style="color:#6f6f6f">Derivable with CASE logic; not a direct column</td></tr>
-        <tr><td class="fw6">E2E Velocity (Median Days)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE(account_created_ts → first_show_date, 0.5)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">Q1: median_days_entry_to_first_show (uses session_entry_ts)</td><td class="mono" style="color:#da1e28">session_entry_ts NULL for all sellers — use account_created_ts as start</td></tr>
-        <tr><td class="fw6">BBE Rate (14-day)</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">BBE transactions within 14 days / Total live stream transactions</td><td><span style="font-size:10px;color:#da1e28;font-weight:700">✗ Stub</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2 — source TBD</td><td class="mono" style="color:#da1e28">Show "Pending" until pipeline source confirmed</td></tr>
-        <tr><td class="fw6">S1 Proactive Outreach</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers who received proactive outreach from Seller Success</td><td><span style="font-size:10px;color:#a2191f;font-weight:700">✗ Missing</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2 or Data Guide</td><td class="mono" style="color:#a2191f">Requires separate outbound contact source</td></tr>
-        <tr><td colspan="6" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
-          <strong style="color:#525252">Source:</strong> All ready metrics query <span style="font-family:monospace">P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2</span>. Required filter: <span style="font-family:monospace">WHERE report_dt = DATE_FORMAT(CURRENT_DATE(),'yyyy-MM-dd') AND is_test_user = 0</span>. Post-stream columns (n_first_show, total_gmv, etc.) are NULL until first sellers complete a live stream — this is expected as of Jul 14. &nbsp;|&nbsp; <strong style="color:#525252">WoW badges:</strong> pp = percentage-point change. % in parens = relative change vs prior week.
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Program North Stars</td></tr>
+        <tr><td class="fw6">E2E Reg → First Show Rate</td><td>L0</td><td class="mono">n_show / n_total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_date IS NOT NULL / account_created sellers</td></tr>
+        <tr><td class="fw6">E2E Reg → Show w/ Sales Rate</td><td>L0</td><td class="mono">n_sales / n_total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_txn_cnt &gt; 0 / account_created sellers</td></tr>
+        <tr><td class="fw6">E2E Reg → Order Fulfilled Rate</td><td>L0</td><td class="mono">n_1ord / n_total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_first_fulfillment_ts / account_created sellers</td></tr>
+        <tr><td class="fw6">E2E Reg → Full Fulfillment Rate</td><td>L0</td><td class="mono">n_fulfil / n_total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_all_fulfilled_ts / account_created sellers</td></tr>
+        <tr><td class="fw6">E2E Velocity (Median Days)</td><td>L0</td><td class="mono">PERCENTILE_APPROX(min/1440, 0.5)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">minutes_entry_to_first_show / 1440; p90 also shown; lower is better</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Registration</td></tr>
+        <tr><td class="fw6">Registration Rate</td><td>L1</td><td class="mono">n_app / n_total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">streaming_app_submitted_ts IS NOT NULL / account_created</td></tr>
+        <tr><td class="fw6">Live Privilege Granted Rate</td><td>L1</td><td class="mono">n_lpg / n_total</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Adjusted</span></td><td class="mono" style="color:#da1e28">n_lpg (37) &gt; n_app (15): BD-onboarded sellers bypass app submission. Using n_total denom instead of n_app to avoid &gt;100% rate.</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Pre-Stream</td></tr>
+        <tr><td class="fw6">Event Creation Rate</td><td>L1</td><td class="mono">n_event / n_lpg</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_event_created_ts IS NOT NULL / activated_studio</td></tr>
+        <tr><td class="fw6">Listing Readiness Rate</td><td>L1</td><td class="mono">n_listing / n_lpg</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_listing_created_ts IS NOT NULL / activated_studio</td></tr>
+        <tr><td class="fw6">First Show Ready Rate</td><td>L1</td><td class="mono">n_ready / n_lpg</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono" style="color:#6f6f6f">is_first_show_ready uses event+listing only; tutorial &amp; shipping readiness not instrumented</td></tr>
+        <tr><td class="fw6">14-Day Schedule Rate</td><td>L1</td><td class="mono">n_14d / n_lpg</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_date within 14 days of studio_activated_ts</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">In-Stream</td></tr>
+        <tr><td class="fw6">First Show Completion Rate</td><td>L1</td><td class="mono">n_show / n_lpg</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_date IS NOT NULL / activated_studio</td></tr>
+        <tr><td class="fw6">Show Commerce Rate</td><td>L1</td><td class="mono">n_commerce / n_show</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">shows with any transaction / first-show sellers</td></tr>
+        <tr><td class="fw6">GMV per Streaming Hour</td><td>L0</td><td class="mono">sum_gmv / (sum_min / 60)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">SUM(total_gmv) / SUM(total_streaming_min/60); unreliable at very small n</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Post-Stream</td></tr>
+        <tr><td class="fw6">1-Order Fulfillment Rate</td><td>L1</td><td class="mono">n_1ord / n_sales</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_first_fulfillment_ts / shows with &gt;$0 GMV</td></tr>
+        <tr><td class="fw6">Full Fulfillment Rate</td><td>L1</td><td class="mono">n_fulfil / n_sales</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">first_show_all_fulfilled_ts / shows with &gt;$0 GMV</td></tr>
+        <tr><td class="fw6">7-Day Repeat Streaming Rate</td><td>L1</td><td class="mono">n_repeat7 / n_show</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">days_to_second_show ≤ 7 / first-show sellers</td></tr>
+        <tr><td colspan="5" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Self-Serve Health</td></tr>
+        <tr><td class="fw6">Inbound GCX Contact Rate</td><td>L1</td><td class="mono">n_gcx / n_total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">gcx_has_any_contact / cohort sellers; lower is better</td></tr>
+        <tr><td class="fw6">Support Requests avg / seller</td><td>L1</td><td class="mono">sum_gcx / n_total</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Live</span></td><td class="mono" style="color:#6f6f6f">SUM(gcx_total_contacts) / cohort size; lower is better</td></tr>
+        <tr><td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
+          <strong style="color:#525252">Source:</strong> <span style="font-family:monospace">P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2</span> via <span style="font-family:monospace">executive_summary_granular_agg.sql</span> · Snapshot: 2026-07-22 · Filter: <span style="font-family:monospace">report_dt = CURRENT_DATE AND is_test_user = 0</span>
         </td></tr>
       </tbody>
     </table>
@@ -1602,6 +1662,7 @@ function showTab(tab) {
   document.getElementById('tab-'+tab).classList.add('active');
   event.target.classList.add('active');
   activeTab = tab;
+  if (tab === 'executive') renderExecutive();
   if (tab === 'registration') renderRegistration();
   if (tab === 'prestream') renderPreStream();
   if (tab === 'instream') renderInStream();
@@ -1619,6 +1680,18 @@ function setGrain(g, btn) {
   if (activeTab === 'instream') renderInStream();
   updateBreadcrumb();
 }
+
+// ─── Executive summary totals (executive_summary_granular_agg.sql · snapshot 2026-07-22) ──────
+const EXEC_TOTALS = {
+  n_total:82, n_app:15, n_lpg:37,
+  n_event:7, n_listing:3, n_ready:3, n_14d:1,
+  n_show:2, n_commerce:1, n_sales:1,
+  n_1ord:0, n_fulfil:0, n_repeat7:1,
+  sum_gmv:6.53, sum_min:28.8,
+  n_gcx:0, sum_gcx:0,
+  e2e_med_days:0.884, e2e_p90_days:48.1,
+  as_of:'2026-07-22'
+};
 
 // ─── Pre-Stream data (v2 · LIVE_SELLER_MASTER_V2 · activated_studio=1) ───────
 // Section 2 of pre_stream_metrics_v2.sql · latest snapshot 2026-07-19
@@ -2381,6 +2454,66 @@ function fmt(n, d) {
   return p + '%';
 }
 
+function renderExecutive() {
+  const d = EXEC_TOTALS;
+  function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+  function pct(n, denom) { return denom > 0 ? (n/denom*100).toFixed(1)+'%' : '—'; }
+  function cnt(n, denom, lbl) { return n+' of '+denom+' '+lbl; }
+
+  set('ex-as-of', d.as_of);
+
+  // North Stars
+  set('ex-e2e-show',       pct(d.n_show, d.n_total));
+  set('ex-e2e-show-cnt',   cnt(d.n_show, d.n_total, 'sellers'));
+  set('ex-e2e-sales',      pct(d.n_sales, d.n_total));
+  set('ex-e2e-sales-cnt',  cnt(d.n_sales, d.n_total, 'sellers'));
+  set('ex-e2e-ord',        pct(d.n_1ord, d.n_total));
+  set('ex-e2e-ord-cnt',    cnt(d.n_1ord, d.n_total, 'sellers'));
+  set('ex-e2e-fulfil',     pct(d.n_fulfil, d.n_total));
+  set('ex-e2e-fulfil-cnt', cnt(d.n_fulfil, d.n_total, 'sellers'));
+  set('ex-e2e-vel',        d.e2e_med_days.toFixed(1)+'d');
+  set('ex-e2e-vel-p90',    'p90: '+d.e2e_p90_days.toFixed(1)+'d · '+d.n_show+' sellers with first show');
+
+  // Registration (denom: n_total — n_lpg > n_app due to BD-onboarded sellers)
+  set('ex-reg-rate', pct(d.n_app, d.n_total));
+  set('ex-reg-cnt',  cnt(d.n_app, d.n_total, 'submitted streaming app'));
+  set('ex-lpg-rate', pct(d.n_lpg, d.n_total));
+  set('ex-lpg-cnt',  cnt(d.n_lpg, d.n_total, 'granted LPG (incl. BD-onboarded)'));
+
+  // Pre-Stream (denom: n_lpg)
+  set('ex-event-rate',   pct(d.n_event, d.n_lpg));
+  set('ex-event-cnt',    cnt(d.n_event, d.n_lpg, 'LPG sellers created first event'));
+  set('ex-listing-rate', pct(d.n_listing, d.n_lpg));
+  set('ex-listing-cnt',  cnt(d.n_listing, d.n_lpg, 'LPG sellers added first listing'));
+  set('ex-ready-rate',   pct(d.n_ready, d.n_lpg));
+  set('ex-ready-cnt',    cnt(d.n_ready, d.n_lpg, 'LPG sellers are first-show ready'));
+  set('ex-14d-rate',     pct(d.n_14d, d.n_lpg));
+  set('ex-14d-cnt',      cnt(d.n_14d, d.n_lpg, 'LPG sellers scheduled within 14 days'));
+
+  // In-Stream
+  set('ex-show-rate',     pct(d.n_show, d.n_lpg));
+  set('ex-show-cnt',      cnt(d.n_show, d.n_lpg, 'LPG sellers completed first show'));
+  set('ex-commerce-rate', d.n_show > 0 ? pct(d.n_commerce, d.n_show) : '—');
+  set('ex-commerce-cnt',  cnt(d.n_commerce, d.n_show, 'shows had transactions'));
+  const gmvHr = d.sum_min > 0 ? d.sum_gmv / (d.sum_min / 60) : 0;
+  set('ex-gmv-hr',     '$'+gmvHr.toFixed(2));
+  set('ex-gmv-hr-cnt', '$'+d.sum_gmv.toFixed(2)+' GMV · '+d.sum_min.toFixed(1)+' streaming min total');
+
+  // Post-Stream
+  set('ex-1ord-rate',   d.n_sales > 0 ? pct(d.n_1ord, d.n_sales) : '—');
+  set('ex-1ord-cnt',    cnt(d.n_1ord, d.n_sales, 'shows with sales fulfilled ≥1 order'));
+  set('ex-fulfil-rate', d.n_sales > 0 ? pct(d.n_fulfil, d.n_sales) : '—');
+  set('ex-fulfil-cnt',  cnt(d.n_fulfil, d.n_sales, 'shows with sales fully fulfilled'));
+  set('ex-repeat-rate', d.n_show > 0 ? pct(d.n_repeat7, d.n_show) : '—');
+  set('ex-repeat-cnt',  cnt(d.n_repeat7, d.n_show, 'first-show sellers returned within 7d'));
+
+  // Self-Serve Health
+  set('ex-gcx-rate',    pct(d.n_gcx, d.n_total));
+  set('ex-gcx-cnt',     cnt(d.n_gcx, d.n_total, 'sellers with GCX contact'));
+  set('ex-gcx-avg',     d.n_total > 0 ? (d.sum_gcx/d.n_total).toFixed(2) : '—');
+  set('ex-gcx-avg-cnt', d.sum_gcx.toFixed(0)+' total contacts across '+d.n_total+' sellers');
+}
+
 function renderRegistration() {
   const f = getFilterState();
   const grainRows = REG_DATA.filter(r => r.tp === activeGrain);
@@ -2767,19 +2900,8 @@ function updateBreadcrumb(){
 
 // ─── Init charts ───────────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
-  // Executive
-  mkLine('ch-exec-northstar',[
-    {n:'Reg → First Show',d:D.e2e_first_show,c:'#0f62fe'},
-    {n:'Reg → Sales',d:D.e2e_sales,c:'#0e6027'},
-    {n:'Reg → Order Fulfilled',d:D.e2e_order,c:'#f1c21b'},
-    {n:'Reg → Full Fulfill',d:D.e2e_full,c:'#da1e28'}
-  ],'%',[{n:'GA Target (10%)',v:10}]);
-
-  mkLine('ch-exec-gmv',[{n:'GMV/hr ($)',d:D.gmv_per_hour,c:'#0f62fe'}],'$');
-  mkLine('ch-exec-selfserve',[
-    {n:'S1 Proactive Outreach %',d:D.s1,c:'#f1c21b'},
-    {n:'S2 Inbound GCX %',d:D.s2,c:'#da1e28'}
-  ],'%',[{n:'Guardrail target',v:30}]);
+  // Executive — populate tiles from EXEC_TOTALS
+  renderExecutive();
 
   // Registration
   mkBar('ch-reg-funnel',
