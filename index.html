@@ -424,11 +424,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     <div class="card-head" style="margin:0"><span class="card-title">Registration — Onboarding Funnel</span><span class="card-sub">Source: LIVE_SELLER_MASTER_V2 × LIVE_SELLER_UNIFIED_ONBOARDING_DIM · Geo / tier / phase filters active</span></div>
   </div>
 
-  <!-- KPI tiles -->
+  <!-- Top KPI tiles -->
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi-tile north-star">
+      <div class="kpi-label">Approval → First Show Rate</div>
+      <div class="kpi-value xl" id="reg-fs-rate">—</div>
+      <div class="kpi-count" id="reg-fs-cnt">—</div>
+      <div class="kpi-note">First Show Went Live / LPG Granted</div>
+    </div>
     <div class="kpi-tile">
       <div class="kpi-label">LPG Rate</div>
-      <div class="kpi-value xl" id="reg-lpg-rate">—</div>
+      <div class="kpi-value" id="reg-lpg-rate">—</div>
       <div class="kpi-count" id="reg-lpg-cnt">—</div>
       <div class="kpi-note">Studio Activated / Account Created</div>
       <div class="kpi-guard">⚠ Guardrail: Below 60% = program blocker</div>
@@ -443,63 +449,115 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-label">Listing Readiness Rate</div>
       <div class="kpi-value" id="reg-ls-rate">—</div>
       <div class="kpi-count" id="reg-ls-cnt">—</div>
-      <div class="kpi-note">First Listing Created / LPG Granted</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">First Show Rate</div>
-      <div class="kpi-value" id="reg-fs-rate">—</div>
-      <div class="kpi-count" id="reg-fs-cnt">—</div>
-      <div class="kpi-note">First Show / LPG Granted</div>
+      <div class="kpi-note">First Listing Added / LPG Granted</div>
     </div>
   </div>
 
-  <!-- Funnel -->
+  <!-- L1 Funnel -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Onboarding Funnel</span><span class="card-sub" id="reg-fn-label">—</span></div>
-  </div>
-  <div style="background:#fff;padding:16px 20px">
-    <div class="funnel">
-      <div class="funnel-row">
-        <div class="funnel-meta"><span>Account Created</span><span id="reg-fn-ac">—</span></div>
-        <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-meta"><span>Studio Activated (LPG)</span><span id="reg-fn-lpg-lbl">—</span></div>
-        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-lpg-bar" style="background:#0353e9;min-width:2px"> </div></div>
-        <div class="funnel-conv" id="reg-fn-lpg-conv">—</div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-meta"><span>First Event Created</span><span id="reg-fn-ev-lbl">—</span></div>
-        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-ev-bar" style="background:#0043ce;min-width:2px"> </div></div>
-        <div class="funnel-conv" id="reg-fn-ev-conv">—</div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-meta"><span>First Listing Created</span><span id="reg-fn-ls-lbl">—</span></div>
-        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-ls-bar" style="background:#002d9c;min-width:2px"> </div></div>
-        <div class="funnel-conv" id="reg-fn-ls-conv">—</div>
-      </div>
-      <div class="funnel-row">
-        <div class="funnel-meta"><span>First Show</span><span id="reg-fn-fs-lbl">—</span></div>
-        <div class="funnel-track"><div class="funnel-fill" id="reg-fn-fs-bar" style="background:#001d6c;min-width:2px"> </div></div>
-        <div class="funnel-conv" id="reg-fn-fs-conv">—</div>
-      </div>
+    <div class="card-head" style="margin:0">
+      <span class="card-title">L1 — Onboarding Funnel</span>
+      <span class="card-sub" id="reg-fn-label">—</span>
+      <span class="card-sub" style="color:#a8a8a8"> · Steps 2 &amp; 5 not yet instrumented · Step 6 blocked as a result</span>
     </div>
   </div>
+  <div style="background:#fff;padding:24px 20px 28px;overflow-x:auto">
+    <div style="font-size:11px;color:#525252;margin-bottom:16px">
+      <span style="font-weight:600;color:#393939">Account Created:</span>
+      <span id="reg-fn-ac" style="margin-left:6px;font-size:15px;font-weight:700;color:#161616">—</span>
+      <span style="margin-left:5px;font-size:11px;color:#8d8d8d">(total cohort · entry point)</span>
+    </div>
+    <div style="display:flex;align-items:flex-start;min-width:980px">
 
-  <!-- Velocity table -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Velocity Targets — Registration Stage</span></div>
-  </div>
-  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;padding:0">
-    <table class="tbl">
-      <thead><tr><th>Step</th><th>Metric</th><th>Median Target</th><th>P90 Target</th><th>Guardrail</th></tr></thead>
-      <tbody>
-        <tr><td class="fw6">Account Created → Studio Activated (LPG)</td><td>LPG Rate</td><td style="color:#0e6027;font-weight:600">≥60%</td><td>—</td><td style="color:#a2191f;font-size:10px">Below 60% = program blocker</td></tr>
-        <tr><td class="fw6">Studio Activated → First Event</td><td>Event Creation Rate</td><td style="color:#0e6027;font-weight:600">—</td><td>—</td><td>—</td></tr>
-        <tr><td class="fw6">Studio Activated → First Listing</td><td>Listing Readiness Rate</td><td style="color:#0e6027;font-weight:600">—</td><td>—</td><td>—</td></tr>
-        <tr><td class="fw6">Studio Activated → First Show</td><td>First Show Rate</td><td style="color:#0e6027;font-weight:600">&lt;10 days median</td><td>≤21 days P75</td><td style="color:#a2191f;font-size:10px">Drop-off &gt;26.2% (historical baseline)</td></tr>
-      </tbody>
-    </table>
+      <!-- Step 1: Live Privilege Granted -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;flex-shrink:0">
+        <div style="font-size:30px;font-weight:700;color:#161616;margin-bottom:8px;line-height:1" id="reg-s1">—</div>
+        <div style="background:#0353e9;color:#fff;font-size:10px;font-weight:700;padding:7px 0;border-radius:2px;width:100%;text-align:center;letter-spacing:.05em">Step 1</div>
+        <div style="font-size:10px;color:#525252;text-align:center;margin-top:7px;line-height:1.5">Live Privilege<br>Granted (Entry)</div>
+      </div>
+
+      <!-- Arrow 1→2: not instrumented -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:62px;flex-shrink:0;padding:0 4px;margin-top:8px">
+        <div style="font-size:9px;color:#8d8d8d;text-align:center;line-height:1.4;margin-bottom:5px">not<br>instrumented</div>
+        <div style="font-size:20px;color:#c6c6c6;line-height:1">→</div>
+      </div>
+
+      <!-- Step 2: Set Up Shipping (not instrumented) -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;flex-shrink:0">
+        <div style="font-size:30px;font-weight:700;color:#c6c6c6;margin-bottom:8px;line-height:1">0</div>
+        <div style="background:#8d8d8d;color:#fff;font-size:10px;font-weight:700;padding:7px 0;border-radius:2px;width:100%;text-align:center;letter-spacing:.05em">Step 2</div>
+        <div style="font-size:10px;color:#8d8d8d;text-align:center;margin-top:7px;line-height:1.5">Set Up<br>Shipping</div>
+        <div style="font-size:9px;color:#a8a8a8;font-style:italic;margin-top:4px">not instrumented</div>
+      </div>
+
+      <!-- Arrow 2→3: no data -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:62px;flex-shrink:0;padding:0 4px;margin-top:8px">
+        <div style="font-size:9px;color:#8d8d8d;text-align:center;line-height:1.4;margin-bottom:5px">— no<br>data</div>
+        <div style="font-size:20px;color:#c6c6c6;line-height:1">→</div>
+      </div>
+
+      <!-- Step 3: Create First Event -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;flex-shrink:0">
+        <div style="font-size:30px;font-weight:700;color:#161616;margin-bottom:8px;line-height:1" id="reg-s3">—</div>
+        <div style="background:#0353e9;color:#fff;font-size:10px;font-weight:700;padding:7px 0;border-radius:2px;width:100%;text-align:center;letter-spacing:.05em">Step 3</div>
+        <div style="font-size:10px;color:#525252;text-align:center;margin-top:7px;line-height:1.5">Create First<br>Event</div>
+      </div>
+
+      <!-- Arrow 3→4: dynamic conversion -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:62px;flex-shrink:0;padding:0 4px;margin-top:8px">
+        <div id="reg-c34" style="font-size:9px;color:#6f6f6f;font-weight:600;text-align:center;line-height:1.4;margin-bottom:5px">—</div>
+        <div style="font-size:20px;color:#c6c6c6;line-height:1">→</div>
+      </div>
+
+      <!-- Step 4: Add Listings to Event -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;flex-shrink:0">
+        <div style="font-size:30px;font-weight:700;color:#161616;margin-bottom:8px;line-height:1" id="reg-s4">—</div>
+        <div style="background:#0353e9;color:#fff;font-size:10px;font-weight:700;padding:7px 0;border-radius:2px;width:100%;text-align:center;letter-spacing:.05em">Step 4</div>
+        <div style="font-size:10px;color:#525252;text-align:center;margin-top:7px;line-height:1.5">Add Listings<br>to Event</div>
+      </div>
+
+      <!-- Arrow 4→5: not instrumented -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:62px;flex-shrink:0;padding:0 4px;margin-top:8px">
+        <div style="font-size:9px;color:#8d8d8d;text-align:center;line-height:1.4;margin-bottom:5px">not<br>instrumented</div>
+        <div style="font-size:20px;color:#c6c6c6;line-height:1">→</div>
+      </div>
+
+      <!-- Step 5: Learn How to Stream (not instrumented) -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;flex-shrink:0">
+        <div style="font-size:30px;font-weight:700;color:#c6c6c6;margin-bottom:8px;line-height:1">0</div>
+        <div style="background:#8d8d8d;color:#fff;font-size:10px;font-weight:700;padding:7px 0;border-radius:2px;width:100%;text-align:center;letter-spacing:.05em">Step 5</div>
+        <div style="font-size:10px;color:#8d8d8d;text-align:center;margin-top:7px;line-height:1.5">Learn How<br>to Stream</div>
+        <div style="font-size:9px;color:#a8a8a8;font-style:italic;margin-top:4px">not instrumented</div>
+      </div>
+
+      <!-- Arrow 5→6: blocked -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:62px;flex-shrink:0;padding:0 4px;margin-top:8px">
+        <div style="font-size:9px;color:#da1e28;font-weight:600;text-align:center;line-height:1.4;margin-bottom:5px">blocked<br>by 2 &amp; 5</div>
+        <div style="font-size:20px;color:#c6c6c6;line-height:1">→</div>
+      </div>
+
+      <!-- Step 6: All 4 Steps Completed (blocked) -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;flex-shrink:0">
+        <div style="font-size:30px;font-weight:700;color:#c6c6c6;margin-bottom:8px;line-height:1">0</div>
+        <div style="background:#da1e28;color:#fff;font-size:10px;font-weight:700;padding:7px 0;border-radius:2px;width:100%;text-align:center;letter-spacing:.05em">Step 6</div>
+        <div style="font-size:10px;color:#8d8d8d;text-align:center;margin-top:7px;line-height:1.5">All 4 Steps<br>Completed</div>
+        <div style="font-size:9px;color:#da1e28;font-style:italic;margin-top:4px">blocked</div>
+      </div>
+
+      <!-- Arrow 6→7: no data -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:62px;flex-shrink:0;padding:0 4px;margin-top:8px">
+        <div style="font-size:9px;color:#8d8d8d;text-align:center;line-height:1.4;margin-bottom:5px">— no<br>data</div>
+        <div style="font-size:20px;color:#c6c6c6;line-height:1">→</div>
+      </div>
+
+      <!-- Step 7: First Show Went Live -->
+      <div style="display:flex;flex-direction:column;align-items:center;width:116px;flex-shrink:0">
+        <div style="font-size:30px;font-weight:700;color:#161616;margin-bottom:8px;line-height:1" id="reg-s7">—</div>
+        <div style="background:#0043ce;color:#fff;font-size:10px;font-weight:700;padding:7px 0;border-radius:2px;width:100%;text-align:center;letter-spacing:.05em">Step 7</div>
+        <div style="font-size:10px;color:#525252;text-align:center;margin-top:7px;line-height:1.5">First Show<br>Went Live</div>
+      </div>
+
+    </div>
   </div>
 
   <!-- Metric Definitions -->
@@ -2238,7 +2296,6 @@ function fmt(n, d) {
 
 function renderRegistration() {
   const f = getFilterState();
-  // Get rows for active grain, then latest cohort period (except Overall)
   const grainRows = REG_DATA.filter(r => r.tp === activeGrain);
   const latestCp  = activeGrain === 'Overall' ? 'Overall'
     : grainRows.reduce((mx,r) => r.cp > mx ? r.cp : mx, '');
@@ -2250,7 +2307,6 @@ function renderRegistration() {
   };
   const label = grainLabelMap[activeGrain] || activeGrain;
 
-  // Apply geo / tier / phase only (cat values differ from filter bar; method/bg not in dataset)
   const rows = grainRows.filter(r =>
     r.cp === latestCp &&
     (f.geo   === 'all' || r.geo   === f.geo)  &&
@@ -2266,83 +2322,40 @@ function renderRegistration() {
     n_fs:  acc.n_fs  + r.n_fs,
   }), {n_ac:0,n_lpg:0,n_ev:0,n_ls:0,n_fs:0});
 
+  function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
   function p1(n,d) { return d>0 ? (n/d*100).toFixed(1)+'%' : '—'; }
-  function cnt(n,d,lbl) { return d>0 ? n+' of '+d+' '+lbl+' · '+label : '0 · '+label; }
-  function bar(id,n,d,w_d) {
-    const pct = w_d>0 ? Math.min(100,n/w_d*100) : 0;
-    const el = document.getElementById(id);
-    if (el) { el.style.width = Math.max(pct,2)+'%'; el.textContent = pct.toFixed(1)+'%'; }
-  }
+  function cnt(n,d,lbl) { return d>0 ? n+' of '+d+' '+lbl+' · '+label : '— · '+label; }
+
+  set('reg-fn-label', label);
 
   if (rows.length === 0) {
-    const msg = 'No data for selection';
-    ['reg-lpg-rate','reg-ec-rate','reg-ls-rate','reg-fs-rate'].forEach(id => {
-      const el=document.getElementById(id); if(el) el.textContent='—';
-    });
-    ['reg-lpg-cnt','reg-ec-cnt','reg-ls-cnt','reg-fs-cnt','reg-fn-ac',
-     'reg-fn-lpg-lbl','reg-fn-ev-lbl','reg-fn-ls-lbl','reg-fn-fs-lbl'].forEach(id => {
-      const el=document.getElementById(id); if(el) el.textContent=msg;
-    });
+    ['reg-fs-rate','reg-lpg-rate','reg-ec-rate','reg-ls-rate'].forEach(id => set(id,'—'));
+    ['reg-fs-cnt','reg-lpg-cnt','reg-ec-cnt','reg-ls-cnt','reg-fn-ac',
+     'reg-s1','reg-s3','reg-s4','reg-s7','reg-c34'].forEach(id => set(id,'No data'));
     return;
   }
 
   // KPI tiles
-  const lpgEl = document.getElementById('reg-lpg-rate');
-  if (lpgEl) lpgEl.textContent = p1(a.n_lpg, a.n_ac);
-  const lpgEl2 = document.getElementById('reg-lpg-cnt');
-  if (lpgEl2) lpgEl2.textContent = cnt(a.n_lpg, a.n_ac, 'sellers activated');
+  set('reg-fs-rate', p1(a.n_fs, a.n_lpg));
+  set('reg-fs-cnt',  cnt(a.n_fs, a.n_lpg, 'sellers with first show'));
+  set('reg-lpg-rate', p1(a.n_lpg, a.n_ac));
+  set('reg-lpg-cnt',  cnt(a.n_lpg, a.n_ac, 'sellers activated'));
+  set('reg-ec-rate', p1(a.n_ev, a.n_lpg));
+  set('reg-ec-cnt',  cnt(a.n_ev, a.n_lpg, 'sellers with event'));
+  set('reg-ls-rate', p1(a.n_ls, a.n_lpg));
+  set('reg-ls-cnt',  cnt(a.n_ls, a.n_lpg, 'sellers with listing'));
 
-  const ecEl = document.getElementById('reg-ec-rate');
-  if (ecEl) ecEl.textContent = p1(a.n_ev, a.n_lpg);
-  const ecEl2 = document.getElementById('reg-ec-cnt');
-  if (ecEl2) ecEl2.textContent = cnt(a.n_ev, a.n_lpg, 'sellers with event');
+  // Account created (entry cohort)
+  set('reg-fn-ac', a.n_ac.toLocaleString());
 
-  const lsEl = document.getElementById('reg-ls-rate');
-  if (lsEl) lsEl.textContent = p1(a.n_ls, a.n_lpg);
-  const lsEl2 = document.getElementById('reg-ls-cnt');
-  if (lsEl2) lsEl2.textContent = cnt(a.n_ls, a.n_lpg, 'sellers with listing');
+  // Funnel step counts (Steps 1, 3, 4, 7 are dynamic; 2, 5, 6 are hardcoded 0 in HTML)
+  set('reg-s1', a.n_lpg.toLocaleString());
+  set('reg-s3', a.n_ev.toLocaleString());
+  set('reg-s4', a.n_ls.toLocaleString());
+  set('reg-s7', a.n_fs.toLocaleString());
 
-  const fsEl = document.getElementById('reg-fs-rate');
-  if (fsEl) fsEl.textContent = p1(a.n_fs, a.n_lpg);
-  const fsEl2 = document.getElementById('reg-fs-cnt');
-  if (fsEl2) fsEl2.textContent = cnt(a.n_fs, a.n_lpg, 'sellers with first show');
-
-  // Funnel label
-  const fnLbl = document.getElementById('reg-fn-label');
-  if (fnLbl) fnLbl.textContent = label;
-
-  // Funnel bars (denominator = n_ac for all, to show proportion of total cohort)
-  const acEl = document.getElementById('reg-fn-ac');
-  if (acEl) acEl.textContent = a.n_ac + ' sellers (100%)';
-
-  const lpgP = a.n_ac>0 ? (a.n_lpg/a.n_ac*100).toFixed(1) : 0;
-  const evP  = a.n_ac>0 ? (a.n_ev /a.n_ac*100).toFixed(1) : 0;
-  const lsP  = a.n_ac>0 ? (a.n_ls /a.n_ac*100).toFixed(1) : 0;
-  const fsP  = a.n_ac>0 ? (a.n_fs /a.n_ac*100).toFixed(1) : 0;
-
-  const lpgLbl = document.getElementById('reg-fn-lpg-lbl');
-  if (lpgLbl) lpgLbl.textContent = a.n_lpg+' sellers ('+lpgP+'%)';
-  bar('reg-fn-lpg-bar', a.n_lpg, a.n_lpg, a.n_ac);
-  const lpgConv = document.getElementById('reg-fn-lpg-conv');
-  if (lpgConv) lpgConv.textContent = '↓ '+lpgP+'% of accounts';
-
-  const evLbl = document.getElementById('reg-fn-ev-lbl');
-  if (evLbl) evLbl.textContent = a.n_ev+' sellers ('+evP+'%)';
-  bar('reg-fn-ev-bar', a.n_ev, a.n_ev, a.n_ac);
-  const evConv = document.getElementById('reg-fn-ev-conv');
-  if (evConv) evConv.textContent = '↓ '+evP+'% of accounts';
-
-  const lsLbl = document.getElementById('reg-fn-ls-lbl');
-  if (lsLbl) lsLbl.textContent = a.n_ls+' sellers ('+lsP+'%)';
-  bar('reg-fn-ls-bar', a.n_ls, a.n_ls, a.n_ac);
-  const lsConv = document.getElementById('reg-fn-ls-conv');
-  if (lsConv) lsConv.textContent = '↓ '+lsP+'% of accounts';
-
-  const fsLbl = document.getElementById('reg-fn-fs-lbl');
-  if (fsLbl) fsLbl.textContent = a.n_fs+' sellers ('+fsP+'%)';
-  bar('reg-fn-fs-bar', a.n_fs, a.n_fs, a.n_ac);
-  const fsConv = document.getElementById('reg-fn-fs-conv');
-  if (fsConv) fsConv.textContent = '↓ '+fsP+'% of accounts';
+  // Conversion arrow 3→4: step-to-step (listings / events)
+  set('reg-c34', a.n_ev > 0 ? (a.n_ls/a.n_ev*100).toFixed(0)+'% conv.' : '—');
 }
 
 function renderPreStream() {
