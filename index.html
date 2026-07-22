@@ -1087,11 +1087,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div id="ch-is-volume" style="height:160px"></div>
     </div>
 
-  <!-- S2a — Inventory & Listing Mix -->
+  <!-- S2 — Inventory & Auction Activity -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0">
-      <span class="card-title">Inventory &amp; Listing Mix</span>
-      <span class="card-sub">Source: HC_STREAM_METRICS (LIVE_EVENT_LISTING grain) · BIN = fixed-price; Auction = bid-format · Pin metrics excluded (CDC proxy unreliable)</span>
+      <span class="card-title">Inventory &amp; Auction Activity</span>
+      <span class="card-sub">Source: HC_STREAM_METRICS · BIN = fixed-price; Auction = bid-format · total_bids / unique_bidders from auction_items_with_bids · Pin metrics excluded (CDC proxy unreliable)</span>
     </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
@@ -1120,15 +1120,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-note">AVG(total_bin_items) per event</div>
     </div>
   </div>
-
-  <!-- S2b — Auction & Bid Engagement -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:1px">
-    <div class="card-head" style="margin:0">
-      <span class="card-title">Auction &amp; Bid Engagement</span>
-      <span class="card-sub">Source: HC_STREAM_METRICS · total_bids = all bids placed; unique_bidders = distinct buyers bidding; auction_items_with_bids = items that received ≥1 bid</span>
-    </div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-top:1px">
     <div class="kpi-tile north-star">
       <div class="kpi-label">% Streams with Bids</div>
       <div class="kpi-value" id="is-pct-bids">—</div>
@@ -3161,34 +3153,36 @@ function renderInStream() {
   set('is-items-sold', fmtN(a.items_sold),                  label);
   set('is-hrs',        a.hrs.toFixed(1) + ' hrs',           label);
   set('is-avg-items',  avg_items.toFixed(1),                label);
-  set('is-str',        fmtP(str_pct),                       label);
+  set('is-str',        fmtP(str_pct),   fmtN(a.items_sold)+' of '+fmtN(a.total_items)+' items · '+label);
 
   // S2a: Inventory & Listing Mix
   set('is-avg-auction-items', avg_auction.toFixed(1),           label);
-  set('is-auction-mix',       auction_mix != null ? fmtP(auction_mix) : '—', label);
-  set('is-auction-str',       auction_str != null ? fmtP(auction_str) : '—', label);
+  set('is-auction-mix',       auction_mix != null ? fmtP(auction_mix) : '—',
+      fmtN(a.auction_items)+' of '+fmtN(a.total_items)+' items · '+label);
+  set('is-auction-str',       auction_str != null ? fmtP(auction_str) : '—',
+      fmtN(a.auction_sold)+' sold of '+fmtN(a.auction_items)+' auction items · '+label);
   set('is-avg-bin-items',     avg_bin.toFixed(1),               label);
 
   // S2b: Auction & Bid Engagement
-  set('is-pct-bids',   fmtP(pct_bids),                          label);
+  set('is-pct-bids',   fmtP(pct_bids),   a.streams_w_bids+' of '+a.streams+' streams · '+label);
   set('is-bidders',    fmtN(a.bidders),                         label);
   set('is-avg-bids',   avg_bids != null ? fmtD(avg_bids, 1) : '—', label);
   set('is-total-bids', fmtN(a.total_bids),                      label);
 
   // S3a: Viewer Engagement
   set('is-viewers', fmtN(viewers),           label);
-  set('is-qvr',     fmtP(qvr),              label);
-  set('is-bounce',  fmtP(bounce),            label);
+  set('is-qvr',     fmtP(qvr),   fmtN(a.quality_viewers)+' of '+fmtN(a.total_viewers)+' viewers · '+label);
+  set('is-bounce',  fmtP(bounce), fmtN(a.bounced_viewers)+' of '+fmtN(a.total_viewers)+' viewers · '+label);
   set('is-watch',   Math.round(watch_secs) + ' s', label);
 
   // S3b/c: Tool Adoption
-  set('is-pct-chat',     fmtP(pct_chat),    label);
-  set('is-pct-chat-pin', fmtP(pct_chatpin), label);
-  set('is-pct-notice',   fmtP(pct_notice),  label);
-  set('is-pct-any-tool', fmtP(pct_anytool), label);
+  set('is-pct-chat',     fmtP(pct_chat),    a.s_chat    +' of '+a.sellers+' sellers · '+label);
+  set('is-pct-chat-pin', fmtP(pct_chatpin), a.s_chatpin +' of '+a.sellers+' sellers · '+label);
+  set('is-pct-notice',   fmtP(pct_notice),  a.s_notice  +' of '+a.sellers+' sellers · '+label);
+  set('is-pct-any-tool', fmtP(pct_anytool), a.s_anytool +' of '+a.sellers+' sellers · '+label);
 
   // S4: Guardrails
-  set('is-zero-sale',     fmtP(pct_zero),           label);
+  set('is-zero-sale',     fmtP(pct_zero),     a.zero_sale+' of '+a.streams+' streams · '+label);
   set('is-instream-list', fmtD(avg_instream),        label);
   set('is-resets',        fmtD(avg_resets),           label);
   set('is-muted',         fmtD(avg_muted),            label);
