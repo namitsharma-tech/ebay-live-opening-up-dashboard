@@ -553,6 +553,100 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
   </div>
 
+  <!-- Before You Go + Rates (2-col) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:16px;background:#e0e0e0">
+
+    <!-- Before You Go -->
+    <div style="background:#fff;padding:20px 24px 24px">
+      <div style="font-size:12px;font-weight:700;color:#161616;margin-bottom:3px">L1 — Before You Go</div>
+      <div style="font-size:10px;color:#6f6f6f;margin-bottom:20px">Widget state distribution among LPG-granted sellers · 75% &amp; 100% require Steps 2 &amp; 5 (not instrumented)</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:110px">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1">
+          <span style="font-size:11px;font-weight:700;color:#161616" id="reg-byg-0">—</span>
+          <div id="reg-byg-0-bar" style="width:100%;background:#0353e9;min-height:4px;border-radius:1px 1px 0 0"></div>
+          <span style="font-size:9px;color:#525252">0%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1">
+          <span style="font-size:11px;font-weight:700;color:#161616" id="reg-byg-25">—</span>
+          <div id="reg-byg-25-bar" style="width:100%;background:#0353e9;min-height:4px;border-radius:1px 1px 0 0"></div>
+          <span style="font-size:9px;color:#525252">25%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1">
+          <span style="font-size:11px;font-weight:700;color:#161616" id="reg-byg-50">—</span>
+          <div id="reg-byg-50-bar" style="width:100%;background:#0353e9;min-height:4px;border-radius:1px 1px 0 0"></div>
+          <span style="font-size:9px;color:#525252">50%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1">
+          <span style="font-size:11px;font-weight:700;color:#c6c6c6">0</span>
+          <div style="width:100%;background:#e0e0e0;height:4px;border-radius:1px 1px 0 0"></div>
+          <span style="font-size:9px;color:#a8a8a8">75%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1">
+          <span style="font-size:11px;font-weight:700;color:#c6c6c6">0</span>
+          <div style="width:100%;background:#e0e0e0;height:4px;border-radius:1px 1px 0 0"></div>
+          <span style="font-size:9px;color:#a8a8a8">100%</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;flex:1">
+          <span style="font-size:11px;font-weight:700;color:#161616" id="reg-byg-str">—</span>
+          <div id="reg-byg-str-bar" style="width:100%;background:#24a148;min-height:4px;border-radius:1px 1px 0 0"></div>
+          <span style="font-size:9px;color:#525252">Streamed</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rates -->
+    <div style="background:#fff;padding:20px 24px 24px">
+      <div style="font-size:12px;font-weight:700;color:#161616;margin-bottom:3px">L1 — Rates</div>
+      <div style="font-size:10px;color:#6f6f6f;margin-bottom:16px">Time-to-Completion, median (days)</div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px">
+        <thead>
+          <tr style="border-bottom:1px solid #e0e0e0">
+            <th style="text-align:left;padding:6px 0;color:#6f6f6f;font-weight:600;font-size:10px">Metric</th>
+            <th style="text-align:right;padding:6px 0;color:#6f6f6f;font-weight:600;font-size:10px">Median</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f4f4f4">
+            <td style="padding:9px 0;color:#161616">Approval → Initial Engagement</td>
+            <td style="text-align:right;padding:9px 0;color:#8d8d8d;font-size:10px">× Not available</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f4f4f4">
+            <td style="padding:9px 0;color:#161616">Approval → Debut Broadcast</td>
+            <td style="text-align:right;padding:9px 0;color:#8d8d8d;font-size:10px">× Not available</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f4f4f4">
+            <td style="padding:9px 0;color:#8d8d8d;font-style:italic">Approval → Total Prerequisite Fulfillment</td>
+            <td style="text-align:right;padding:9px 0;color:#8d8d8d;font-size:10px">No data (0 reached Step 6)</td>
+          </tr>
+          <tr>
+            <td style="padding:9px 0;color:#da1e28;font-size:10px">First Show → Identity Verification (Late Finishers)</td>
+            <td style="text-align:right;padding:9px 0;color:#da1e28;font-size:10px">× Not available</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- Others -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:0">
+    <div class="card-head" style="margin:0"><span class="card-title">L1 — Others</span></div>
+  </div>
+  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:0">
+    <table class="tbl">
+      <thead><tr><th style="width:60%">Metric</th><th style="width:40%;text-align:right">Value</th></tr></thead>
+      <tbody>
+        <tr><td class="fw6">Out-of-Order Completion Rate</td><td style="text-align:right;color:#f1c21b;font-size:10px">△ Partial — Event/Listing only (Steps 2 &amp; 5 not instrumented)</td></tr>
+        <tr><td style="color:#da1e28">Post-First-Show Step 2: Payout Identity Verified</td><td style="text-align:right;color:#da1e28;font-size:10px">× Not available</td></tr>
+        <tr><td class="fw6">Session Velocity: Median Time to Complete (per module)</td><td style="text-align:right;color:#f1c21b;font-size:10px">△ Partial — Event &amp; Listing modules only</td></tr>
+        <tr><td style="color:#da1e28">Session Velocity: Multi-Session Rate</td><td style="text-align:right;color:#da1e28;font-size:10px">× Not available</td></tr>
+        <tr><td style="color:#da1e28">Session Velocity: Abandonment Rate</td><td style="text-align:right;color:#da1e28;font-size:10px">× Not available</td></tr>
+        <tr><td class="fw6">Post-First-Show Step 3: Second Show</td><td style="text-align:right;color:#8d8d8d;font-size:10px">× Not available — requires separate second-show query</td></tr>
+        <tr><td style="color:#da1e28">Post-First-Show Step 4: Streaming Habit Formed</td><td style="text-align:right;color:#da1e28;font-size:10px">× Not available — needs definition</td></tr>
+      </tbody>
+    </table>
+  </div>
+
   <!-- Metric Definitions -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
     <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('reg-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.reg-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
@@ -2349,6 +2443,31 @@ function renderRegistration() {
 
   // Conversion arrow 3→4: step-to-step (listings / events)
   set('reg-c34', a.n_ev > 0 ? (a.n_ls/a.n_ev*100).toFixed(0)+'% conv.' : '—');
+
+  // Before You Go — approximate widget state distribution from aggregated counts
+  // 0%  = LPG granted but no event (no step 3 done)
+  // 25% = created event but no listing (step 3 only, since steps 2+5=0)
+  // 50% = listing added but not streamed (steps 3+4)
+  // 75%/100% = 0 (require steps 2+5 which are not instrumented)
+  // Streamed = first show went live
+  const byg0   = Math.max(0, a.n_lpg - a.n_ev);
+  const byg25  = Math.max(0, a.n_ev  - a.n_ls);
+  const byg50  = Math.max(0, a.n_ls  - a.n_fs);
+  const bygStr = a.n_fs;
+  const bygMax = Math.max(byg0, byg25, byg50, bygStr, 1);
+  const BAR_H  = 85;
+  function setBygBar(id, val) {
+    const el = document.getElementById(id+'-bar');
+    if (el) el.style.height = Math.max(4, Math.round(val/bygMax*BAR_H))+'px';
+  }
+  set('reg-byg-0',   byg0);
+  set('reg-byg-25',  byg25);
+  set('reg-byg-50',  byg50);
+  set('reg-byg-str', bygStr);
+  setBygBar('reg-byg-0',   byg0);
+  setBygBar('reg-byg-25',  byg25);
+  setBygBar('reg-byg-50',  byg50);
+  setBygBar('reg-byg-str', bygStr);
 }
 
 function renderPreStream() {
