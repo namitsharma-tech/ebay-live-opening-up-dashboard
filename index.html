@@ -1077,21 +1077,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-note">items_sold / items_listed · DDI gold standard</div>
     </div>
   </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">GMV / Streaming Hour — 30-day trend</div>
-      <div id="ch-is-gmv-hr" style="height:160px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Daily Streams &amp; Active Sellers</div>
-      <div id="ch-is-volume" style="height:160px"></div>
-    </div>
 
   <!-- S2 — Inventory & Auction Activity -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:1px">
     <div class="card-head" style="margin:0">
       <span class="card-title">Inventory &amp; Auction Activity</span>
-      <span class="card-sub">Source: HC_STREAM_METRICS · BIN = fixed-price; Auction = bid-format · total_bids / unique_bidders from auction_items_with_bids · Pin metrics excluded (CDC proxy unreliable)</span>
+      <span class="card-sub">Source: HC_STREAM_METRICS · BIN = fixed-price; Auction = bid-format · Pin metrics excluded (CDC proxy unreliable)</span>
     </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
@@ -1121,6 +1112,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-top:1px">
+    <div class="kpi-tile">
+      <div class="kpi-label">BIN Sell-Through Rate</div>
+      <div class="kpi-value" id="is-bin-str">—</div>
+      <div class="kpi-count" id="is-bin-str-note">—</div>
+      <div class="kpi-note">(items_sold − auction_sold) / bin_items × 100</div>
+    </div>
     <div class="kpi-tile north-star">
       <div class="kpi-label">% Streams with Bids</div>
       <div class="kpi-value" id="is-pct-bids">—</div>
@@ -1134,24 +1131,38 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-note">SUM(unique_bidders) across filtered streams</div>
     </div>
     <div class="kpi-tile">
-      <div class="kpi-label">Avg Bids / Bidding Item</div>
-      <div class="kpi-value" id="is-avg-bids">—</div>
-      <div class="kpi-count" id="is-avg-bids-note">—</div>
-      <div class="kpi-note">total_bids / auction_items_with_bids · bid intensity</div>
-    </div>
-    <div class="kpi-tile">
       <div class="kpi-label">Total Bids Placed</div>
       <div class="kpi-value" id="is-total-bids">—</div>
       <div class="kpi-count" id="is-total-bids-note">—</div>
       <div class="kpi-note">SUM(total_bids) across filtered streams</div>
     </div>
   </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-top:1px">
+    <div class="kpi-tile">
+      <div class="kpi-label">Avg Bids / Bidding Item</div>
+      <div class="kpi-value" id="is-avg-bids">—</div>
+      <div class="kpi-count" id="is-avg-bids-note">—</div>
+      <div class="kpi-note">total_bids / auction_items_with_bids · bid intensity</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Avg Bids / Stream-with-Bids</div>
+      <div class="kpi-value" id="is-avg-bids-stream">—</div>
+      <div class="kpi-count" id="is-avg-bids-stream-note">—</div>
+      <div class="kpi-note">total_bids / streams_w_bids · stream-level bid load</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Bid Price Realization %</div>
+      <div class="kpi-value" id="is-bid-real">—</div>
+      <div class="kpi-count" id="is-bid-real-note">—</div>
+      <div class="kpi-note">final_bid / start_price × 100 · weighted avg across items</div>
+    </div>
+  </div>
 
-  <!-- S3a — Viewer Engagement -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+  <!-- S3 — Viewer & Seller Engagement -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:1px">
     <div class="card-head" style="margin:0">
-      <span class="card-title">Viewer Engagement</span>
-      <span class="card-sub">Use total_unique_viewers from HC_STREAM_METRICS — NOT DDI VIEWERCOUNT (inflated 3–4×)</span>
+      <span class="card-title">Viewer &amp; Seller Engagement</span>
+      <span class="card-sub">Viewers: use HC_STREAM_METRICS — NOT DDI VIEWERCOUNT (inflated 3–4×) · Tool metrics: UBI-derived, 3–5 day lag, Daily grain shows "—"</span>
     </div>
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
@@ -1180,19 +1191,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-note">AVG(avg_watch_duration_secs)</div>
     </div>
   </div>
-  <div class="chart-pane" style="margin-top:1px">
-    <div class="chart-pane-title">Avg Viewers &amp; Quality Viewer Rate % — 30-day trend</div>
-    <div id="ch-is-viewers" style="height:160px"></div>
-  </div>
-
-  <!-- S3b/3c — Seller Tool Adoption -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0">
-      <span class="card-title">Seller Tool Adoption</span>
-      <span class="card-sub">UBI-derived · *_global columns are seller-day totals (directional) · Daily grain shows "—" — HC_UBI_BASE lags 3–5 days</span>
-    </div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-top:1px">
     <div class="kpi-tile">
       <div class="kpi-label">% Sellers Sending Chat</div>
       <div class="kpi-value" id="is-pct-chat">—</div>
@@ -1220,7 +1219,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   </div>
 
   <!-- S4 — Guardrails -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:1px">
     <div class="card-head" style="margin:0">
       <span class="card-title">Guardrail Metrics</span>
       <span class="card-sub">Lower = healthier · † UBI-derived metrics show "—" for Daily grain (HC_UBI_BASE 3–5 day lag)</span>
@@ -1252,9 +1251,31 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       <div class="kpi-note">users_muted_global · community health · UBI</div>
     </div>
   </div>
-  <div class="chart-pane" style="margin-top:1px">
-    <div class="chart-pane-title">Sell-Through Rate % — 30-day trend</div>
-    <div id="ch-is-str" style="height:160px"></div>
+
+  <!-- Trend Charts -->
+  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:1px">
+    <div class="card-head" style="margin:0">
+      <span class="card-title">Trend Charts</span>
+      <span class="card-sub">30-day rolling view · grain-aware (Weekly/Monthly show aggregated bars)</span>
+    </div>
+  </div>
+  <div class="g2" style="gap:1px;background:#e0e0e0">
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">GMV / Streaming Hour — 30-day trend</div>
+      <div id="ch-is-gmv-hr" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Daily Streams &amp; Active Sellers</div>
+      <div id="ch-is-volume" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Avg Viewers &amp; Quality Viewer Rate % — 30-day trend</div>
+      <div id="ch-is-viewers" style="height:160px"></div>
+    </div>
+    <div class="chart-pane" style="margin:0">
+      <div class="chart-pane-title">Sell-Through Rate % — 30-day trend</div>
+      <div id="ch-is-str" style="height:160px"></div>
+    </div>
   </div>
 
   <!-- Metric Definitions -->
@@ -1285,6 +1306,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
         <tr><td class="fw6">Total Unique Bidders</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(unique_bidders)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">unique_bidders</td><td class="mono" style="color:#6f6f6f">May double-count across streams (buyer in 2 streams counted twice)</td></tr>
         <tr><td class="fw6">Avg Bids / Bidding Item</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(total_bids) / SUM(auction_items_with_bids)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_bids · auction_items_with_bids</td><td class="mono" style="color:#6f6f6f">Bid intensity per contested item — recompute at rollup</td></tr>
         <tr><td class="fw6">Total Bids Placed</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(total_bids)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_bids</td><td class="mono" style="color:#6f6f6f">Absolute bid volume across filtered streams</td></tr>
+        <tr><td class="fw6">BIN Sell-Through Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">(items_sold − auction_sold) / bin_items × 100</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">items_sold_during · auction_items_sold · total_bin_items</td><td class="mono" style="color:#6f6f6f">Derived from existing columns — no query change needed</td></tr>
+        <tr><td class="fw6">Avg Bids / Stream-with-Bids</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(total_bids) / COUNT(streams where total_bids&gt;0)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">total_bids · streams_w_bids</td><td class="mono" style="color:#6f6f6f">Stream-level bid load — higher = more competitive auctions per stream</td></tr>
+        <tr><td class="fw6">Bid Price Realization %</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">weighted avg(avg_bid_price_realization_pct)</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Pending</span></td><td class="mono">avg_bid_price_realization_pct · HC_STREAM_METRICS</td><td class="mono" style="color:#7d4e00">IS_DATA query re-run needed to include this column</td></tr>
         <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Volume &amp; Inventory</td></tr>
         <tr><td class="fw6"># Streams / # Sellers</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">COUNT(DISTINCT live_event_id / seller_id)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">live_event_id · seller_id</td><td class="mono" style="color:#6f6f6f">—</td></tr>
         <tr><td class="fw6">Items Sold During Stream</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">SUM(items_sold_during)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">items_sold_during · DDI</td><td class="mono" style="color:#6f6f6f">Gold standard — not from LEL/CDC</td></tr>
@@ -3078,8 +3102,8 @@ function renderInStream() {
   if (rows.length === 0) {
     const msg = 'No data for selection';
     ['is-gmv-hr','is-gmv','is-streams','is-sellers','is-items-sold','is-hrs','is-avg-items','is-str',
-     'is-avg-auction-items','is-auction-mix','is-auction-str','is-avg-bin-items',
-     'is-pct-bids','is-bidders','is-avg-bids','is-total-bids',
+     'is-avg-auction-items','is-auction-mix','is-auction-str','is-avg-bin-items','is-bin-str',
+     'is-pct-bids','is-bidders','is-total-bids','is-avg-bids','is-avg-bids-stream','is-bid-real',
      'is-viewers','is-qvr','is-bounce','is-watch',
      'is-pct-chat','is-pct-chat-pin','is-pct-notice','is-pct-any-tool',
      'is-zero-sale','is-instream-list','is-resets','is-muted'].forEach(id => set(id, '—', msg));
@@ -3137,13 +3161,17 @@ function renderInStream() {
   const avg_resets  = a.streams    > 0 ? a.sum_resets   / a.streams             : 0;
   const avg_muted   = a.streams    > 0 ? a.sum_muted    / a.streams             : 0;
   // Inventory & Listing Mix
-  const avg_auction = a.streams       > 0 ? a.auction_items / a.streams           : 0;
-  const auction_mix = a.total_items   > 0 ? a.auction_items / a.total_items * 100 : null;
-  const auction_str = a.auction_items > 0 ? a.auction_sold  / a.auction_items * 100 : null;
-  const avg_bin     = a.streams       > 0 ? a.bin_items     / a.streams           : 0;
+  const avg_auction    = a.streams       > 0 ? a.auction_items / a.streams           : 0;
+  const auction_mix    = a.total_items   > 0 ? a.auction_items / a.total_items * 100 : null;
+  const auction_str    = a.auction_items > 0 ? a.auction_sold  / a.auction_items * 100 : null;
+  const avg_bin        = a.streams       > 0 ? a.bin_items     / a.streams           : 0;
+  const bin_sold       = a.items_sold - a.auction_sold;
+  const bin_str        = a.bin_items     > 0 ? bin_sold / a.bin_items * 100          : null;
   // Auction & Bid Engagement
-  const pct_bids    = a.streams       > 0 ? a.streams_w_bids / a.streams * 100    : 0;
-  const avg_bids    = a.items_w_bids  > 0 ? a.total_bids     / a.items_w_bids     : null;
+  const pct_bids       = a.streams       > 0 ? a.streams_w_bids / a.streams * 100    : 0;
+  const avg_bids       = a.items_w_bids  > 0 ? a.total_bids     / a.items_w_bids     : null;
+  const avg_bids_stream= a.streams_w_bids> 0 ? a.total_bids     / a.streams_w_bids   : null;
+  const bid_real       = null; // populated after IS_DATA query re-run with avg_bid_price_realization_pct
 
   // S1: North Star + Volume
   set('is-gmv-hr',     '$' + gmv_per_hr.toFixed(2) + '/hr', label);
@@ -3155,19 +3183,22 @@ function renderInStream() {
   set('is-avg-items',  avg_items.toFixed(1),                label);
   set('is-str',        fmtP(str_pct),   fmtN(a.items_sold)+' of '+fmtN(a.total_items)+' items · '+label);
 
-  // S2a: Inventory & Listing Mix
+  // S2: Inventory & Auction Activity
   set('is-avg-auction-items', avg_auction.toFixed(1),           label);
   set('is-auction-mix',       auction_mix != null ? fmtP(auction_mix) : '—',
       fmtN(a.auction_items)+' of '+fmtN(a.total_items)+' items · '+label);
   set('is-auction-str',       auction_str != null ? fmtP(auction_str) : '—',
       fmtN(a.auction_sold)+' sold of '+fmtN(a.auction_items)+' auction items · '+label);
   set('is-avg-bin-items',     avg_bin.toFixed(1),               label);
-
-  // S2b: Auction & Bid Engagement
-  set('is-pct-bids',   fmtP(pct_bids),   a.streams_w_bids+' of '+a.streams+' streams · '+label);
-  set('is-bidders',    fmtN(a.bidders),                         label);
-  set('is-avg-bids',   avg_bids != null ? fmtD(avg_bids, 1) : '—', label);
-  set('is-total-bids', fmtN(a.total_bids),                      label);
+  set('is-bin-str',           bin_str != null ? fmtP(bin_str) : '—',
+      fmtN(bin_sold)+' BIN sold of '+fmtN(a.bin_items)+' BIN items · '+label);
+  set('is-pct-bids',          fmtP(pct_bids), a.streams_w_bids+' of '+a.streams+' streams · '+label);
+  set('is-bidders',           fmtN(a.bidders),                  label);
+  set('is-total-bids',        fmtN(a.total_bids),               label);
+  set('is-avg-bids',          avg_bids != null ? fmtD(avg_bids, 1) : '—', label);
+  set('is-avg-bids-stream',   avg_bids_stream != null ? fmtD(avg_bids_stream, 1) : '—',
+      a.streams_w_bids > 0 ? fmtN(a.total_bids)+' bids over '+a.streams_w_bids+' streams · '+label : label);
+  set('is-bid-real',          bid_real != null ? fmtP(bid_real) : '—', label);
 
   // S3a: Viewer Engagement
   set('is-viewers', fmtN(viewers),           label);
