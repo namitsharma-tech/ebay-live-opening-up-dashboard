@@ -1350,270 +1350,86 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 <div id="tab-poststream" class="section">
 
   <div style="background:#e0e0e0;margin-bottom:1px">
-    <div class="card-head" style="margin:0"><span class="card-title">Post-Stream — Fulfillment, Insights &amp; Seller Retention</span><span class="card-sub">Owner: Jessica Reid · Analytics: Roger Yu</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Post-Stream — Fulfillment &amp; Shipment Metrics</span><span class="card-sub">Source: POST_STREAM_SHIPMENT_QUERIES_V2 · LIVE_SELLER_MASTER_V2 · as of Jul 22 2026</span></div>
   </div>
 
-  <!-- North Stars -->
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <!-- North Stars: Fulfillment Rates -->
+  <div class="kpi-row" style="grid-template-columns:repeat(2,1fr)">
     <div class="kpi-tile north-star">
-      <div class="kpi-label">Order Fulfillment Rate (1-Order) <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value xl">91% <span class="badge g">▲ +4pp (+4.6%)</span></div>
-      <div class="kpi-count">717 of 788 paid orders fulfilled</div>
-      <div class="kpi-note">Orders shipped within handling time / Total orders · GA gate: ≥90%</div>
-      <div class="kpi-guard">Hard stop: &lt;60% = program blocker</div>
+      <div class="kpi-label">Order Fulfilled Rate</div>
+      <div class="kpi-value xl">80.0%</div>
+      <div class="kpi-count">4 of 5 first-show sellers with sales shipped ≥1 order</div>
+      <div class="kpi-note">first_show_first_fulfillment_ts IS NOT NULL / sellers with first_show_txn_cnt &gt; 0</div>
+      <div class="kpi-guard">GA gate: ≥90% · Hard stop: &lt;60%</div>
     </div>
     <div class="kpi-tile north-star">
-      <div class="kpi-label">Full Fulfillment Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value xl">82% <span class="badge g">▲ +5pp (+6.5%)</span></div>
-      <div class="kpi-count">646 of 788 paid orders fully shipped</div>
-      <div class="kpi-note">All orders in show fully shipped / Total paid orders · GA: ≥80%</div>
-      <div class="kpi-guard">⚠ Late shipment rate: 6.2%</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">21-Day Seller Retention Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">67% <span class="badge g">▲ +5pp (+8.1%)</span></div>
-      <div class="kpi-count">77 of 115 first-show sellers retained</div>
-      <div class="kpi-note">≥1 show d8–21 / first-show sellers · GA target: &gt;70%</div>
-      <div class="kpi-guard">Hard stop: seller churn &gt;30% for ≥2 weeks</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Post-Stream Insights Engagement <span class="badge-sm" style="background:#da1e28;color:#fff">✗ No Source</span></div>
-      <div class="kpi-value">61% <span class="badge g">▲ +6pp (+10.9%)</span></div>
-      <div class="kpi-count">70 of 115 sellers visited Insights</div>
-      <div class="kpi-note">Sellers landing on Insights / sellers with ≥1 completed stream</div>
+      <div class="kpi-label">Full Fulfillment Rate</div>
+      <div class="kpi-value xl">40.0%</div>
+      <div class="kpi-count">2 of 5 first-show sellers with sales shipped all orders</div>
+      <div class="kpi-note">first_show_all_fulfilled_ts IS NOT NULL / sellers with first_show_txn_cnt &gt; 0</div>
+      <div class="kpi-guard">GA gate: ≥80%</div>
     </div>
   </div>
 
-  <div class="chart-pane" style="margin-top:1px">
-    <div class="chart-pane-title">Fulfillment Rates &amp; 21-Day Retention — by Cohort Week</div>
-    <div id="ch-ps2-northstar" style="height:210px"></div>
-  </div>
-
-  <!-- Fulfillment funnel -->
+  <!-- Shipment Quality Metrics -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Order Lifecycle — Cohort Jun-30</span><span class="card-sub">Post-show paid orders · seller handling SLA window</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Shipment Quality Metrics</span></div>
   </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0">
-    <div style="background:#fff;padding:16px">
-      <div class="funnel">
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>Total Orders Created (post-event)</span><span>842 orders (100%)</span></div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:100%;background:#0f62fe">100%</div></div>
-        </div>
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>Paid Orders</span><span>788 orders — 93.6%</span></div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:93.6%;background:#0353e9">93.6%</div></div>
-          <div class="funnel-conv">↓ 6.4% unpaid rate</div>
-        </div>
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>1-Order Fulfilled (≥1 item shipped)</span><span>717 orders — 91.0% of paid</span></div>
-          <div class="funnel-track">
-            <div class="funnel-fill" style="width:85.2%;background:#0043ce">91%</div>
-            <div class="funnel-target-ga" style="left:90%"></div>
-          </div>
-          <div class="funnel-targets-legend"><span class="ga">— GA gate: 90%</span></div>
-        </div>
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>Fully Fulfilled (all items shipped)</span><span>646 orders — 82.0% of paid</span></div>
-          <div class="funnel-track">
-            <div class="funnel-fill" style="width:76.8%;background:#002d9c">82%</div>
-            <div class="funnel-target-ga" style="left:80%"></div>
-          </div>
-          <div class="funnel-targets-legend"><span class="ga">— GA gate: 80%</span></div>
-        </div>
-        <div class="funnel-row">
-          <div class="funnel-meta"><span>Fulfilled Within SLA (handling time)</span><span>600 orders — 92.7% of fulfilled</span></div>
-          <div class="funnel-track"><div class="funnel-fill" style="width:71.3%;background:#001d6c">93%</div></div>
-          <div class="funnel-conv">↓ 6.2% late shipment rate (against fulfilled)</div>
-        </div>
-      </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi-tile">
+      <div class="kpi-label">Shipped GMV Rate</div>
+      <div class="kpi-value">80.4%</div>
+      <div class="kpi-count">$5,184.69 of $6,445.25 first-show GMV shipped</div>
+      <div class="kpi-note">first_show_shipped_gmv / first_show_gmv</div>
     </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Fulfillment Timing — % Fulfilled by Day Bucket</div>
-      <div id="ch-ps2-timing" style="height:240px"></div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Paid-to-Shipped Order Gap Rate</div>
+      <div class="kpi-value">68.4%</div>
+      <div class="kpi-count">154 of 225 paid orders shipped</div>
+      <div class="kpi-note">first_show_shipped_order_count / first_show_paid_order_count</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">eBay Label Usage Rate</div>
+      <div class="kpi-value">98.7%</div>
+      <div class="kpi-count">152 of 154 shipped orders used eBay label</div>
+      <div class="kpi-note">first_show_ebay_label_cnt / first_show_shipped_order_count</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Off-Platform Carrier Rate</div>
+      <div class="kpi-value">0.0%</div>
+      <div class="kpi-count">0 of 154 shipped orders used seller carrier</div>
+      <div class="kpi-note">first_show_off_platform_cnt / first_show_shipped_order_count</div>
+    </div>
+    <div class="kpi-tile">
+      <div class="kpi-label">Untracked Shipment Rate</div>
+      <div class="kpi-value">1.3%</div>
+      <div class="kpi-count">2 of 154 shipped orders have no tracking</div>
+      <div class="kpi-note">first_show_untracked_cnt / first_show_shipped_order_count</div>
     </div>
   </div>
 
-  <!-- Fulfillment KPIs -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Fulfillment Quality Metrics (L1)</span></div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi-tile">
-      <div class="kpi-label">Median Days to First Fulfillment <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">2.1d <span class="badge g">▼ -0.7d (-25.0%)</span></div>
-      <div class="kpi-count">717 fulfilled orders · lower is better</div>
-      <div class="kpi-note">Payment → first item shipped · lower is better</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Median Days to Full Fulfillment <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">3.4d <span class="badge g">▼ -0.7d (-17.1%)</span></div>
-      <div class="kpi-count">646 fully shipped orders · lower is better</div>
-      <div class="kpi-note">Payment → all items shipped · lower is better</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Unpaid Order Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">6.4% <span class="badge g">▼ -0.8pp (-11.1%)</span></div>
-      <div class="kpi-count">54 of 842 orders unpaid · lower is better</div>
-      <div class="kpi-note">Orders not paid within payment window</div>
-      <div class="kpi-guard">⚠ Unpaid aging 72h: 2.1%</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Paid But Unfulfilled (7d) <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="kpi-value">4.8% <span class="badge g">▼ -1.4pp (-22.6%)</span></div>
-      <div class="kpi-count">38 of 788 paid orders stalled · lower is better</div>
-      <div class="kpi-note">Paid orders unshipped after 7 days</div>
-      <div class="kpi-guard">⚠ Monitor for BBE risk</div>
-    </div>
-  </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Fulfillment Speed — Median &amp; P90 Days</div>
-      <div id="ch-ps2-speed" style="height:160px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Unpaid &amp; Late Shipment Rates</div>
-      <div id="ch-ps2-unpaid" style="height:160px"></div>
-    </div>
-  </div>
-
-  <!-- Post-Stream Insights Engagement -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Post-Stream Insights Page — Seller Engagement (L1)</span><span class="card-sub">Insights page: view statistics, download report, date range exploration</span></div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi-tile">
-      <div class="kpi-label">Insights Landing Rate (same day) <span class="badge-sm" style="background:#da1e28;color:#fff">✗ No Source</span></div>
-      <div class="kpi-value">38% <span class="badge g">▲ +3pp (+8.6%)</span></div>
-      <div class="kpi-count">44 of 115 sellers · within 1d</div>
-      <div class="kpi-note">Sellers landing on Insights within 1d of stream end</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Report Download Rate <span class="badge-sm" style="background:#da1e28;color:#fff">✗ No Source</span></div>
-      <div class="kpi-value">44% <span class="badge g">▲ +6pp (+15.8%)</span></div>
-      <div class="kpi-count">31 of 70 Insights landers</div>
-      <div class="kpi-note">Sellers who clicked download / all Insights landers</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Non-Default View Adoption <span class="badge-sm" style="background:#da1e28;color:#fff">✗ No Source</span></div>
-      <div class="kpi-value">29% <span class="badge g">▲ +5pp (+20.8%)</span></div>
-      <div class="kpi-count">20 of 70 Insights landers</div>
-      <div class="kpi-note">Sellers who selected a non-default date range</div>
-    </div>
-    <div class="kpi-tile">
-      <div class="kpi-label">Repeat Insights Revisit Rate <span class="badge-sm" style="background:#da1e28;color:#fff">✗ No Source</span></div>
-      <div class="kpi-value">52% <span class="badge g">▲ +7pp (+15.6%)</span></div>
-      <div class="kpi-count">36 of 70 Insights landers · 2+ sessions</div>
-      <div class="kpi-note">Sellers with 2+ Insights sessions post-stream</div>
-    </div>
-  </div>
-  <div class="g2" style="gap:1px;background:#e0e0e0;margin-top:1px;margin-bottom:1px">
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Insights Landing by Time Bucket (% of sellers with completed stream)</div>
-      <div id="ch-ps2-insights" style="height:160px"></div>
-    </div>
-    <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Insights Engagement Actions — Trend</div>
-      <div id="ch-ps2-engage" style="height:160px"></div>
-    </div>
-  </div>
-
-  <!-- Retention & Guardrails -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Seller Retention &amp; Guardrail Metrics</span><span class="card-sub">21-day churn · BBE · hard stops</span></div>
-  </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-    <div class="guard-tile ok">
-      <div class="guard-label">Order Fulfillment Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="guard-val">91%</div>
-      <div class="guard-status">≥90% GA gate · Hard stop if &lt;60% · ✓ On track</div>
-    </div>
-    <div class="guard-tile ok">
-      <div class="guard-label">BBE Rate (14-day) <span class="badge-sm" style="background:#da1e28;color:#fff">✗ No Source</span></div>
-      <div class="guard-val">1.6%</div>
-      <div class="guard-status">≤ baseline+5pp · Hard stop if &gt;baseline+15pp · ✓ On track</div>
-    </div>
-    <div class="guard-tile warn">
-      <div class="guard-label">21-Day Seller Churn <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="guard-val">33%</div>
-      <div class="guard-status">Hard stop if &gt;30% · ⚠ Slightly elevated — monitor</div>
-    </div>
-    <div class="guard-tile ok">
-      <div class="guard-label">Late Shipment Rate <span class="badge-sm" style="background:#f1c21b;color:#161616">⏳ Pending</span></div>
-      <div class="guard-val">6.2%</div>
-      <div class="guard-status">Fulfilled orders shipped after seller SLA · ✓ Trending down</div>
-    </div>
-  </div>
-  <div class="chart-pane" style="margin-top:1px">
-    <div class="chart-pane-title">Seller Retention &amp; Fulfillment Rates — Trend (lower churn = healthier)</div>
-    <div id="ch-ps2-retention" style="height:160px"></div>
-  </div>
-
-  <!-- Metric summary table -->
+  <!-- Metric Summary Table -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0"><span class="card-title">Post-Stream Metric Summary</span></div>
   </div>
-  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0">
+  <div class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
     <table class="tbl">
-      <thead><tr><th>Domain</th><th>Metric</th><th>Formula</th><th>Current</th><th>Target</th><th>Level</th></tr></thead>
+      <thead><tr><th>Metric</th><th>Numerator / Denominator</th><th>Rate</th><th>Numerator</th><th>Denominator</th><th>Source column(s)</th></tr></thead>
       <tbody>
-        <tr><td>Fulfillment</td><td class="fw6">Order Fulfillment Rate (1-Order)</td><td class="mono">Orders with ≥1 item fulfilled / Paid orders</td><td class="fw6">91%</td><td>≥90% (GA)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
-        <tr><td>Fulfillment</td><td class="fw6">Full Fulfillment Rate</td><td class="mono">Fully fulfilled orders / Paid orders</td><td class="fw6">82%</td><td>≥80% (GA)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
-        <tr><td>Fulfillment</td><td class="fw6">Median Days to First Fulfillment</td><td class="mono">Median(payment_ts → first_ship_ts) in days</td><td class="fw6">2.1d</td><td>Improving WoW</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Fulfillment</td><td class="fw6">Late Shipment Rate</td><td class="mono">Late fulfilled / Total fulfilled</td><td class="fw6">6.2%</td><td>Declining</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Fulfillment</td><td class="fw6">Unpaid Order Rate</td><td class="mono">Unpaid orders / Total orders</td><td class="fw6">6.4%</td><td>Declining</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Fulfillment</td><td class="fw6">Paid but Unfulfilled (7d)</td><td class="mono">Paid orders unshipped after 7d / Paid orders</td><td class="fw6">4.8%</td><td>Declining</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Insights</td><td class="fw6">Post-Stream Insights Engagement</td><td class="mono">Sellers landing on Insights / Sellers with ≥1 stream</td><td class="fw6">61%</td><td>—</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td></tr>
-        <tr><td>Insights</td><td class="fw6">Insights Landing Rate (1d)</td><td class="mono">Insights landers within 1d / Sellers with ended stream</td><td class="fw6">38%</td><td>—</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Insights</td><td class="fw6">Report Download Rate</td><td class="mono">Downloads / Insights landers</td><td class="fw6">44%</td><td>—</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Insights</td><td class="fw6">Repeat Insights Revisit Rate</td><td class="mono">Sellers with 2+ sessions / First-time landers</td><td class="fw6">52%</td><td>—</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td></tr>
-        <tr><td>Retention</td><td class="fw6">21-Day Seller Retention Rate</td><td class="mono">Sellers with ≥1 show d8–21 / First-show sellers</td><td class="fw6">67%</td><td>&gt;70% (GA)</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td></tr>
-        <tr><td>Trust</td><td class="fw6">BBE Rate (14-day)</td><td class="mono">BBE transactions / Total transactions</td><td class="fw6">1.6%</td><td>≤ baseline+5pp</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
-        <tr><td>Trust</td><td class="fw6">21-Day Seller Churn</td><td class="mono">Sellers with no shows for 21 days / Active sellers</td><td class="fw6">33%</td><td>&lt;30%</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Metric Definitions -->
-  <div style="background:#e0e0e0;margin-bottom:1px;margin-top:24px">
-    <div class="card-head" style="margin:0;cursor:pointer;user-select:none" onclick="(function(el){var t=document.getElementById('pst-metric-defs');var open=t.style.display!=='none';t.style.display=open?'none':'block';el.querySelector('.pst-toggle').textContent=open?'▶ Show':'▼ Hide'})(this)">
-      <span class="card-title">Metric Definitions — Post-Stream</span>
-      <span class="card-sub">Source tables &amp; computation rules for all metrics on this tab</span>
-      <span class="pst-toggle" style="font-size:10px;font-weight:700;color:#6f6f6f;margin-left:8px">▼ Hide</span>
-    </div>
-  </div>
-  <div id="pst-metric-defs" class="tbl-overflow" style="background:#fff;border:1px solid #e0e0e0;margin-bottom:16px">
-    <table class="tbl">
-      <thead>
-        <tr><th style="width:18%">Metric</th><th style="width:6%">Level</th><th style="width:24%">Formula</th><th style="width:8%">Status</th><th style="width:24%">Source (LIVE_SELLER_MASTER_V2)</th><th style="width:20%">Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L0 Fulfillment North Stars</td></tr>
-        <tr><td class="fw6">Order Fulfillment Rate (1-Order)</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">n_order_fulfilled / n_show_w_sales</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_order_fulfilled, n_show_w_sales</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">Full Fulfillment Rate</td><td><span class="badge-sm" style="background:#0f62fe;color:#fff">L0</span></td><td class="mono">n_all_fulfilled / n_show_w_sales</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: n_all_fulfilled, n_show_w_sales</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">P0 Retention &amp; Insights</td></tr>
-        <tr><td class="fw6">21-Day Seller Retention Rate</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Sellers with ≥1 show d8–21 post first_show_date / n_first_show</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">Q1: days_since_last_show + last_show_date (no pre-built d8–21 flag)</td><td class="mono" style="color:#6f6f6f">Derivable with CASE logic; not a direct column</td></tr>
-        <tr><td class="fw6">Post-Stream Insights Engagement</td><td><span class="badge-sm" style="background:#24a148;color:#fff">P0</span></td><td class="mono">Sellers who landed on Insights ≥1 / n_first_show</td><td><span style="font-size:10px;color:#a2191f;font-weight:700">✗ Missing</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2 — needs UBI/page-event source</td><td class="mono" style="color:#a2191f">Insights page events not yet in any pipeline table</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Fulfillment Quality</td></tr>
-        <tr><td class="fw6">Median Days to First Fulfillment</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE((first_show_first_fulfillment_ts − first_show_date) / 86400, 0.5)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: first_show_first_fulfillment_ts, first_show_date</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">Median Days to Full Fulfillment</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">PERCENTILE((first_show_all_fulfilled_ts − first_show_date) / 86400, 0.5)</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: first_show_all_fulfilled_ts, first_show_date</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">Unpaid Order Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">(first_show_txn_cnt − first_show_paid_order_count) / first_show_txn_cnt</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q1: first_show_txn_cnt, first_show_paid_order_count</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">Paid But Unfulfilled (7d)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">(first_show_paid_order_count − first_show_shipped_order_count) with 7d date threshold</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">Q1: first_show_paid_order_count, first_show_shipped_order_count</td><td class="mono" style="color:#6f6f6f">Count derivable; 7-day threshold requires compare vs first_show_date</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">L1 Insights Page Engagement — all missing</td></tr>
-        <tr><td class="fw6">Insights Landing Rate (same day)</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers on Insights within 1d of stream end / n_first_show</td><td><span style="font-size:10px;color:#a2191f;font-weight:700">✗ Missing</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2</td><td class="mono" style="color:#a2191f">UBI page-event source needed</td></tr>
-        <tr><td class="fw6">Report Download Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Download clicks / Insights landers</td><td><span style="font-size:10px;color:#a2191f;font-weight:700">✗ Missing</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2</td><td class="mono" style="color:#a2191f">UBI page-event source needed</td></tr>
-        <tr><td class="fw6">Non-Default View Adoption</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Non-default date range selections / Insights landers</td><td><span style="font-size:10px;color:#a2191f;font-weight:700">✗ Missing</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2</td><td class="mono" style="color:#a2191f">UBI page-event source needed</td></tr>
-        <tr><td class="fw6">Repeat Insights Revisit Rate</td><td><span class="badge-sm" style="background:#8d8d8d;color:#fff">L1</span></td><td class="mono">Sellers with ≥2 Insights sessions / total Insights landers</td><td><span style="font-size:10px;color:#a2191f;font-weight:700">✗ Missing</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2</td><td class="mono" style="color:#a2191f">UBI page-event source needed</td></tr>
-        <tr><td colspan="6" style="background:#e8f0fe;padding:6px 12px;font-size:10px;font-weight:700;color:#0353e9;text-transform:uppercase;letter-spacing:.06em">Guardrails</td></tr>
-        <tr><td class="fw6">BBE Rate (14-day)</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">BBE transactions within 14 days / Total live stream transactions</td><td><span style="font-size:10px;color:#da1e28;font-weight:700">✗ Stub</span></td><td class="mono">Not in LIVE_SELLER_MASTER_V2 — source TBD</td><td class="mono" style="color:#da1e28">Show "Pending" until pipeline source confirmed</td></tr>
-        <tr><td class="fw6">21-Day Seller Churn</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">first_show_date IS NOT NULL AND days_since_last_show &gt; 21 / n_first_show</td><td><span style="font-size:10px;color:#0e6027;font-weight:700">✓ Ready</span></td><td class="mono">Q5: days_since_last_show, first_show_date</td><td class="mono" style="color:#6f6f6f">NULL until first seller streams</td></tr>
-        <tr><td class="fw6">Late Shipment Rate</td><td><span class="badge-sm" style="background:#da1e28;color:#fff">Guard</span></td><td class="mono">Label breakdown: ebay / off-platform / untracked counts</td><td><span style="font-size:10px;color:#7d4e00;font-weight:700">~ Partial</span></td><td class="mono">Q1: first_show_ebay_label_cnt, first_show_off_platform_cnt, first_show_untracked_cnt</td><td class="mono" style="color:#6f6f6f">Label counts available; SLA comparison column not in guide</td></tr>
+        <tr><td class="fw6">Order Fulfilled Rate</td><td class="mono">first_show_first_fulfillment_ts IS NOT NULL / first_show_txn_cnt &gt; 0</td><td class="fw6">80.0%</td><td>4 sellers</td><td>5 sellers</td><td class="mono">first_show_first_fulfillment_ts, first_show_txn_cnt</td></tr>
+        <tr><td class="fw6">Full Fulfillment Rate</td><td class="mono">first_show_all_fulfilled_ts IS NOT NULL / first_show_txn_cnt &gt; 0</td><td class="fw6">40.0%</td><td>2 sellers</td><td>5 sellers</td><td class="mono">first_show_all_fulfilled_ts, first_show_txn_cnt</td></tr>
+        <tr><td class="fw6">Shipped GMV Rate</td><td class="mono">first_show_shipped_gmv / first_show_gmv</td><td class="fw6">80.4%</td><td>$5,184.69</td><td>$6,445.25</td><td class="mono">first_show_shipped_gmv, first_show_gmv</td></tr>
+        <tr><td class="fw6">Paid-to-Shipped Order Gap Rate</td><td class="mono">first_show_shipped_order_count / first_show_paid_order_count</td><td class="fw6">68.4%</td><td>154 orders</td><td>225 orders</td><td class="mono">first_show_shipped_order_count, first_show_paid_order_count</td></tr>
+        <tr><td class="fw6">eBay Label Usage Rate</td><td class="mono">first_show_ebay_label_cnt / first_show_shipped_order_count</td><td class="fw6">98.7%</td><td>152 orders</td><td>154 orders</td><td class="mono">first_show_ebay_label_cnt, first_show_shipped_order_count</td></tr>
+        <tr><td class="fw6">Off-Platform Carrier Rate</td><td class="mono">first_show_off_platform_cnt / first_show_shipped_order_count</td><td class="fw6">0.0%</td><td>0 orders</td><td>154 orders</td><td class="mono">first_show_off_platform_cnt, first_show_shipped_order_count</td></tr>
+        <tr><td class="fw6">Untracked Shipment Rate</td><td class="mono">first_show_untracked_cnt / first_show_shipped_order_count</td><td class="fw6">1.3%</td><td>2 orders</td><td>154 orders</td><td class="mono">first_show_untracked_cnt, first_show_shipped_order_count</td></tr>
         <tr><td colspan="6" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
-          <strong style="color:#525252">Source:</strong> All ready metrics query <span style="font-family:monospace">P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2</span>. Required filter: <span style="font-family:monospace">WHERE report_dt = DATE_FORMAT(CURRENT_DATE(),'yyyy-MM-dd') AND is_test_user = 0</span>. All <span style="font-family:monospace">first_show_*</span> columns are NULL until first sellers complete a live stream — expected as of Jul 14 2026. &nbsp;|&nbsp; <strong style="color:#a2191f">4 Insights page metrics</strong> have no source in LIVE_SELLER_MASTER_V2 — requires separate UBI/page-event instrumentation.
+          <strong style="color:#525252">Source:</strong> <span style="font-family:monospace">P_LIVE_ANALYTICS_T.LIVE_SELLER_MASTER_V2</span> · latest <span style="font-family:monospace">report_dt</span> snapshot · <span style="font-family:monospace">is_test_user = 0</span> · All metrics scoped to seller's first live show · 203 total sellers · 5 sellers with first-show sales · as of Jul 22 2026
         </td></tr>
       </tbody>
     </table>
   </div>
+
 </div><!-- /post-stream -->
 
 </div><!-- /main -->
@@ -1658,25 +1474,6 @@ const D = {
   instream_list:     [6,5,4,3,2],
   auct_reset:        [3,2,2,1,1],
   muted:             [5,4,3,3,2],
-  // Post-Stream data
-  ps2_order_fulfill: [74,79,83,87,91],
-  ps2_full_fulfill:  [62,68,73,77,82],
-  ps2_retention_21d: [48,53,57,62,67],
-  ps2_insights_eng:  [32,41,48,55,61],
-  ps2_churn_21d:     [48,44,40,36,33],
-  ps2_bbs_rate:      [2.4,2.1,1.9,1.7,1.6],
-  ps2_late_ship:     [13.4,11.2,9.1,7.6,6.2],
-  ps2_unpaid_rate:   [11.2,9.4,8.1,7.2,6.4],
-  ps2_unfulfilled7d: [10.8,9.1,7.6,6.2,4.8],
-  ps2_med_days_1st:  [4.8,4.1,3.4,2.8,2.1],
-  ps2_p90_days_1st:  [9.2,8.1,7.3,6.4,5.8],
-  ps2_med_days_full: [6.4,5.6,4.8,4.1,3.4],
-  ps2_insights_1d:   [18,24,29,33,38],
-  ps2_insights_3d:   [24,30,36,41,46],
-  ps2_insights_7d:   [29,36,42,48,52],
-  ps2_download_rate: [24,30,35,40,44],
-  ps2_revisit_rate:  [28,34,39,45,52],
-  ps2_nondefault:    [12,16,20,25,29],
 };
 
 // ─── Chart helper ──────────────────────────────────────────────────────────
@@ -3353,68 +3150,6 @@ window.addEventListener('DOMContentLoaded', () => {
       {n:'Sell-Through Rate %',d:str,c:'#0353e9'}
     ],'%',dates);
   })();
-
-  // Post-Stream charts
-  mkLine('ch-ps2-northstar',[
-    {n:'1-Order Fulfillment Rate %',d:D.ps2_order_fulfill,c:'#0f62fe'},
-    {n:'Full Fulfillment Rate %',d:D.ps2_full_fulfill,c:'#24a148'},
-    {n:'21-Day Retention Rate %',d:D.ps2_retention_21d,c:'#f1c21b'}
-  ],'%',[
-    {n:'Fulfillment GA gate (90%)',v:90,c:'#0f62fe'},
-    {n:'Retention GA target (70%)',v:70,c:'#f1c21b'}
-  ]);
-
-  // Fulfillment timing bar chart (stacked cumulative by day bucket)
-  (function(){
-    const el = document.getElementById('ch-ps2-timing');
-    if(!el) return;
-    const c = echarts.init(el);
-    c.setOption({
-      animation:true,animationDuration:400,
-      grid:{top:28,right:16,bottom:36,left:60},
-      tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
-      legend:{bottom:0,textStyle:{fontSize:9,color:'#6f6f6f'}},
-      xAxis:{type:'category',data:WKS,axisLabel:{fontSize:9,color:'#6f6f6f'}},
-      yAxis:{type:'value',max:100,axisLabel:{fontSize:9,color:'#6f6f6f',formatter:'{value}%'},splitLine:{lineStyle:{color:'#f4f4f4'}}},
-      series:[
-        {name:'Within 1d',type:'bar',stack:'s',data:[28,31,33,35,38],itemStyle:{color:'#0f62fe'}},
-        {name:'1–3d',type:'bar',stack:'s',data:[22,24,25,26,27],itemStyle:{color:'#0353e9'}},
-        {name:'3–5d',type:'bar',stack:'s',data:[14,15,15,14,14],itemStyle:{color:'#0043ce'}},
-        {name:'5–7d',type:'bar',stack:'s',data:[8,7,7,8,7],itemStyle:{color:'#002d9c'}},
-        {name:'>7d / unfulfilled',type:'bar',stack:'s',data:[28,23,20,17,14],itemStyle:{color:'#e0e0e0'}}
-      ]
-    });
-    window.addEventListener('resize',()=>c.resize());
-  })();
-
-  mkLine('ch-ps2-speed',[
-    {n:'Median days — 1st fulfillment',d:D.ps2_med_days_1st,c:'#0f62fe'},
-    {n:'P90 days — 1st fulfillment',d:D.ps2_p90_days_1st,c:'#8d8d8d'},
-    {n:'Median days — full fulfillment',d:D.ps2_med_days_full,c:'#24a148'}
-  ],' d');
-
-  mkLine('ch-ps2-unpaid',[
-    {n:'Unpaid Order Rate %',d:D.ps2_unpaid_rate,c:'#da1e28'},
-    {n:'Late Shipment Rate %',d:D.ps2_late_ship,c:'#f1c21b'},
-    {n:'Paid Unfulfilled 7d %',d:D.ps2_unfulfilled7d,c:'#6929c4'}
-  ],'%');
-
-  mkLine('ch-ps2-insights',[
-    {n:'Landed within 1d',d:D.ps2_insights_1d,c:'#0f62fe'},
-    {n:'Landed within 3d',d:D.ps2_insights_3d,c:'#0353e9'},
-    {n:'Landed within 7d',d:D.ps2_insights_7d,c:'#002d9c'}
-  ],'%');
-
-  mkLine('ch-ps2-engage',[
-    {n:'Download Rate %',d:D.ps2_download_rate,c:'#24a148'},
-    {n:'Repeat Revisit Rate %',d:D.ps2_revisit_rate,c:'#0f62fe'},
-    {n:'Non-Default View Adoption %',d:D.ps2_nondefault,c:'#f1c21b'}
-  ],'%');
-
-  mkLine('ch-ps2-retention',[
-    {n:'21-Day Retention Rate %',d:D.ps2_retention_21d,c:'#0f62fe'},
-    {n:'21-Day Churn Rate %',d:D.ps2_churn_21d,c:'#da1e28'}
-  ],'%',[{n:'Retention GA target (70%)',v:70,c:'#24a148'},{n:'Churn hard stop (30%)',v:30,c:'#da1e28'}]);
 
   renderPreStream();
 });
