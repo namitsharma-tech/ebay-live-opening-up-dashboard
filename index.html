@@ -54,6 +54,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 .kpi-value.xl{font-size:30px}
 .kpi-note{font-size:9px;color:#8d8d8d}
 .kpi-count{font-size:11px;font-weight:700;color:#161616;letter-spacing:-.01em;margin-top:-2px}
+#tab-executive .kpi-count{font-size:12px;margin-top:1px}
 .kpi-guard{font-size:9px;color:#a2191f;border-top:1px solid #f4f4f4;padding-top:4px;margin-top:2px}
 .badge{font-size:11px;font-weight:600;padding:2px 6px;display:inline-block}
 .badge-sm{font-size:9px;font-weight:700;padding:1px 5px;display:inline-block}
@@ -288,6 +289,15 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
   </div>
 
+  <!-- E2E Velocity distribution -->
+  <div style="background:#fff;border:1px solid #e0e0e0;border-top:0;padding:10px 20px 14px">
+    <div style="font-size:10px;font-weight:700;color:#525252;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">
+      E2E Velocity — Days to First Show · n=9 valid streamers (3 excluded: negative velocity / data quality)
+      <span style="font-weight:400;text-transform:none;color:#8d8d8d;margin-left:8px">Min = 0.88d (1 fast outlier) · Most sellers take 32–50 days</span>
+    </div>
+    <div id="ch-exec-velocity" style="height:90px"></div>
+  </div>
+
   <!-- Registration -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0"><span class="card-title">Registration</span><span class="card-sub">2 metrics · Denominator: account_created sellers</span></div>
@@ -410,12 +420,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <!-- Charts -->
   <div class="g2" style="gap:1px;margin-top:16px;margin-bottom:1px">
     <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Seller Pipeline — Current Period Funnel</div>
-      <div id="ch-exec-funnel" style="height:210px"></div>
+      <div class="chart-pane-title">Seller Funnel — Account Created → Go Live (current period &amp; filters)</div>
+      <div id="ch-exec-funnel" style="height:230px"></div>
     </div>
     <div class="chart-pane" style="margin:0">
-      <div class="chart-pane-title">Monthly Cohort Trend — Sellers &amp; Key Rates</div>
-      <div id="ch-exec-trend" style="height:210px"></div>
+      <div class="chart-pane-title">Monthly Cohort Trend — Volume &amp; Key Rates</div>
+      <div id="ch-exec-trend" style="height:230px"></div>
     </div>
   </div>
 
@@ -1694,6 +1704,13 @@ function setGrain(g, btn) {
   updateBreadcrumb();
 }
 
+// ─── E2E Velocity percentile distribution (snapshot 2026-07-22 · n=9 valid streamers) ────────
+// Filtered: first_show_date IS NOT NULL AND minutes_entry_to_first_show > 0
+// Note: 3 sellers have negative minutes (session_entry_ts > first_show_date — data quality issue)
+const EXEC_VELOCITY = {
+  min_days: 0.88, p25: 31.97, p50: 43.17, p75: 47.18, p90: 50.41, n: 9, as_of: '2026-07-22'
+};
+
 // ─── Executive granular data (snapshot 2026-07-22 · tp×cp×geo×tier×phase) ───────────────────
 // e2e_med/p90 are days; NaN rows stored as null (PERCENTILE_APPROX needs ≥1 streamer)
 const EXEC_DATA = [
@@ -2487,6 +2504,7 @@ function fmt(n, d) {
 
 let execFunnelChart = null;
 let execTrendChart  = null;
+let execVelChart    = null;
 
 function renderExecutive() {
   const f = getFilterState();
@@ -2520,7 +2538,7 @@ function renderExecutive() {
 
   function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
   function pct(n, d) { return d > 0 ? (n/d*100).toFixed(1)+'%' : '—'; }
-  function cnt(n, d, lbl) { return n+' of '+d+' '+lbl; }
+  function cnt(n, d, lbl) { return n+' of '+d+(lbl?' · '+lbl:''); }
   const label = grainLabelMap[activeGrain] || activeGrain;
 
   set('ex-as-of', label);
@@ -2544,65 +2562,105 @@ function renderExecutive() {
   set('ex-e2e-fulfil-cnt', cnt(a.n_fulfil, a.n_total, 'sellers'));
   set('ex-e2e-vel',        e2eMed !== null ? e2eMed.toFixed(1)+'d' : '—');
   set('ex-e2e-vel-p90',    e2eP90 !== null
-    ? 'p90: '+e2eP90.toFixed(1)+'d · '+a.n_show+' sellers with first show'
-    : a.n_show+' sellers with first show · e2e vel unavailable at this filter');
+    ? 'p90: '+e2eP90.toFixed(1)+'d · '+a.n_show+' of '+a.n_total+' sellers streamed'
+    : a.n_show+' of '+a.n_total+' sellers streamed');
 
   // Registration
   set('ex-reg-rate', pct(a.n_app, a.n_total));
-  set('ex-reg-cnt',  cnt(a.n_app, a.n_total, 'submitted streaming app'));
+  set('ex-reg-cnt',  cnt(a.n_app, a.n_total, null));
   set('ex-lpg-rate', pct(a.n_lpg, a.n_total));
-  set('ex-lpg-cnt',  cnt(a.n_lpg, a.n_total, 'granted LPG (incl. BD-onboarded)'));
+  set('ex-lpg-cnt',  cnt(a.n_lpg, a.n_total, 'incl. BD-onboarded'));
 
   // Pre-Stream
   set('ex-event-rate',   pct(a.n_event, a.n_lpg));
-  set('ex-event-cnt',    cnt(a.n_event, a.n_lpg, 'LPG sellers created first event'));
+  set('ex-event-cnt',    cnt(a.n_event, a.n_lpg, 'LPG sellers'));
   set('ex-listing-rate', pct(a.n_listing, a.n_lpg));
-  set('ex-listing-cnt',  cnt(a.n_listing, a.n_lpg, 'LPG sellers added first listing'));
+  set('ex-listing-cnt',  cnt(a.n_listing, a.n_lpg, 'LPG sellers'));
   set('ex-ready-rate',   pct(a.n_ready, a.n_lpg));
-  set('ex-ready-cnt',    cnt(a.n_ready, a.n_lpg, 'LPG sellers first-show ready'));
+  set('ex-ready-cnt',    cnt(a.n_ready, a.n_lpg, 'LPG sellers'));
   set('ex-14d-rate',     pct(a.n_14d, a.n_lpg));
-  set('ex-14d-cnt',      cnt(a.n_14d, a.n_lpg, 'LPG sellers scheduled within 14 days'));
+  set('ex-14d-cnt',      cnt(a.n_14d, a.n_lpg, 'LPG sellers'));
 
   // In-Stream
   set('ex-show-rate',     pct(a.n_show, a.n_lpg));
-  set('ex-show-cnt',      cnt(a.n_show, a.n_lpg, 'LPG sellers completed first show'));
+  set('ex-show-cnt',      cnt(a.n_show, a.n_lpg, 'LPG sellers'));
   set('ex-commerce-rate', a.n_show > 0 ? pct(a.n_commerce, a.n_show) : '—');
-  set('ex-commerce-cnt',  cnt(a.n_commerce, a.n_show, 'shows had transactions'));
+  set('ex-commerce-cnt',  cnt(a.n_commerce, a.n_show, null));
   const gmvHr = a.sum_min > 0 ? a.sum_gmv / (a.sum_min / 60) : 0;
   set('ex-gmv-hr',     a.sum_min > 0 ? '$'+gmvHr.toFixed(2) : '—');
-  set('ex-gmv-hr-cnt', '$'+a.sum_gmv.toFixed(2)+' GMV · '+a.sum_min.toFixed(1)+' streaming min');
+  set('ex-gmv-hr-cnt', '$'+a.sum_gmv.toFixed(2)+' GMV · '+a.sum_min.toFixed(1)+' min');
 
   // Post-Stream
   set('ex-1ord-rate',   a.n_sales > 0 ? pct(a.n_1ord, a.n_sales) : '—');
-  set('ex-1ord-cnt',    cnt(a.n_1ord, a.n_sales, 'shows with sales fulfilled ≥1 order'));
+  set('ex-1ord-cnt',    cnt(a.n_1ord, a.n_sales, 'shows w/ sales'));
   set('ex-fulfil-rate', a.n_sales > 0 ? pct(a.n_fulfil, a.n_sales) : '—');
-  set('ex-fulfil-cnt',  cnt(a.n_fulfil, a.n_sales, 'shows with sales fully fulfilled'));
+  set('ex-fulfil-cnt',  cnt(a.n_fulfil, a.n_sales, 'shows w/ sales'));
   set('ex-repeat-rate', a.n_show > 0 ? pct(a.n_repeat7, a.n_show) : '—');
-  set('ex-repeat-cnt',  cnt(a.n_repeat7, a.n_show, 'first-show sellers returned within 7d'));
+  set('ex-repeat-cnt',  cnt(a.n_repeat7, a.n_show, 'first-show sellers'));
 
   // Self-Serve Health
   set('ex-gcx-rate',    pct(a.n_gcx, a.n_total));
-  set('ex-gcx-cnt',     cnt(a.n_gcx, a.n_total, 'sellers with GCX contact'));
+  set('ex-gcx-cnt',     cnt(a.n_gcx, a.n_total, null));
   set('ex-gcx-avg',     a.n_total > 0 ? (a.sum_gcx/a.n_total).toFixed(2) : '—');
-  set('ex-gcx-avg-cnt', a.sum_gcx.toFixed(0)+' total contacts across '+a.n_total+' sellers');
+  set('ex-gcx-avg-cnt', a.sum_gcx+' contacts · '+a.n_total+' sellers');
 
-  // ── Funnel bar chart (current period/filter) ──────────────────────────────
+  // ── Funnel chart — 6-stage pipeline with conversion rates ────────────────
   if (execFunnelChart) {
-    const stages  = ['Account Created','App Submitted','LPG Granted','Event Created',
-                     'Listing Ready','First Show Ready','First Show','Show w/ Sales','Fulfilled'];
-    const values  = [a.n_total, a.n_app, a.n_lpg, a.n_event,
-                     a.n_listing, a.n_ready, a.n_show, a.n_sales, a.n_1ord];
-    const colors  = ['#0353e9','#0353e9','#0353e9','#0353e9',
-                     '#0353e9','#0353e9','#24a148','#24a148','#24a148'];
+    const total = a.n_total || 1;
+    const fStages  = ['Account Created','App Submitted','LPG Granted\n(incl. BD)',
+                      'Event Created','Listing Ready','First Show (Go Live)'];
+    const fValues  = [a.n_total, a.n_app, a.n_lpg, a.n_event, a.n_listing, a.n_show];
+    const fColors  = ['#4589ff','#4589ff','#0353e9','#0353e9','#0353e9','#24a148'];
+    const richLabel = (v, prev, t) => {
+      const ofTotal = t > 0 ? ' ('+Math.round(v/t*100)+'%)' : '';
+      const conv    = prev > 0 ? '  ↓'+Math.round(v/prev*100)+'%' : '';
+      return v + ofTotal + conv;
+    };
     execFunnelChart.setOption({
-      tooltip: {trigger:'axis', axisPointer:{type:'none'},
-        formatter: p => p[0].name+': <b>'+p[0].value+'</b> sellers'},
-      grid: {left:110,right:30,top:10,bottom:20},
-      xAxis: {type:'value', minInterval:1},
-      yAxis: {type:'category', data:stages, axisLabel:{fontSize:10}},
-      series:[{type:'bar', data:values.map((v,i)=>({value:v,itemStyle:{color:colors[i]}})),
-        barMaxWidth:18, label:{show:true, position:'right', fontSize:10,
-          formatter:p=>p.value>0?p.value:''}}]
+      tooltip: {trigger:'item', formatter: p =>
+        '<b>'+p.name+'</b><br/>'+p.value+' sellers · '+(p.value/total*100).toFixed(1)+'% of cohort'},
+      series:[{
+        type:'funnel', sort:'none',
+        min:0, max:a.n_total, minSize:'3%', maxSize:'100%',
+        gap:4, left:'2%', width:'60%', top:8, bottom:8,
+        label:{show:true, position:'right', fontSize:11, color:'#161616',
+          formatter: p => richLabel(p.value,
+            fValues[fStages.indexOf(p.name)-1] || p.value, total)},
+        itemStyle:{borderWidth:0},
+        data: fStages.map((n,i)=>({name:n, value:fValues[i], itemStyle:{color:fColors[i]}}))
+      }]
+    }, true);
+  }
+
+  // ── E2E Velocity percentile bar chart ────────────────────────────────────
+  if (execVelChart) {
+    const V = EXEC_VELOCITY;
+    execVelChart.setOption({
+      tooltip:{trigger:'axis', formatter: p => p[0].name+': <b>'+p[0].value+'d</b>'},
+      grid:{left:42,right:20,top:8,bottom:22},
+      xAxis:{type:'value', name:'days', nameTextStyle:{fontSize:9},
+        min:0, max:Math.ceil(V.p90+2), axisLabel:{fontSize:9}},
+      yAxis:{type:'category', data:['p25','p50\n(med)','p75','p90'],
+        axisLabel:{fontSize:9,lineHeight:12}},
+      series:[{
+        type:'bar', barWidth:14,
+        data:[
+          {value:V.p25, itemStyle:{color:'#24a148'}},
+          {value:V.p50, itemStyle:{color:'#0353e9'}},
+          {value:V.p75, itemStyle:{color:'#f1c21b'}},
+          {value:V.p90, itemStyle:{color:'#da1e28'}}
+        ],
+        label:{show:true, position:'right', fontSize:10,
+          formatter: p => p.value+'d'}
+      },{
+        type:'scatter', symbol:'diamond', symbolSize:10,
+        data:[{value:[V.min_days, 'p25'], name:'min (fastest)'}],
+        itemStyle:{color:'#24a148'},
+        tooltip:{formatter: p => 'Min (fastest): <b>'+V.min_days+'d</b><br/>1 seller — very fast outlier'}
+      }],
+      graphic:[{type:'text',left:'55%',top:2,
+        style:{text:'★ min: '+V.min_days+'d (1 fast outlier)',
+          font:'10px sans-serif',fill:'#525252'}}]
     }, true);
   }
 
@@ -3039,6 +3097,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Executive — init charts then render tiles
   execFunnelChart = echarts.init(document.getElementById('ch-exec-funnel'));
   execTrendChart  = echarts.init(document.getElementById('ch-exec-trend'));
+  execVelChart    = echarts.init(document.getElementById('ch-exec-velocity'));
   renderExecutive();
 
   // Registration
