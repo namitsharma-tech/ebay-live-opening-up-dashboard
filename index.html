@@ -295,14 +295,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
       E2E Velocity — Days to First Show · n=9 valid streamers (3 excluded: negative velocity / data quality)
       <span style="font-weight:400;text-transform:none;color:#8d8d8d;margin-left:8px">Min = 0.88d (1 fast outlier) · Most sellers take 32–50 days</span>
     </div>
-    <div id="ch-exec-velocity" style="height:90px"></div>
+    <div id="ch-exec-velocity" style="height:140px"></div>
   </div>
 
   <!-- Registration -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0"><span class="card-title">Registration</span><span class="card-sub">2 metrics · Denominator: account_created sellers</span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(2,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">Registration Rate</div>
       <div class="kpi-value" id="ex-reg-rate">—</div>
@@ -352,7 +352,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0"><span class="card-title">In-Stream</span><span class="card-sub">3 metrics</span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">First Show Completion Rate</div>
       <div class="kpi-value" id="ex-show-rate">—</div>
@@ -377,7 +377,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0"><span class="card-title">Post-Stream</span><span class="card-sub">3 metrics</span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">1-Order Fulfillment Rate</div>
       <div class="kpi-value" id="ex-1ord-rate">—</div>
@@ -402,7 +402,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
     <div class="card-head" style="margin:0"><span class="card-title">Self-Serve Health</span><span class="card-sub">2 metrics · Lower is better · Proactive outreach not in source table</span></div>
   </div>
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+  <div class="kpi-row" style="grid-template-columns:repeat(2,1fr)">
     <div class="kpi-tile">
       <div class="kpi-label">Inbound GCX Contact Rate</div>
       <div class="kpi-value" id="ex-gcx-rate">—</div>
@@ -421,7 +421,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
   <div class="g2" style="gap:1px;margin-top:16px;margin-bottom:1px">
     <div class="chart-pane" style="margin:0">
       <div class="chart-pane-title">Seller Funnel — Account Created → Go Live (current period &amp; filters)</div>
-      <div id="ch-exec-funnel" style="height:230px"></div>
+      <div id="ch-exec-funnel" style="height:260px"></div>
     </div>
     <div class="chart-pane" style="margin:0">
       <div class="chart-pane-title">Monthly Cohort Trend — Volume &amp; Key Rates</div>
@@ -2604,30 +2604,45 @@ function renderExecutive() {
   set('ex-gcx-avg',     a.n_total > 0 ? (a.sum_gcx/a.n_total).toFixed(2) : '—');
   set('ex-gcx-avg-cnt', a.sum_gcx+' contacts · '+a.n_total+' sellers');
 
-  // ── Funnel chart — 6-stage pipeline with conversion rates ────────────────
+  // ── Funnel chart — horizontal bar funnel, 6-stage pipeline ───────────────
   if (execFunnelChart) {
     const total = a.n_total || 1;
-    const fStages  = ['Account Created','App Submitted','LPG Granted\n(incl. BD)',
-                      'Event Created','Listing Ready','First Show (Go Live)'];
-    const fValues  = [a.n_total, a.n_app, a.n_lpg, a.n_event, a.n_listing, a.n_show];
-    const fColors  = ['#4589ff','#4589ff','#0353e9','#0353e9','#0353e9','#24a148'];
-    const richLabel = (v, prev, t) => {
-      const ofTotal = t > 0 ? ' ('+Math.round(v/t*100)+'%)' : '';
-      const conv    = prev > 0 ? '  ↓'+Math.round(v/prev*100)+'%' : '';
-      return v + ofTotal + conv;
-    };
+    // Stages bottom-to-top so Account Created renders at top in ECharts category axis
+    const fStages = ['First Show\n(Go Live)','Listing Ready','Event Created',
+                     'LPG Granted\n(incl. BD)','App Submitted','Account Created'];
+    const fValues = [a.n_show, a.n_listing, a.n_event, a.n_lpg, a.n_app, a.n_total];
+    // Blue shades: lightest at top (account created = widest), darkest at bottom (go live)
+    const fColors = ['#001d6c','#002d9c','#0043ce','#0353e9','#4589ff','#a6c8ff'];
+    // prev values for step conversion (reversed order)
+    const fPrev   = [a.n_listing, a.n_event, a.n_lpg, a.n_app, a.n_total, null];
     execFunnelChart.setOption({
-      tooltip: {trigger:'item', formatter: p =>
-        '<b>'+p.name+'</b><br/>'+p.value+' sellers · '+(p.value/total*100).toFixed(1)+'% of cohort'},
+      tooltip:{trigger:'item', formatter: p => {
+        const idx = fStages.indexOf(p.name);
+        const pct  = (p.value/total*100).toFixed(1);
+        const prev = fPrev[idx];
+        const conv = prev && prev > 0 ? ' · ↓'+Math.round(p.value/prev*100)+'% from prev step' : '';
+        return '<b>'+p.name.replace('\n',' ')+'</b><br/>'+p.value+' sellers · '+pct+'% of cohort'+conv;
+      }},
+      grid:{left:110,right:90,top:8,bottom:8},
+      xAxis:{type:'value', max:total, show:false},
+      yAxis:{type:'category', data:fStages, axisLabel:{fontSize:10, lineHeight:14, rich:{}}},
       series:[{
-        type:'funnel', sort:'none',
-        min:0, max:a.n_total, minSize:'3%', maxSize:'100%',
-        gap:4, left:'2%', width:'60%', top:8, bottom:8,
-        label:{show:true, position:'right', fontSize:11, color:'#161616',
-          formatter: p => richLabel(p.value,
-            fValues[fStages.indexOf(p.name)-1] || p.value, total)},
-        itemStyle:{borderWidth:0},
-        data: fStages.map((n,i)=>({name:n, value:fValues[i], itemStyle:{color:fColors[i]}}))
+        type:'bar', barWidth:28,
+        data: fStages.map((n,i) => ({
+          value: fValues[i],
+          itemStyle:{color:fColors[i]}
+        })),
+        label:{
+          show:true, position:'right', fontSize:10, color:'#161616',
+          formatter: p => {
+            const idx  = fStages.indexOf(p.name);
+            const v    = fValues[idx];
+            const prev = fPrev[idx];
+            const pct  = total > 0 ? Math.round(v/total*100)+'%' : '—';
+            const conv = prev && prev > 0 ? ' ↓'+Math.round(v/prev*100)+'%' : '';
+            return v+' ('+pct+')'+conv;
+          }
+        }
       }]
     }, true);
   }
@@ -2637,28 +2652,29 @@ function renderExecutive() {
     const V = EXEC_VELOCITY;
     execVelChart.setOption({
       tooltip:{trigger:'axis', formatter: p => p[0].name+': <b>'+p[0].value+'d</b>'},
-      grid:{left:42,right:20,top:8,bottom:22},
+      grid:{left:52,right:60,top:12,bottom:28},
       xAxis:{type:'value', name:'days', nameTextStyle:{fontSize:9},
-        min:0, max:Math.ceil(V.p90+2), axisLabel:{fontSize:9}},
+        min:0, max:Math.ceil(V.p90+4), axisLabel:{fontSize:9},
+        splitLine:{lineStyle:{color:'#f0f0f0'}}},
       yAxis:{type:'category', data:['p25','p50\n(med)','p75','p90'],
         axisLabel:{fontSize:9,lineHeight:12}},
       series:[{
-        type:'bar', barWidth:14,
+        type:'bar', barWidth:18,
         data:[
-          {value:V.p25, itemStyle:{color:'#24a148'}},
-          {value:V.p50, itemStyle:{color:'#0353e9'}},
-          {value:V.p75, itemStyle:{color:'#f1c21b'}},
-          {value:V.p90, itemStyle:{color:'#da1e28'}}
+          {value:V.p25, itemStyle:{color:'#a6c8ff'}},
+          {value:V.p50, itemStyle:{color:'#4589ff'}},
+          {value:V.p75, itemStyle:{color:'#0353e9'}},
+          {value:V.p90, itemStyle:{color:'#001d6c'}}
         ],
-        label:{show:true, position:'right', fontSize:10,
+        label:{show:true, position:'right', fontSize:10, color:'#161616',
           formatter: p => p.value+'d'}
       },{
         type:'scatter', symbol:'diamond', symbolSize:10,
         data:[{value:[V.min_days, 'p25'], name:'min (fastest)'}],
-        itemStyle:{color:'#24a148'},
+        itemStyle:{color:'#0353e9'},
         tooltip:{formatter: p => 'Min (fastest): <b>'+V.min_days+'d</b><br/>1 seller — very fast outlier'}
       }],
-      graphic:[{type:'text',left:'55%',top:2,
+      graphic:[{type:'text',left:'62%',top:4,
         style:{text:'★ min: '+V.min_days+'d (1 fast outlier)',
           font:'10px sans-serif',fill:'#525252'}}]
     }, true);
