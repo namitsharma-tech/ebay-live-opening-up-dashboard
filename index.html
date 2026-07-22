@@ -775,8 +775,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
     </div>
     <div class="kpi-tile">
       <div class="kpi-label">Event Completion Time</div>
-      <div class="kpi-value" style="font-size:18px">P50: 16 min <span class="badge-sm" style="background:#42be65;color:#fff">Live</span></div>
-      <div class="kpi-count">P90: 73+ hrs (incl. sellers who returned later) · 3,328 sessions</div>
+      <div class="kpi-value" style="font-size:18px">P50: 15.8 min <span class="badge-sm" style="background:#42be65;color:#fff">Live</span></div>
+      <div class="kpi-count">P90: 73.4 hrs (incl. sellers who returned later) · 3,328 sessions</div>
       <div class="kpi-note">CTA click → event published · Source: COMPLETION_TIME_FINAL_T</div>
     </div>
     <div class="kpi-tile">
@@ -815,7 +815,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
 
   <!-- Funnel -->
   <div style="background:#e0e0e0;margin-bottom:1px;margin-top:16px">
-    <div class="card-head" style="margin:0"><span class="card-title">Pre-Stream Funnel — All Sellers · Overall (578 sellers · all-time as of Jul 21)</span></div>
+    <div class="card-head" style="margin:0"><span class="card-title">Pre-Stream Funnel — All Sellers · Overall (18 sellers · all-time as of Jul 22)</span></div>
   </div>
   <div class="g2" style="gap:1px;background:#e0e0e0">
     <div style="background:#fff;padding:16px">
@@ -1002,7 +1002,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'IBM Pl
         <tr>
           <td colspan="5" style="background:#fff8e1;padding:8px 12px;font-size:10px;color:#6f6f6f;border-top:2px solid #f1c21b">
             <strong style="color:#525252">Data source (v2):</strong>
-            Denominator for all funnel &amp; quality metrics = sellers with <strong>activated_studio = 1</strong> in LIVE_SELLER_MASTER_V2 (latest snapshot · 72 sellers · US + Unknown geo).
+            Denominator for all funnel &amp; quality metrics = sellers with <strong>activated_studio = 1</strong> in LIVE_SELLER_MASTER_V2 (latest snapshot · 18 sellers · US + Unknown geo).
             All funnel steps from SELLER_FIRST_SHOW_FUNNEL joined to LIVE_SELLER_MASTER_V2.
             Dimensional filters (geo · phase · category · tier · onboarding_method · seller_background) joined from LIVE_SELLER_UNIFIED_ONBOARDING_DIM.
             Static tiles (completion times, express listing adoption) retain old LPG-cohort sources pending v2 migration.
@@ -1629,18 +1629,18 @@ const D = {
   lpg_rate:          [49,52,55,56,58],
   approval_hrs:      [3.2,2.8,2.4,2.1,1.8],
   manual_review:     [38,33,31,28,25],
-  event_completion:  [72,75,78,81,44.3],   // Jul-14: real (341 clicked, 151 published)
-  event_abandon:     [28,25,22,19,55.7],   // Jul-14: real
+  event_completion:  [0,0,0,20.0,16.7],  // real: Jul12-18:2/10=20%; Jul19-22:1/6=16.7%
+  event_abandon:     [0,0,0,80.0,83.3],  // real: 100-event_completion per week
   listing_completion:[65,70,73,76,50.0],   // Jul-14: real (EXPRESS_LISTING_COMPLETION_RATE_T)
   express_adopt:     [40,45,50,55,60],     // Jul-14: not available (LISTING_ADOPTION_T issue)
   cat_accept:        [62,65,67,70,27.6],   // Jul-14: real (21/29 users overrode category)
   ship_accept:       [68,71,73,75,55.2],   // Jul-14: real (13/29 users overrode shipping)
-  event_error:       [8.2,6.8,5.4,4.1,3.2], // Jul-14: not available (error_code always NULL)
-  listing_error:     [11.1,9.4,7.8,6.2,5.1], // Jul-14: not available
-  ps_event_creation:  [32,38,43,47,52],
-  ps_listing_ready:   [28,33,40,44,48],
-  ps_show_ready:      [16,20,23,26,29],
-  ps_show_14d:        [14,17,21,24,27],
+  event_error:       [0,0,0,0,0],          // real: error_code always NULL in source
+  listing_error:     [0,0,0,0,0],          // real: error_code always NULL in source
+  ps_event_creation:  [0,0,0,20.0,16.7],  // real: wks Jun14-Jul11:0; Jul12-18:2/10=20%; Jul19-22:1/6=16.7%
+  ps_listing_ready:   [0,0,0,10.0,0],    // real: Jul12-18:1/10=10%; Jul19-22:0/6
+  ps_show_ready:      [0,0,0,10.0,0],    // real: Jul12-18:1/10=10%
+  ps_show_14d:        [0,0,0,10.0,0],    // real: Jul12-18:1/10=10%
   gmv_stream:        [340,410,490,560,640],
   items_listed:      [18,21,24,26,28],
   items_pinned:      [9,11,13,15,17],
@@ -2057,43 +2057,43 @@ const REG_DATA = [
 //          s(setup_started), ec(event_created), lr(listing_ready),
 //          fsr(first_show_ready), s14(streamed_within_14d)
 const PS_DATA_ALL = [
-  {geo:"US",cat:"Apparel",tier:"T3",phase:"Rest",method:"BD_Onboarded",bg:"Core_to_Live",s:2,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",cat:"Coins and Bullions",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Health and Beauty",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Other",tier:"T3",phase:"Rest",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Other Collectibles",tier:"T3",phase:"Rest",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Toys",tier:"T3",phase:"Rest",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:1,lr:1,fsr:1,s14:0},
-  {geo:"US",cat:"Toys and Funko",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Trading Cards CCG",tier:"T3",phase:"Rest",method:"BD_Onboarded",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Trading Cards STC",tier:"T3",phase:"Rest",method:"BD_Onboarded",bg:"Core_to_Live",s:2,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Watches and Jewelry",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Coins and Bullions",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:2,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Electronics",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",cat:"Unknown",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",cat:"Watches and Jewelry",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:2,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:2,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Unknown",method:"Unknown",bg:"Unknown",s:10,ec:1,lr:0,fsr:0,s14:0}
+];
+
+// ─── Pre-Stream data (v2 · Monthly MTD · Jul 1–22 2026) ──────────────────────
+// CAST(studio_activated_ts AS DATE) BETWEEN '2026-07-01' AND '2026-07-22'
+const PS_DATA_MONTHLY = [
+  {geo:"US",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",cat:"Unknown",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",cat:"Watches and Jewelry",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:2,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:2,ec:1,lr:1,fsr:1,s14:1},
+  {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Unknown",method:"Unknown",bg:"Unknown",s:9,ec:1,lr:0,fsr:0,s14:0}
+];
+
+// ─── Pre-Stream data (v2 · Weekly · Jul 12-18 2026) ───────────────────────────
+// CAST(studio_activated_ts AS DATE) BETWEEN '2026-07-12' AND '2026-07-18'
+const PS_DATA_WEEKLY = [
+  {geo:"US",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
+  {geo:"US",cat:"Unknown",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"US",cat:"Watches and Jewelry",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:2,ec:1,lr:1,fsr:1,s14:1},
   {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Unknown",method:"Unknown",bg:"Unknown",s:4,ec:0,lr:0,fsr:0,s14:0}
 ];
 
-// ─── Pre-Stream data (v2 · Monthly MTD · Jul 1–21 2026) ──────────────────────
-// CAST(studio_activated_ts AS DATE) BETWEEN '2026-07-01' AND '2026-07-21'
-const PS_DATA_MONTHLY = [
-  {geo:"US",cat:"Coins and Bullions",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Toys and Funko",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"US",cat:"Watches and Jewelry",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Coins and Bullions",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:2,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Collectibles",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:3,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Electronics",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:4,ec:1,lr:1,fsr:1,s14:1},
-  {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:1,lr:0,fsr:0,s14:0},
-  {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Unknown",method:"Unknown",bg:"Unknown",s:4,ec:0,lr:0,fsr:0,s14:0}
+// ─── Pre-Stream data (v2 · Daily · Jul 17 2026) ────────────────────────────────
+// CAST(studio_activated_ts AS DATE) = '2026-07-17'
+const PS_DATA_DAILY = [
+  {geo:"US",cat:"Unknown",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"Core_to_Live",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Fashion",tier:"Unknown",phase:"Rest",method:"Self-Serve",bg:"New_to_Ebay",s:1,ec:0,lr:0,fsr:0,s14:0},
+  {geo:"Unknown",cat:"Unknown",tier:"Unknown",phase:"Unknown",method:"Unknown",bg:"Unknown",s:1,ec:0,lr:0,fsr:0,s14:0}
 ];
 
 // ─── In-Stream data (v4 · HC_STREAM_METRICS × LIVE_SELLER_UNIFIED_ONBOARDING_DIM · expanded schema · through Jul 18 2026) ──
@@ -2952,19 +2952,16 @@ function renderPreStream() {
   const grainDataMap = {
     'Overall': PS_DATA_ALL,
     'Monthly': PS_DATA_MONTHLY,
-    'Weekly':  null,
-    'Daily':   null
+    'Weekly':  PS_DATA_WEEKLY,
+    'Daily':   PS_DATA_DAILY
   };
   const grainLabelMap = {
-    'Overall': 'All-time · studio-activated sellers',
-    'Monthly': 'Jul 2026 MTD · studio-activated sellers',
-    'Weekly':  'Jul 19–25 · studio-activated sellers',
-    'Daily':   'Jul 21 · studio-activated sellers'
+    'Overall': 'All-time · studio-activated sellers · as of Jul 22 2026',
+    'Monthly': 'Jul 2026 MTD (Jul 1–22) · studio-activated sellers',
+    'Weekly':  'Jul 12–18 2026 · studio-activated sellers',
+    'Daily':   'Jul 17 2026 · studio-activated sellers'
   };
-  const noDataMsgMap = {
-    'Weekly': 'No new sellers onboarded Jul 19–25',
-    'Daily':  'No new sellers onboarded Jul 21'
-  };
+  const noDataMsgMap = {};
 
   const data  = grainDataMap[activeGrain];
   const label = grainLabelMap[activeGrain];
